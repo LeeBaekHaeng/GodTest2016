@@ -9,6 +9,11 @@ public class EgovFileScrtyTest {
 		System.out.println("테스트");
 
 		encryptPassword();
+
+		// EgovARIACryptoServiceImpl egovARIACryptoServiceImpl = new
+		// EgovARIACryptoServiceImpl();
+		// EgovARIACryptoService
+		// EgovCryptoService
 	}
 
 	public void encryptPassword() throws Exception {
@@ -26,5 +31,4 @@ public class EgovFileScrtyTest {
 		System.out.println("decodeBinary=" + decodeBinary.toString());
 		System.out.println("decodeBinary=" + new String(decodeBinary));
 	}
-
 }
