@@ -1,0 +1,42 @@
+/* ----------------------------------------------------------------------------
+   EgovMobile Style Sheet
+   Description :  UX grid view component
+   Modification Information
+   수정일           수정자      수정내용
+   -------------    --------    ---------------------
+   2014.09.11		 표준프레임워크     			 최초 생성
+ 
+   author   : 표준프레임워크
+   since    : 2014.09.11
+---------------------------------------------------------------------------- */
+
+dl, dt, dd, ol, ul, li { list-style:none }
+input { border:0 none; }
+
+.ui-footer .ui-title { font-size: 0.7em; margin: .6em 0 .8em}
+.ui-li-aside { float: right; width: 40%; text-align: right; margin: 0.85em -0.188em 0 0; }
+
+.com-copContent { margin:0; padding:0; background:#fff; }
+.paddT10 { padding-top:10px; }
+
+/* 상세화면 */
+.dev-Detail { clear:both; border-bottom:solid 2px #ddd; padding:5px 0 10px; overflow:hidden }
+.dev-Detail li { text-align:left; padding:10px; overflow:hidden; vertical-align:top; line-height:150%; border-bottom:1px dashed #cccccc; }
+.dev-Detail li span { dispaly:block; float:left; text-align:left; }
+.dev-Detail li span.uss-tit { width:28%; font-size:16px; }
+.dev-Detail li span.uss-con { width:68%; color:#333; float:right; text-align:left; font-size:14px;}
+.dev-Detail li:last-child { border-bottom:0 none; }
+
+.devBtn { clear:both; padding:0 0 20px; margin:0; }
+
+/* 공통 등록하기 화면 */
+.dev-registOk { padding:10px 0 0; clear:both; margin:0; }
+.dev-registOk dt { padding:10px 0 0; overflow:hidden; margin:0;  }
+.dev-registOk dt strong { padding:0 0 0 10px; color:#ff6600 }
+.dev-registOk dd { padding:5px 0 10px; border-bottom:1px dashed #ccc; overflow:hidden; margin:0;}
+.dev-registOk dd:last-child { overflow:hidden; border-bottom:0 none; }
+
+.egovDevBtn { clear:both; padding:10px 0; border-top:1px solid #ccc; margin-top:20px}
+
+.select { text-align:left; }
+.com-textContents { height:150px; width:100%; margin:0; padding:0; text-align:left; float:left; }
