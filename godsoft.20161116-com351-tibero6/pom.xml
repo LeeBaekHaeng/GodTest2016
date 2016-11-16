@@ -388,6 +388,27 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.31</version>
 		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>tmaxsoft</groupId> -->
+		<!-- <artifactId>tibero</artifactId> -->
+		<!-- <version>6</version> -->
+		<!-- <scope>system</scope> -->
+		<!-- <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/tibero6-jdbc.jar</systemPath> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>tmaxsoft</groupId>
+			<artifactId>tibero</artifactId>
+			<version>6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.maven.artifact.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
