@@ -16,7 +16,11 @@ import egovframework.com.cmm.service.CmmnDetailCode;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-		"classpath:egovframework/spring/com/**/context-*.xml",
+// "classpath:egovframework/spring/com/**/context-*.xml",
+		"classpath:egovframework/spring/com/context-datasource.xml",
+		// "classpath:egovframework/spring/com/context-aspect.xml",
+		// "classpath:egovframework/spring/com/context-common.xml",
+		// "classpath:egovframework/spring/com/idgn/context-*.xml",
 		"classpath:godsoft/spring/com/**/context-*.xml" })
 public class CmmUseMapperTest {
 
