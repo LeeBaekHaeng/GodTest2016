@@ -9,6 +9,16 @@
 </head>
 <body>
 
+WEBPASS=${WEBPASS}
+contextPath=${contextPath}
+
+hello
+<ol>
+<c:forEach items="${COM001}" var="item">
+<li>${item.codeNm}</li>
+</c:forEach>
+</ol>
+
 	<ol>
 		<c:forEach items="${COM001}" var="item">
 			<li>${item.codeNm}</li>
