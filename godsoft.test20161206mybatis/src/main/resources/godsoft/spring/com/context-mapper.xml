@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation"
+			value="classpath:godsoft/mapper/config/${Globals.DbType}/mybatis-3-config.xml" />
+
+		<property name="mapperLocations"
+			value="classpath:godsoft/mapper/com/**/*_${Globals.DbType}.xml" />
+
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean class="egovframework.rte.psl.dataaccess.mapper.MapperConfigurer">
+		<property name="basePackage" value="godsoft.com.**.service.impl" />
+	</bean>
+
+</beans>
