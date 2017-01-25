@@ -57,6 +57,21 @@
 					} ]
 				}
 			});
+
+			// 			function a() {
+			// 				console.debug("a");
+			// 			}
+
+			// 			function a(vo) {
+			// 				console.debug("a vo");
+			// 				console.debug("a " + vo);
+			// 				console.debug("a " + vo.a);
+			// 			}
+
+			// 			a();
+			// // 			a({
+			// // 				a : "에이"
+			// // 			});
 		});
 	</script>
 
