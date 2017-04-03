@@ -58,6 +58,17 @@ function fn_egov_save() {
 
 }
 
+function fn_testData() {
+	document.getElementById('emplyrId').value = 'god';
+	document.getElementById('userNm').value = '이백행';
+	document.getElementById('password').value = 'god';
+	document.getElementById('houseAdres').value = '대전';
+// 	document.getElementById('').value = '';
+// 	document.getElementById('').value = '';
+// 	document.getElementById('').value = '';
+}
+
+fn_testData();
 // -->
 </script>
 </head>
@@ -287,6 +298,7 @@ function fn_egov_save() {
 			<li><span class="btn_blue_l"><a href="javascript:fn_egov_delete();">삭제</a><img src="<c:url value='/images//btn_bg_r.gif'/>" alt="" /></span></li>
 			</c:if>
 			<li><span class="btn_blue_l"><a href="javascript:document.detailForm.reset();">Reset</a><img src="<c:url value='/images//btn_bg_r.gif'/>" alt="" /></span></li></ul>
+			<li><span class="btn_blue_l"><a href="javascript:fn_testData();">테스트 데이터</a><img src="<c:url value='/images//btn_bg_r.gif'/>" alt="" /></span></li></ul>
 	</div>
 </div>
 <!-- 검색조건 유지 -->
