@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Comtnemplyrinfo">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="comtnemplyrinfoSerarchVO" type="kosii.test.curd.comtnemplyrinfo.service.ComtnemplyrinfoDefaultVO"/>
+	
+	<resultMap id="comtnemplyrinfo" class="kosii.test.curd.comtnemplyrinfo.service.ComtnemplyrinfoVO">
+		<result property="emplyrId" column="EMPLYR_ID" columnIndex="1"/>
+		<result property="orgnztId" column="ORGNZT_ID" columnIndex="2"/>
+		<result property="userNm" column="USER_NM" columnIndex="3"/>
+		<result property="password" column="PASSWORD" columnIndex="4"/>
+		<result property="emplNo" column="EMPL_NO" columnIndex="5"/>
+		<result property="ihidnum" column="IHIDNUM" columnIndex="6"/>
+		<result property="sexdstnCode" column="SEXDSTN_CODE" columnIndex="7"/>
+		<result property="brthdy" column="BRTHDY" columnIndex="8"/>
+		<result property="fxnum" column="FXNUM" columnIndex="9"/>
+		<result property="houseAdres" column="HOUSE_ADRES" columnIndex="10"/>
+		<result property="passwordHint" column="PASSWORD_HINT" columnIndex="11"/>
+		<result property="passwordCnsr" column="PASSWORD_CNSR" columnIndex="12"/>
+		<result property="houseEndTelno" column="HOUSE_END_TELNO" columnIndex="13"/>
+		<result property="areaNo" column="AREA_NO" columnIndex="14"/>
+		<result property="detailAdres" column="DETAIL_ADRES" columnIndex="15"/>
+		<result property="zip" column="ZIP" columnIndex="16"/>
+		<result property="offmTelno" column="OFFM_TELNO" columnIndex="17"/>
+		<result property="mbtlnum" column="MBTLNUM" columnIndex="18"/>
+		<result property="emailAdres" column="EMAIL_ADRES" columnIndex="19"/>
+		<result property="ofcpsNm" column="OFCPS_NM" columnIndex="20"/>
+		<result property="houseMiddleTelno" column="HOUSE_MIDDLE_TELNO" columnIndex="21"/>
+		<result property="groupId" column="GROUP_ID" columnIndex="22"/>
+		<result property="pstinstCode" column="PSTINST_CODE" columnIndex="23"/>
+		<result property="emplyrSttusCode" column="EMPLYR_STTUS_CODE" columnIndex="24"/>
+		<result property="esntlId" column="ESNTL_ID" columnIndex="25"/>
+		<result property="crtfcDnValue" column="CRTFC_DN_VALUE" columnIndex="26"/>
+		<result property="sbscrbDe" column="SBSCRB_DE" columnIndex="27"/>
+	</resultMap>
+	
+	<insert id="comtnemplyrinfoDAO.insertComtnemplyrinfo_S">
+		<![CDATA[
+			INSERT INTO COMTNEMPLYRINFO 
+				( EMPLYR_ID
+				  , ORGNZT_ID
+				  , USER_NM
+				  , PASSWORD
+				  , EMPL_NO
+				  , IHIDNUM
+				  , SEXDSTN_CODE
+				  , BRTHDY
+				  , FXNUM
+				  , HOUSE_ADRES
+				  , PASSWORD_HINT
+				  , PASSWORD_CNSR
+				  , HOUSE_END_TELNO
+				  , AREA_NO
+				  , DETAIL_ADRES
+				  , ZIP
+				  , OFFM_TELNO
+				  , MBTLNUM
+				  , EMAIL_ADRES
+				  , OFCPS_NM
+				  , HOUSE_MIDDLE_TELNO
+				  , GROUP_ID
+				  , PSTINST_CODE
+				  , EMPLYR_STTUS_CODE
+				  , ESNTL_ID
+				  , CRTFC_DN_VALUE
+				  , SBSCRB_DE )
+			VALUES ( #emplyrId#
+				  , #orgnztId#
+				  , #userNm#
+				  , #password#
+				  , #emplNo#
+				  , #ihidnum#
+				  , #sexdstnCode#
+				  , #brthdy#
+				  , #fxnum#
+				  , #houseAdres#
+				  , #passwordHint#
+				  , #passwordCnsr#
+				  , #houseEndTelno#
+				  , #areaNo#
+				  , #detailAdres#
+				  , #zip#
+				  , #offmTelno#
+				  , #mbtlnum#
+				  , #emailAdres#
+				  , #ofcpsNm#
+				  , #houseMiddleTelno#
+				  , #groupId#
+				  , #pstinstCode#
+				  , #emplyrSttusCode#
+				  , #esntlId#
+				  , #crtfcDnValue#
+				  , #sbscrbDe# )
+		]]>
+	</insert>
+	
+	<update id="comtnemplyrinfoDAO.updateComtnemplyrinfo_S">
+		<![CDATA[
+			UPDATE COMTNEMPLYRINFO
+			SET EMPLYR_ID=#emplyrId#
+				, ORGNZT_ID=#orgnztId#
+				, USER_NM=#userNm#
+				, PASSWORD=#password#
+				, EMPL_NO=#emplNo#
+				, IHIDNUM=#ihidnum#
+				, SEXDSTN_CODE=#sexdstnCode#
+				, BRTHDY=#brthdy#
+				, FXNUM=#fxnum#
+				, HOUSE_ADRES=#houseAdres#
+				, PASSWORD_HINT=#passwordHint#
+				, PASSWORD_CNSR=#passwordCnsr#
+				, HOUSE_END_TELNO=#houseEndTelno#
+				, AREA_NO=#areaNo#
+				, DETAIL_ADRES=#detailAdres#
+				, ZIP=#zip#
+				, OFFM_TELNO=#offmTelno#
+				, MBTLNUM=#mbtlnum#
+				, EMAIL_ADRES=#emailAdres#
+				, OFCPS_NM=#ofcpsNm#
+				, HOUSE_MIDDLE_TELNO=#houseMiddleTelno#
+				, GROUP_ID=#groupId#
+				, PSTINST_CODE=#pstinstCode#
+				, EMPLYR_STTUS_CODE=#emplyrSttusCode#
+				, ESNTL_ID=#esntlId#
+				, CRTFC_DN_VALUE=#crtfcDnValue#
+				, SBSCRB_DE=#sbscrbDe#
+						WHERE EMPLYR_ID=#emplyrId#
+				]]>
+	</update>
+	
+	<delete id="comtnemplyrinfoDAO.deleteComtnemplyrinfo_S">
+		<![CDATA[
+			DELETE FROM COMTNEMPLYRINFO 
+						WHERE EMPLYR_ID=#emplyrId#
+				]]>
+	</delete>
+	
+	<select id="comtnemplyrinfoDAO.selectComtnemplyrinfo_S" resultMap="comtnemplyrinfo">
+		<![CDATA[
+			SELECT
+				EMPLYR_ID
+				, ORGNZT_ID
+				, USER_NM
+				, PASSWORD
+				, EMPL_NO
+				, IHIDNUM
+				, SEXDSTN_CODE
+				, BRTHDY
+				, FXNUM
+				, HOUSE_ADRES
+				, PASSWORD_HINT
+				, PASSWORD_CNSR
+				, HOUSE_END_TELNO
+				, AREA_NO
+				, DETAIL_ADRES
+				, ZIP
+				, OFFM_TELNO
+				, MBTLNUM
+				, EMAIL_ADRES
+				, OFCPS_NM
+				, HOUSE_MIDDLE_TELNO
+				, GROUP_ID
+				, PSTINST_CODE
+				, EMPLYR_STTUS_CODE
+				, ESNTL_ID
+				, CRTFC_DN_VALUE
+				, SBSCRB_DE
+			FROM COMTNEMPLYRINFO
+						WHERE EMPLYR_ID=#emplyrId#
+				]]>
+	</select>
+	
+	<select id="comtnemplyrinfoDAO.selectComtnemplyrinfoList_D" parameterClass="comtnemplyrinfoSerarchVO" resultClass="egovMap">
+SELECT * FROM (
+	SELECT A.*, ROWNUM RNUM FROM (
+				SELECT
+								EMPLYR_ID
+								, ORGNZT_ID
+								, USER_NM
+								, PASSWORD
+								, EMPL_NO
+								, IHIDNUM
+								, SEXDSTN_CODE
+								, BRTHDY
+								, FXNUM
+								, HOUSE_ADRES
+								, PASSWORD_HINT
+								, PASSWORD_CNSR
+								, HOUSE_END_TELNO
+								, AREA_NO
+								, DETAIL_ADRES
+								, ZIP
+								, OFFM_TELNO
+								, MBTLNUM
+								, EMAIL_ADRES
+								, OFCPS_NM
+								, HOUSE_MIDDLE_TELNO
+								, GROUP_ID
+								, PSTINST_CODE
+								, EMPLYR_STTUS_CODE
+								, ESNTL_ID
+								, CRTFC_DN_VALUE
+								, SBSCRB_DE
+						FROM COMTNEMPLYRINFO
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					EMPLYR_ID = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					ORGNZT_ID LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+						EMPLYR_ID DESC
+		
+		<![CDATA[					
+	) A WHERE ROWNUM <= #lastIndex#
+)WHERE RNUM > #firstIndex#
+]]>
+	</select>	
+	<select id="comtnemplyrinfoDAO.selectComtnemplyrinfoListTotCnt_S" parameterClass="comtnemplyrinfoSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM COMTNEMPLYRINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				EMPLYR_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				ORGNZT_ID LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>
