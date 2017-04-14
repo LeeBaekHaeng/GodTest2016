@@ -1,0 +1,18 @@
+Author : 이백행<dlqorgod@naver.com>
+Create Date : 2017-04-09
+
+DataAccess
+ Create DataAccess: 체크
+ Resource(SQLMap) Folder: src/main/resources/kosii/sqlmap/test/crud
+ DAO Package: kosii.test.curd.comtnauthorinfo.service.impl
+ VO Package: kosii.test.curd.comtnauthorinfo.service
+
+Service
+ Create Service: 체크
+ Service Package: kosii.test.curd.comtnauthorinfo.service
+ Service Impl Package: kosii.test.curd.comtnauthorinfo.service.impl
+
+Web
+ Create Web: 체크
+ Controller Package: kosii.test.crud.comtnauthorinfo.web
+ JSP Folder: src/main/webapp/WEB-INF/jsp/kosii/test/crud
