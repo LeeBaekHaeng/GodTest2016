@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Comtnroleinfo">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="comtnroleinfoSerarchVO" type="kosii.test.crud.comtnroleinfo.service.ComtnroleinfoDefaultVO"/>
+	
+	<resultMap id="comtnroleinfo" class="kosii.test.crud.comtnroleinfo.service.ComtnroleinfoVO">
+		<result property="roleCode" column="ROLE_CODE" columnIndex="1"/>
+		<result property="roleNm" column="ROLE_NM" columnIndex="2"/>
+		<result property="rolePttrn" column="ROLE_PTTRN" columnIndex="3"/>
+		<result property="roleDc" column="ROLE_DC" columnIndex="4"/>
+		<result property="roleTy" column="ROLE_TY" columnIndex="5"/>
+		<result property="roleSort" column="ROLE_SORT" columnIndex="6"/>
+		<result property="roleCreatDe" column="ROLE_CREAT_DE" columnIndex="7"/>
+	</resultMap>
+	
+	<insert id="comtnroleinfoDAO.insertComtnroleinfo_S">
+		<![CDATA[
+			INSERT INTO COMTNROLEINFO 
+				( ROLE_CODE
+				  , ROLE_NM
+				  , ROLE_PTTRN
+				  , ROLE_DC
+				  , ROLE_TY
+				  , ROLE_SORT
+				  , ROLE_CREAT_DE )
+			VALUES ( #roleCode#
+				  , #roleNm#
+				  , #rolePttrn#
+				  , #roleDc#
+				  , #roleTy#
+				  , #roleSort#
+				  , #roleCreatDe# )
+		]]>
+	</insert>
+	
+	<update id="comtnroleinfoDAO.updateComtnroleinfo_S">
+		<![CDATA[
+			UPDATE COMTNROLEINFO
+			SET ROLE_CODE=#roleCode#
+				, ROLE_NM=#roleNm#
+				, ROLE_PTTRN=#rolePttrn#
+				, ROLE_DC=#roleDc#
+				, ROLE_TY=#roleTy#
+				, ROLE_SORT=#roleSort#
+				, ROLE_CREAT_DE=#roleCreatDe#
+						WHERE ROLE_CODE=#roleCode#
+				]]>
+	</update>
+	
+	<delete id="comtnroleinfoDAO.deleteComtnroleinfo_S">
+		<![CDATA[
+			DELETE FROM COMTNROLEINFO 
+						WHERE ROLE_CODE=#roleCode#
+				]]>
+	</delete>
+	
+	<select id="comtnroleinfoDAO.selectComtnroleinfo_S" resultMap="comtnroleinfo">
+		<![CDATA[
+			SELECT
+				ROLE_CODE
+				, ROLE_NM
+				, ROLE_PTTRN
+				, ROLE_DC
+				, ROLE_TY
+				, ROLE_SORT
+				, ROLE_CREAT_DE
+			FROM COMTNROLEINFO
+						WHERE ROLE_CODE=#roleCode#
+				]]>
+	</select>
+	
+	<select id="comtnroleinfoDAO.selectComtnroleinfoList_D" parameterClass="comtnroleinfoSerarchVO" resultClass="egovMap">
+SELECT * FROM (
+	SELECT A.*, ROWNUM RNUM FROM (
+				SELECT
+								ROLE_CODE
+								, ROLE_NM
+								, ROLE_PTTRN
+								, ROLE_DC
+								, ROLE_TY
+								, ROLE_SORT
+								, ROLE_CREAT_DE
+						FROM COMTNROLEINFO
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					ROLE_CODE = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					ROLE_NM LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+						ROLE_CODE DESC
+		
+		<![CDATA[					
+	) A WHERE ROWNUM <= #lastIndex#
+)WHERE RNUM > #firstIndex#
+]]>
+	</select>	
+	<select id="comtnroleinfoDAO.selectComtnroleinfoListTotCnt_S" parameterClass="comtnroleinfoSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM COMTNROLEINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				ROLE_CODE = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				ROLE_NM LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>
