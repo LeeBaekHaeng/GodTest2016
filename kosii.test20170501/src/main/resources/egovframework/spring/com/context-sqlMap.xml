@@ -18,6 +18,7 @@
 		<property name="configLocations">
 			<list>
 				<value>classpath:/egovframework/sqlmap/config/${Globals.DbType}/*.xml</value>
+				<value>classpath:/kosii/sqlmap/config/${Globals.DbType}/*.xml</value>
 			</list>
 		</property>
 		<property name="dataSource" ref="egov.dataSource"/>
