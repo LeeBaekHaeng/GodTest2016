@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Test20170604LbhEntrprsMber">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="test20170604LbhEntrprsMberSerarchVO" type="godsoft.test.crud.test20170604lbhentrprsmber.service.Test20170604LbhEntrprsMberDefaultVO"/>
+	
+	<resultMap id="test20170604LbhEntrprsMber" class="godsoft.test.crud.test20170604lbhentrprsmber.service.Test20170604LbhEntrprsMberVO">
+		<result property="entrprsMberId" column="ENTRPRS_MBER_ID" columnIndex="1"/>
+		<result property="entrprsSeCode" column="ENTRPRS_SE_CODE" columnIndex="2"/>
+	</resultMap>
+	
+	<insert id="test20170604LbhEntrprsMberDAO.insertTest20170604LbhEntrprsMber_S">
+		<![CDATA[
+			INSERT INTO TEST_20170604_LBH_ENTRPRS_MBER 
+				( ENTRPRS_MBER_ID
+				  , ENTRPRS_SE_CODE )
+			VALUES ( #entrprsMberId#
+				  , #entrprsSeCode# )
+		]]>
+	</insert>
+	
+	<update id="test20170604LbhEntrprsMberDAO.updateTest20170604LbhEntrprsMber_S">
+		<![CDATA[
+			UPDATE TEST_20170604_LBH_ENTRPRS_MBER
+			SET ENTRPRS_MBER_ID=#entrprsMberId#
+				, ENTRPRS_SE_CODE=#entrprsSeCode#
+						WHERE ENTRPRS_MBER_ID=#entrprsMberId#
+				]]>
+	</update>
+	
+	<delete id="test20170604LbhEntrprsMberDAO.deleteTest20170604LbhEntrprsMber_S">
+		<![CDATA[
+			DELETE FROM TEST_20170604_LBH_ENTRPRS_MBER 
+						WHERE ENTRPRS_MBER_ID=#entrprsMberId#
+				]]>
+	</delete>
+	
+	<select id="test20170604LbhEntrprsMberDAO.selectTest20170604LbhEntrprsMber_S" resultMap="test20170604LbhEntrprsMber">
+		<![CDATA[
+			SELECT
+				ENTRPRS_MBER_ID
+				, ENTRPRS_SE_CODE
+			FROM TEST_20170604_LBH_ENTRPRS_MBER
+						WHERE ENTRPRS_MBER_ID=#entrprsMberId#
+				]]>
+	</select>
+	
+	<select id="test20170604LbhEntrprsMberDAO.selectTest20170604LbhEntrprsMberList_D" parameterClass="test20170604LbhEntrprsMberSerarchVO" resultClass="egovMap">
+SELECT * FROM (
+	SELECT A.*, ROWNUM RNUM FROM (
+				SELECT
+								ENTRPRS_MBER_ID
+								, ENTRPRS_SE_CODE
+						FROM TEST_20170604_LBH_ENTRPRS_MBER
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					ENTRPRS_MBER_ID = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					ENTRPRS_SE_CODE LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+						ENTRPRS_MBER_ID DESC
+		
+		<![CDATA[					
+	) A WHERE ROWNUM <= #lastIndex#
+)WHERE RNUM > #firstIndex#
+]]>
+	</select>	
+	<select id="test20170604LbhEntrprsMberDAO.selectTest20170604LbhEntrprsMberListTotCnt_S" parameterClass="test20170604LbhEntrprsMberSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM TEST_20170604_LBH_ENTRPRS_MBER
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				ENTRPRS_MBER_ID = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				ENTRPRS_SE_CODE LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>
