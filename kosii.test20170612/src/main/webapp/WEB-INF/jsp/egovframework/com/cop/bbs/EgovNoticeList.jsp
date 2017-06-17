@@ -77,6 +77,7 @@
 		document.subForm.nttId.value = nttId;
 		document.subForm.bbsId.value = bbsId;
 		document.subForm.action = "<c:url value='/cop/bbs${prefix}/selectBoardArticle.do'/>";
+		document.subForm.method = 'get';
 		document.subForm.submit();
 	}
 //-->
@@ -185,7 +186,7 @@
 				    		<img src="<c:url value='/images/egovframework/com/cmm/icon/reply_arrow.gif'/>" alt="reply arrow">
 				    	</c:if>
 			    		<span class="link">
-			    			<a href="#"  onclick="fn_egov_inqire_notice();"><c:out value="${result.nttSj}"/></a>
+			    			<a href="#"  onclick="fn_egov_inqire_notice('${status.index}', '${result.nttId}', '${result.bbsId}');"><c:out value="${result.nttSj}"/></a>
 			    		</span>
 			    	</form>
 	    		</c:otherwise>

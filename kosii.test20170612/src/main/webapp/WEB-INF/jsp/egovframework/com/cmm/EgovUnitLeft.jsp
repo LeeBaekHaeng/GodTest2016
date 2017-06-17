@@ -9,6 +9,9 @@
 </head>
 
 <body>
+
+<a href="${pageContext.request.contextPath}/cop/bbs/selectBoardList.do?bbsId=BBSMSTR_000000000001" target="_content">일반게시판 + 일반게시판</a>
+
 <c:set var="isMai" value="false"/>
 <c:set var="isUat" value="false"/>
 <c:set var="isSec" value="false"/>
