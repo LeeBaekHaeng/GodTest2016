@@ -74,11 +74,11 @@
 
 	function fn_egov_inqire_notice(i, nttId, bbsId) {
 		 if(bbsId == "") return false; //20150508
-		document.subForm.nttId.value = nttId;
-		document.subForm.bbsId.value = bbsId;
-		document.subForm.action = "<c:url value='/cop/bbs${prefix}/selectBoardArticle.do'/>";
-		document.subForm.method = 'get';
-		document.subForm.submit();
+		document.subForm[i].nttId.value = nttId;
+		document.subForm[i].bbsId.value = bbsId;
+		document.subForm[i].action = "<c:url value='/cop/bbs${prefix}/selectBoardArticle.do'/>";
+		document.subForm[i].method = 'get';
+		document.subForm[i].submit();
 	}
 //-->
 </script>
