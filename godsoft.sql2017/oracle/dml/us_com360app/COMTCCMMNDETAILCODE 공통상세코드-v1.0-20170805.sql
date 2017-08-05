@@ -1,4 +1,4 @@
-select
+﻿select
     COMTCCMMNDETAILCODE.*
-from COMTCCMMNDETAILCODE /* ������ڵ� */
+from COMTCCMMNDETAILCODE /* 공통상세코드 */
 ;
