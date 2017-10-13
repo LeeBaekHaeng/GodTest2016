@@ -1,19 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<e:DomainDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:e="http://exerd.tomato.com/model" UUID="DDefinition_rfe9ALAXEeegW-tuYjmJcA" productId="com.tomato.db.oracle_10g" version="2.4.8.20170711-1106">
-  <domain UUID="Domain_rfe9AbAXEeegW-tuYjmJcA" name="문자" suggestedDataType="VARCHAR2(255)">
-    <domain UUID="Domain_rfe9ArAXEeegW-tuYjmJcA" name="주민등록번호" suggestedDataType="VARCHAR2(13)"/>
-    <domain UUID="Domain_rfe9A7AXEeegW-tuYjmJcA" name="주소"/>
-    <domain UUID="Domain_rfe9BLAXEeegW-tuYjmJcA" name="웹주소"/>
-    <domain UUID="Domain_rfe9BbAXEeegW-tuYjmJcA" name="전화번호" suggestedDataType="VARCHAR2(30)"/>
-    <domain UUID="Domain_rfe9BrAXEeegW-tuYjmJcA" name="이메일" suggestedDataType="VARCHAR2(40)"/>
-    <domain UUID="Domain_rfe9B7AXEeegW-tuYjmJcA" name="이름" suggestedDataType="VARCHAR2(50)"/>
+<e:DomainDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:e="http://exerd.tomato.com/model" UUID="DDefinition_VwSzELAfEeeWxLzai3ioyQ" productId="com.tomato.db.oracle_10g" version="2.4.8.20170711-1106">
+  <domain UUID="Domain_VwSzEbAfEeeWxLzai3ioyQ" name="금액">
+    <domain UUID="Domain_VwSzErAfEeeWxLzai3ioyQ" name="금액(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
   </domain>
-  <domain UUID="Domain_rfe9CLAXEeegW-tuYjmJcA" name="숫자" suggestedDataType="INTEGER">
-    <domain UUID="Domain_rfe9CbAXEeegW-tuYjmJcA" name="금액"/>
+  <domain UUID="Domain_VwSzE7AfEeeWxLzai3ioyQ" name="각도">
+    <domain UUID="Domain_VwSzFLAfEeeWxLzai3ioyQ" name="방위각">
+      <domain UUID="Domain_VwSzFbAfEeeWxLzai3ioyQ" name="방위각(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+    </domain>
   </domain>
-  <domain UUID="Domain_rfe9CrAXEeegW-tuYjmJcA" name="일시" suggestedDataType="DATE"/>
-  <domain UUID="Domain_rfe9C7AXEeegW-tuYjmJcA" name="객체" suggestedDataType="BLOB">
-    <domain UUID="Domain_rfe9DLAXEeegW-tuYjmJcA" name="이미지" suggestedDataType="ORDImage"/>
-    <domain UUID="Domain_rfe9DbAXEeegW-tuYjmJcA" name="오디오" suggestedDataType="ORDAudio"/>
+  <domain UUID="Domain_VwSzFrAfEeeWxLzai3ioyQ" name="영역">
+    <domain UUID="Domain_VwSzF7AfEeeWxLzai3ioyQ" name="면적">
+      <domain UUID="Domain_VwSzGLAfEeeWxLzai3ioyQ" name="면적(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+    </domain>
+  </domain>
+  <domain UUID="Domain_VwSzGbAfEeeWxLzai3ioyQ" name="코드">
+    <domain UUID="Domain_VwSzGrAfEeeWxLzai3ioyQ" name="분류">
+      <domain UUID="Domain_VwSzG7AfEeeWxLzai3ioyQ" name="분류(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+    </domain>
+    <domain UUID="Domain_VwSzHLAfEeeWxLzai3ioyQ" name="유형"/>
+    <domain UUID="Domain_VwSzHbAfEeeWxLzai3ioyQ" name="구분"/>
+    <domain UUID="Domain_VwSzHrAfEeeWxLzai3ioyQ" name="여부"/>
+  </domain>
+  <domain UUID="Domain_VwSzH7AfEeeWxLzai3ioyQ" name="좌표">
+    <domain UUID="Domain_VwSzILAfEeeWxLzai3ioyQ" name="위도"/>
+    <domain UUID="Domain_VwSzIbAfEeeWxLzai3ioyQ" name="경도"/>
+  </domain>
+  <domain UUID="Domain_VwSzIrAfEeeWxLzai3ioyQ" name="날짜">
+    <domain UUID="Domain_VwSzI7AfEeeWxLzai3ioyQ" name="년"/>
+    <domain UUID="Domain_VwSzJLAfEeeWxLzai3ioyQ" name="년월"/>
+    <domain UUID="Domain_VwSzJbAfEeeWxLzai3ioyQ" name="월일"/>
+    <domain UUID="Domain_VwSzJrAfEeeWxLzai3ioyQ" name="월"/>
+    <domain UUID="Domain_VwSzJ7AfEeeWxLzai3ioyQ" name="일자"/>
+    <domain UUID="Domain_VwSzKLAfEeeWxLzai3ioyQ" name="일"/>
+    <domain UUID="Domain_VwSzKbAfEeeWxLzai3ioyQ" name="일시"/>
+    <domain UUID="Domain_VwSzKrAfEeeWxLzai3ioyQ" name="시각"/>
+    <domain UUID="Domain_VwSzK7AfEeeWxLzai3ioyQ" name="시분"/>
+    <domain UUID="Domain_VwSzLLAfEeeWxLzai3ioyQ" name="분기"/>
+    <domain UUID="Domain_VwSzLbAfEeeWxLzai3ioyQ" name="반기"/>
+  </domain>
+  <domain UUID="Domain_VwSzLrAfEeeWxLzai3ioyQ" name="차원">
+    <domain UUID="Domain_VwSzL7AfEeeWxLzai3ioyQ" name="표고"/>
+    <domain UUID="Domain_VwSzMLAfEeeWxLzai3ioyQ" name="깊이"/>
+    <domain UUID="Domain_VwSzMbAfEeeWxLzai3ioyQ" name="지름"/>
+    <domain UUID="Domain_VwSzMrAfEeeWxLzai3ioyQ" name="해발"/>
+    <domain UUID="Domain_VwSzM7AfEeeWxLzai3ioyQ" name="높이"/>
+    <domain UUID="Domain_VwSzNLAfEeeWxLzai3ioyQ" name="길이">
+      <domain UUID="Domain_VwSzNbAfEeeWxLzai3ioyQ" name="길이(N)" suggestedDataType="NUMBER"/>
+    </domain>
+    <domain UUID="Domain_VwSzNrAfEeeWxLzai3ioyQ" name="반지름"/>
+    <domain UUID="Domain_VwSzN7AfEeeWxLzai3ioyQ" name="꼭짓점"/>
+    <domain UUID="Domain_VwSzOLAfEeeWxLzai3ioyQ" name="연장"/>
+    <domain UUID="Domain_VwSzObAfEeeWxLzai3ioyQ" name="너비"/>
+    <domain UUID="Domain_VwSzOrAfEeeWxLzai3ioyQ" name="위치"/>
+  </domain>
+  <domain UUID="Domain_VwSzO7AfEeeWxLzai3ioyQ" name="식별자">
+    <domain UUID="Domain_VwSzPLAfEeeWxLzai3ioyQ" name="아이디">
+      <domain UUID="Domain_VwSzPbAfEeeWxLzai3ioyQ" name="아이디(V2,128)" suggestedDataType="VARCHAR2(128)"/>
+    </domain>
+    <domain UUID="Domain_VwSzPrAfEeeWxLzai3ioyQ" name="순번"/>
+    <domain UUID="Domain_VwSzP7AfEeeWxLzai3ioyQ" name="번호"/>
+  </domain>
+  <domain UUID="Domain_VwSzQLAfEeeWxLzai3ioyQ" name="질량">
+    <domain UUID="Domain_VwSzQbAfEeeWxLzai3ioyQ" name="질량(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+  </domain>
+  <domain UUID="Domain_VwSzQrAfEeeWxLzai3ioyQ" name="이름">
+    <domain UUID="Domain_VwSzQ7AfEeeWxLzai3ioyQ" name="명">
+      <domain UUID="Domain_VwSzRLAfEeeWxLzai3ioyQ" name="명(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+    </domain>
+    <domain UUID="Domain_VwSzRbAfEeeWxLzai3ioyQ" name="제목"/>
+  </domain>
+  <domain UUID="Domain_VwSzRrAfEeeWxLzai3ioyQ" name="수량">
+    <domain UUID="Domain_VwSzR7AfEeeWxLzai3ioyQ" name="분산"/>
+    <domain UUID="Domain_VwSzSLAfEeeWxLzai3ioyQ" name="지표"/>
+    <domain UUID="Domain_VwSzSbAfEeeWxLzai3ioyQ" name="최빈수"/>
+    <domain UUID="Domain_VwSzSrAfEeeWxLzai3ioyQ" name="계"/>
+    <domain UUID="Domain_VwSzS7AfEeeWxLzai3ioyQ" name="수"/>
+    <domain UUID="Domain_VwSzTLAfEeeWxLzai3ioyQ" name="량"/>
+  </domain>
+  <domain UUID="Domain_VwSzTbAfEeeWxLzai3ioyQ" name="율">
+    <domain UUID="Domain_VwSzTrAfEeeWxLzai3ioyQ" name="가속도"/>
+    <domain UUID="Domain_VwSzT7AfEeeWxLzai3ioyQ" name="밀도"/>
+    <domain UUID="Domain_VwSzULAfEeeWxLzai3ioyQ" name="빈도"/>
+    <domain UUID="Domain_VwSzUbAfEeeWxLzai3ioyQ" name="습도"/>
+    <domain UUID="Domain_VwSzUrAfEeeWxLzai3ioyQ" name="강도"/>
+    <domain UUID="Domain_VwSzU7AfEeeWxLzai3ioyQ" name="크기"/>
+    <domain UUID="Domain_VwSzVLAfEeeWxLzai3ioyQ" name="모멘트"/>
+    <domain UUID="Domain_VwSzVbAfEeeWxLzai3ioyQ" name="제곱"/>
+    <domain UUID="Domain_VwSzVrAfEeeWxLzai3ioyQ" name="저항"/>
+    <domain UUID="Domain_VwSzV7AfEeeWxLzai3ioyQ" name="축척"/>
+    <domain UUID="Domain_VwSzWLAfEeeWxLzai3ioyQ" name="속도"/>
+    <domain UUID="Domain_VwSzWbAfEeeWxLzai3ioyQ" name="토크"/>
+    <domain UUID="Domain_VwSzWrAfEeeWxLzai3ioyQ" name="점성도"/>
+    <domain UUID="Domain_VwSzW7AfEeeWxLzai3ioyQ" name="비율"/>
+  </domain>
+  <domain UUID="Domain_VwSzXLAfEeeWxLzai3ioyQ" name="온도">
+    <domain UUID="Domain_VwSzXbAfEeeWxLzai3ioyQ" name="온도(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+  </domain>
+  <domain UUID="Domain_VwSzXrAfEeeWxLzai3ioyQ" name="텍스트">
+    <domain UUID="Domain_VwSzX7AfEeeWxLzai3ioyQ" name="주석"/>
+    <domain UUID="Domain_VwSzYLAfEeeWxLzai3ioyQ" name="설명">
+      <domain UUID="Domain_VwSzYbAfEeeWxLzai3ioyQ" name="설명(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+    </domain>
+    <domain UUID="Domain_VwSzYrAfEeeWxLzai3ioyQ" name="비고"/>
+    <domain UUID="Domain_VwSzY7AfEeeWxLzai3ioyQ" name="내용">
+      <domain UUID="Domain_VwSzZLAfEeeWxLzai3ioyQ" name="내용(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+    </domain>
+  </domain>
+  <domain UUID="Domain_VwSzZbAfEeeWxLzai3ioyQ" name="체적">
+    <domain UUID="Domain_VwSzZrAfEeeWxLzai3ioyQ" name="체적(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
+  </domain>
+  <domain UUID="Domain_VwSzZ7AfEeeWxLzai3ioyQ" name="무게">
+    <domain UUID="Domain_VwSzaLAfEeeWxLzai3ioyQ" name="무게(V2,4000)" suggestedDataType="VARCHAR2(4000)"/>
   </domain>
 </e:DomainDefinition>
