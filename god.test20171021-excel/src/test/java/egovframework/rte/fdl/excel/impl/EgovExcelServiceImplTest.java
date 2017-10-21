@@ -1,5 +1,7 @@
 package egovframework.rte.fdl.excel.impl;
 
+import java.util.Date;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -13,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import egovframework.rte.fdl.excel.EgovExcelService;
 import egovframework.rte.fdl.excel.util.EgovExcelUtil;
+import egovframework.rte.fdl.string.EgovDateUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:god/spring/com/context-excel.xml" })
@@ -64,6 +67,8 @@ public class EgovExcelServiceImplTest {
 			egovLogger.debug("nullable: " + nullable);
 			egovLogger.debug("columnId: " + columnId);
 		}
+
+		EgovDateUtil.toString(new Date(), "", null);
 	}
 
 }
