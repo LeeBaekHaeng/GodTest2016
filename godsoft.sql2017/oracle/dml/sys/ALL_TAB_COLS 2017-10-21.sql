@@ -1,0 +1,8 @@
+select
+    ALL_TAB_COLS.*
+from SYS.ALL_TAB_COLS
+where 1 = 1
+    and ALL_TAB_COLS.OWNER = 'TEST'
+order by
+    ALL_TAB_COLS.OWNER, ALL_TAB_COLS.TABLE_NAME, ALL_TAB_COLS.COLUMN_ID
+;
