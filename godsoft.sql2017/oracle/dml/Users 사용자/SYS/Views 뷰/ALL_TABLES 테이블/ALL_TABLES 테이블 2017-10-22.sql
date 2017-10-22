@@ -1,6 +1,6 @@
-select
+Ôªøselect
     ALL_TABLES.*
-from SYS.ALL_TABLES /* ≈◊¿Ã∫Ì */
+from SYS.ALL_TABLES /* ÌÖåÏù¥Î∏î */
 where 1 = 1
     and ALL_TABLES.OWNER in (
         'TEST'
