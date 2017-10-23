@@ -51,6 +51,9 @@ public class EgovExcelServiceImplTest {
 		} catch (IOException e) {
 			egovLogger.error(e.getMessage());
 		}
+		if (filepath == null) {
+			return;
+		}
 
 		Workbook wb = null;
 		try {
@@ -58,7 +61,6 @@ public class EgovExcelServiceImplTest {
 		} catch (Exception e) {
 			egovLogger.error(e.getMessage());
 		}
-
 		if (wb == null) {
 			return;
 		}
