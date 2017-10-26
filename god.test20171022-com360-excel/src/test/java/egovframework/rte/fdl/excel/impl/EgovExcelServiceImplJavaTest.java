@@ -30,7 +30,8 @@ public class EgovExcelServiceImplJavaTest {
 	@Test
 	public void test() {
 		// loadWorkbookAllTables();
-		loadWorkbookAllTablesHeader();
+		// loadWorkbookAllTablesHeader();
+		loadWorkbookAllTablesHeader2();
 		// loadWorkbookAllTabCols();
 		// loadWorkbookAllTabComments();
 		// loadWorkbookAllColComments();
@@ -140,6 +141,59 @@ public class EgovExcelServiceImplJavaTest {
 			System.out.println("OWNER: " + record.get("OWNER"));
 			System.out.println("TABLE_NAME: " + record.get("TABLE_NAME"));
 		}
+	}
+
+	public void loadWorkbookAllTablesHeader2() {
+		Resource template = new ClassPathResource(
+				"egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TABLES 테이블 header.xls");
+		String filepath = null;
+		try {
+			filepath = template.getFile().toString();
+		} catch (IOException e) {
+			egovLogger.error(e.getMessage());
+		}
+		if (filepath == null) {
+			return;
+		}
+
+		Workbook wb = null;
+		try {
+			wb = egovExcelService.loadWorkbook(filepath);
+		} catch (Exception e) {
+			egovLogger.error(e.getMessage());
+		}
+		if (wb == null) {
+			return;
+		}
+
+		egovLogger.debug("wb: " + wb);
+
+		Sheet sheet = wb.getSheetAt(0);
+
+		List<Map<String, Object>> records = new ArrayList<Map<String, Object>>();
+
+		for (Row row : sheet) {
+			// egovLogger.debug("row: " + row);
+
+			Map<String, Object> record = new HashMap<String, Object>();
+
+			for (Cell cell : row) {
+				record.put(EgovExcelUtil.getValue(sheet.getRow(0).getCell(cell.getColumnIndex())),
+						EgovExcelUtil.getValue(cell));
+			}
+
+			records.add(record);
+		}
+
+		for (Map<String, Object> record : records) {
+			System.out.println("record: " + record);
+			System.out.println("ENTITY_NAME: " + record.get("ENTITY_NAME"));
+			System.out.println("OWNER: " + record.get("OWNER"));
+			System.out.println("TABLE_NAME: " + record.get("TABLE_NAME"));
+		}
+
+		// System.out.println(sheet.getRow(0).getCell(0));
+		// System.out.println(EgovExcelUtil.getValue(sheet.getRow(0).getCell(0)));
 	}
 
 	public void loadWorkbookAllTabCols() {
