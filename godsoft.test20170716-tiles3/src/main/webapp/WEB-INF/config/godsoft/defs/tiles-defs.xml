@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+	<definition name="godsoft.sub.definition"
+		template="/WEB-INF/jsp/godsoft/com/layout/sub/layout.jsp">
+		<put-attribute name="header"
+			value="/WEB-INF/jsp/godsoft/com/layout/sub/header.jsp" />
+		<put-attribute name="menu"
+			value="/WEB-INF/jsp/godsoft/com/layout/sub/menu.jsp" />
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/godsoft/com/layout/sub/body.jsp" />
+		<put-attribute name="footer"
+			value="/WEB-INF/jsp/godsoft/com/layout/sub/footer.jsp" />
+	</definition>
+
+	<definition name="egovframework/com/cop/bbs/*" extends="godsoft.sub.definition">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/egovframework/com/cop/bbs/{1}.jsp" />
+	</definition>
+
+</tiles-definitions>

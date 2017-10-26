@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Comtnauthorinfo">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="comtnauthorinfoSerarchVO" type="kosii.test.curd.comtnauthorinfo.service.ComtnauthorinfoDefaultVO"/>
+	
+	<resultMap id="comtnauthorinfo" class="kosii.test.curd.comtnauthorinfo.service.ComtnauthorinfoVO">
+		<result property="authorCode" column="AUTHOR_CODE" columnIndex="1"/>
+		<result property="authorNm" column="AUTHOR_NM" columnIndex="2"/>
+		<result property="authorDc" column="AUTHOR_DC" columnIndex="3"/>
+		<result property="authorCreatDe" column="AUTHOR_CREAT_DE" columnIndex="4"/>
+	</resultMap>
+	
+	<insert id="comtnauthorinfoDAO.insertComtnauthorinfo_S">
+		<![CDATA[
+			INSERT INTO COMTNAUTHORINFO 
+				( AUTHOR_CODE
+				  , AUTHOR_NM
+				  , AUTHOR_DC
+				  , AUTHOR_CREAT_DE )
+			VALUES ( #authorCode#
+				  , #authorNm#
+				  , #authorDc#
+				  , #authorCreatDe# )
+		]]>
+	</insert>
+	
+	<update id="comtnauthorinfoDAO.updateComtnauthorinfo_S">
+		<![CDATA[
+			UPDATE COMTNAUTHORINFO
+			SET AUTHOR_CODE=#authorCode#
+				, AUTHOR_NM=#authorNm#
+				, AUTHOR_DC=#authorDc#
+				, AUTHOR_CREAT_DE=#authorCreatDe#
+						WHERE AUTHOR_CODE=#authorCode#
+				]]>
+	</update>
+	
+	<delete id="comtnauthorinfoDAO.deleteComtnauthorinfo_S">
+		<![CDATA[
+			DELETE FROM COMTNAUTHORINFO 
+						WHERE AUTHOR_CODE=#authorCode#
+				]]>
+	</delete>
+	
+	<select id="comtnauthorinfoDAO.selectComtnauthorinfo_S" resultMap="comtnauthorinfo">
+		<![CDATA[
+			SELECT
+				AUTHOR_CODE
+				, AUTHOR_NM
+				, AUTHOR_DC
+				, AUTHOR_CREAT_DE
+			FROM COMTNAUTHORINFO
+						WHERE AUTHOR_CODE=#authorCode#
+				]]>
+	</select>
+	
+	<select id="comtnauthorinfoDAO.selectComtnauthorinfoList_D" parameterClass="comtnauthorinfoSerarchVO" resultClass="egovMap">
+SELECT * FROM (
+	SELECT A.*, ROWNUM RNUM FROM (
+				SELECT
+								AUTHOR_CODE
+								, AUTHOR_NM
+								, AUTHOR_DC
+								, AUTHOR_CREAT_DE
+						FROM COMTNAUTHORINFO
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					AUTHOR_CODE = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					AUTHOR_NM LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+						AUTHOR_CODE DESC
+		
+		<![CDATA[					
+	) A WHERE ROWNUM <= #lastIndex#
+)WHERE RNUM > #firstIndex#
+]]>
+	</select>	
+	<select id="comtnauthorinfoDAO.selectComtnauthorinfoListTotCnt_S" parameterClass="comtnauthorinfoSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM COMTNAUTHORINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				AUTHOR_CODE = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				AUTHOR_NM LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>

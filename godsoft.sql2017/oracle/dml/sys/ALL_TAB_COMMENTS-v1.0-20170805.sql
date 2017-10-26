@@ -1,0 +1,4 @@
+select
+    ALL_TAB_COMMENTS.*
+from ALL_TAB_COMMENTS
+;

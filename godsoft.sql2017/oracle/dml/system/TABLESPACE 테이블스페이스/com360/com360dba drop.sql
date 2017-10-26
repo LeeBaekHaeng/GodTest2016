@@ -1,0 +1,18 @@
+/*
+com360
+*/
+
+/*
+데이터 테이블스페이스 삭제
+*/
+DROP TABLESPACE ts_dcom360dba INCLUDING CONTENTS AND DATAFILES;
+
+/*
+인덱스 테이블스페이스 삭제
+*/
+DROP TABLESPACE ts_icom360dba INCLUDING CONTENTS AND DATAFILES;
+
+/*
+임시 테이블스페이스 삭제
+*/
+DROP TABLESPACE ts_tcom360dba INCLUDING CONTENTS AND DATAFILES;

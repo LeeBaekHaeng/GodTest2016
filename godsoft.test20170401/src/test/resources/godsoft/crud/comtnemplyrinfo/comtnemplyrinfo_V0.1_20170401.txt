@@ -1,0 +1,18 @@
+Author : 이백행<dlqorgod@naver.com>
+Create Date : 2017-04-01
+
+DataAccess
+	Create DataAccess: 체크
+	Resource(SQLMap) Folder: src/main/resources/godsoft/sqlmap/test/crud
+	DAO Package: godsoft.test.curd.comtnemplyrinfo.service.impl
+	VO Package: godsoft.test.curd.comtnemplyrinfo.service
+
+Service
+	Create Service: 체크
+	Service Package: godsoft.test.curd.comtnemplyrinfo.service
+	Service Impl Package: godsoft.test.curd.comtnemplyrinfo.service.impl
+
+Web
+	Create Web: 체크
+	Controller Package: godsoft.test.crud.comtnemplyrinfo.web
+	JSP Folder: src/main/webapp/WEB-INF/jsp/godsoft/test/crud
