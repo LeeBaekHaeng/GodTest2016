@@ -1,8 +1,13 @@
 package egovframework.rte.fdl.excel.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -24,7 +29,8 @@ public class EgovExcelServiceImplJavaTest {
 
 	@Test
 	public void test() {
-		loadWorkbookAllTables();
+		// loadWorkbookAllTables();
+		loadWorkbookAllTablesHeader();
 		// loadWorkbookAllTabCols();
 		// loadWorkbookAllTabComments();
 		// loadWorkbookAllColComments();
@@ -70,6 +76,69 @@ public class EgovExcelServiceImplJavaTest {
 
 			egovLogger.debug("owner: " + owner);
 			egovLogger.debug("tableName: " + tableName);
+		}
+	}
+
+	public void loadWorkbookAllTablesHeader() {
+		Resource template = new ClassPathResource(
+				"egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TABLES 테이블 header.xls");
+		String filepath = null;
+		try {
+			filepath = template.getFile().toString();
+		} catch (IOException e) {
+			egovLogger.error(e.getMessage());
+		}
+		if (filepath == null) {
+			return;
+		}
+
+		Workbook wb = null;
+		try {
+			wb = egovExcelService.loadWorkbook(filepath);
+		} catch (Exception e) {
+			egovLogger.error(e.getMessage());
+		}
+		if (wb == null) {
+			return;
+		}
+
+		egovLogger.debug("wb: " + wb);
+
+		Sheet sheet = wb.getSheetAt(0);
+
+		Map<Integer, String> header = new HashMap<Integer, String>();
+
+		List<Map<String, Object>> records = new ArrayList<Map<String, Object>>();
+
+		for (Row row : sheet) {
+			// egovLogger.debug("row: " + row);
+
+			int rowNum = row.getRowNum();
+
+			if (rowNum == 0) {
+				for (Cell cell : row) {
+					header.put(cell.getColumnIndex(), EgovExcelUtil.getValue(cell));
+				}
+			} else if (rowNum < 1) {
+				continue;
+			} else {
+				Map<String, Object> record = new HashMap<String, Object>();
+				for (Cell cell : row) {
+					record.put(header.get(cell.getColumnIndex()), EgovExcelUtil.getValue(cell));
+				}
+				records.add(record);
+			}
+		}
+
+		for (Integer key : header.keySet()) {
+			System.out.println(String.format("키 : %s, 값 : %s", key, header.get(key)));
+		}
+
+		for (Map<String, Object> record : records) {
+			System.out.println("record: " + record);
+			System.out.println("ENTITY_NAME: " + record.get("ENTITY_NAME"));
+			System.out.println("OWNER: " + record.get("OWNER"));
+			System.out.println("TABLE_NAME: " + record.get("TABLE_NAME"));
 		}
 	}
 
