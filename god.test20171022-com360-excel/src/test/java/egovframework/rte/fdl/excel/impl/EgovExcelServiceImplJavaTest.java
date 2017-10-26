@@ -7,48 +7,33 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import egovframework.rte.fdl.excel.EgovExcelService;
 import egovframework.rte.fdl.excel.util.EgovExcelUtil;
 import egovframework.rte.fdl.string.EgovDateUtil;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:egovframework/spring/**/context-*.xml" })
-public class EgovExcelServiceImplTest {
+public class EgovExcelServiceImplJavaTest {
 
 	protected Logger egovLogger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	@Qualifier("excelZipService")
-	private EgovExcelService egovExcelService;
-
-	@Autowired
-	private ApplicationContext ctx;
+	private EgovExcelService egovExcelService = new EgovExcelServiceImpl();
 
 	@Test
 	public void test() {
-		// loadWorkbookAllTables();
+		loadWorkbookAllTables();
 		// loadWorkbookAllTabCols();
 		// loadWorkbookAllTabComments();
-		loadWorkbookAllColComments();
+		// loadWorkbookAllColComments();
 		egovLogger.debug("EgovDateUtil.toString: " + EgovDateUtil.toString(new Date(), "", null));
 	}
 
 	public void loadWorkbookAllTables() {
-		// Resource template =
-		// ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블
-		// 2017-10-22.xls");
-		Resource template = ctx
-				.getResource("classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TABLES 테이블.xls");
+		Resource template = new ClassPathResource(
+				"egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TABLES 테이블.xls");
 		String filepath = null;
 		try {
 			filepath = template.getFile().toString();
@@ -89,11 +74,8 @@ public class EgovExcelServiceImplTest {
 	}
 
 	public void loadWorkbookAllTabCols() {
-		// Resource template =
-		// ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블컬럼
-		// 2017-10-22.xls");
-		Resource template = ctx
-				.getResource("classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TAB_COLS 테이블컬럼.xls");
+		Resource template = new ClassPathResource(
+				"classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TAB_COLS 테이블컬럼.xls");
 		String filepath = null;
 		try {
 			filepath = template.getFile().toString();
@@ -148,10 +130,7 @@ public class EgovExcelServiceImplTest {
 	}
 
 	public void loadWorkbookAllTabComments() {
-		// Resource template =
-		// ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블코멘트
-		// 2017-10-22.xls");
-		Resource template = ctx.getResource(
+		Resource template = new ClassPathResource(
 				"classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TAB_COMMENTS 테이블코멘트.xls");
 		String filepath = null;
 		try {
@@ -197,11 +176,8 @@ public class EgovExcelServiceImplTest {
 	}
 
 	public void loadWorkbookAllColComments() {
-		// Resource template =
-		// ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/컬럼코멘트
-		// 2017-10-22.xls");
-		Resource template = ctx.getResource(
-				"classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_COL_COMMENTS 컬럼코멘트.xls");
+		Resource template = new ClassPathResource(
+				"egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_COL_COMMENTS 컬럼코멘트.xls");
 		String filepath = null;
 		try {
 			filepath = template.getFile().toString();
