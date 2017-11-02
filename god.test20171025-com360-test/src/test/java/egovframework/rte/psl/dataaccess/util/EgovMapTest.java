@@ -3,8 +3,12 @@ package egovframework.rte.psl.dataaccess.util;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EgovMapTest {
+
+	protected Logger egovLogger = LoggerFactory.getLogger(getClass());
 
 	@Test
 	public void test() {
@@ -31,6 +35,8 @@ public class EgovMapTest {
 		}
 
 		System.out.println("sb: " + sb);
+
+		egovLogger.debug("이백행");
 	}
 
 }
