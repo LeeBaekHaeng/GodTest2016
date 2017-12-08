@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<script src="./js/egovframework/com/cmm/jquery-1.4.2.min.js"></script>
+
+	<script>
+		(function() {
+
+			var url = './proxy.jsp?http://apis.data.go.kr/1230000/CntrctInfoService/getCntrctInfoListServc?';
+
+			var data = {
+				numOfRows : 10,//한 페이지 결과 수
+				pageNo : 1, // 페이지 번호	
+				serviceKey : 'UMEa5VvLLLGHOOzP2cVmtSF15EtCq4Ke7KBJR8OS63PB2EJgAZGnVZdy7saCYsrOvXzJKw4raynLW7AT0Ezsyg%3D%3D', // 서비스키	
+				inqryDiv : '1', // 조회구분 1:등록일시, 2:통합계약번호
+				inqryBgnDt : '201711010000', // 조회시작일시
+				inqryEndDt : '201711302359', // 조회종료일시
+			// 				untyCntrctNo : '2016070113289', // 통합계약번호
+			};
+
+			function success(data, textStatus, jqXHR) {
+				console.log('data', data);
+				console.log('textStatus', textStatus);
+				console.log('jqXHR', jqXHR);
+
+				console.log('OpenAPI_ServiceResponse', $(data).find(
+						'OpenAPI_ServiceResponse').text());
+				console.log('OpenAPI_ServiceResponse', $(data).find(
+						'OpenAPI_ServiceResponse cmmMsgHeader returnCode')
+						.text());
+				console.log('OpenAPI_ServiceResponse', $(data).find(
+						'OpenAPI_ServiceResponse cmmMsgHeader errMsg').text());
+
+				var v = '';
+
+				$(data).find('OpenAPI_ServiceResponse cmmMsgHeader ').each(
+						function() {
+							console.log('this', this);
+
+							v += '<tr>';
+							v += '<td>' + $(this).find('cmmMsgHeader').text()
+									+ '</td>';
+							v += '</tr>';
+						});
+
+				$('#table1 tbody').html(v);
+			}
+
+			var dataType = 'xml';
+
+			$.post(url, data, success, dataType);
+// 			$.get(url, data, success, dataType);
+
+		}());
+	</script>
+
+</body>
+</html>
