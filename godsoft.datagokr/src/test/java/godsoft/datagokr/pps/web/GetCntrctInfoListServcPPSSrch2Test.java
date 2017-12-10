@@ -1,5 +1,6 @@
 package godsoft.datagokr.pps.web;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Collection;
 
@@ -35,8 +36,12 @@ public class GetCntrctInfoListServcPPSSrch2Test {
 		// "UTF-8"));
 		// connection.data("ServiceKey",
 		// "UMEa5VvLLLGHOOzP2cVmtSF15EtCq4Ke7KBJR8OS63PB2EJgAZGnVZdy7saCYsrOvXzJKw4raynLW7AT0Ezsyg%3D%3D");
+		// connection.data("ServiceKey",
+		// URLEncoder.encode(
+		// "UMEa5VvLLLGHOOzP2cVmtSF15EtCq4Ke7KBJR8OS63PB2EJgAZGnVZdy7saCYsrOvXzJKw4raynLW7AT0Ezsyg%3D%3D",
+		// "UTF-8"));
 		connection.data("ServiceKey",
-				URLEncoder.encode(
+				URLDecoder.decode(
 						"UMEa5VvLLLGHOOzP2cVmtSF15EtCq4Ke7KBJR8OS63PB2EJgAZGnVZdy7saCYsrOvXzJKw4raynLW7AT0Ezsyg%3D%3D",
 						"UTF-8"));
 

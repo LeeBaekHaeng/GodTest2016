@@ -7,20 +7,16 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class PpsController {
 
-	@RequestMapping(value = "/1230000/CntrctInfoService/getCntrctInfoListServcPPSSrch.do", produces = "application/xml")
-	public @ResponseBody String gdTrailInfoOpenAPISelectList(@RequestParam Map<String, Object> vo, ModelMap model,
-			HttpServletResponse response) throws Exception {
+	@RequestMapping(value = "/1230000/CntrctInfoService/getCntrctInfoListServcPPSSrch.do")
+	public String getCntrctInfoListServcPPSSrch(@RequestParam Map<String, Object> vo, ModelMap model) throws Exception {
 		StringBuilder urlBuilder = new StringBuilder(
 				"http://apis.data.go.kr/1230000/CntrctInfoService/getCntrctInfoListServcPPSSrch"); /* URL */
 		urlBuilder.append("?" + URLEncoder.encode("ServiceKey", "UTF-8")
@@ -96,7 +92,7 @@ public class PpsController {
 		URL url = new URL(urlBuilder.toString());
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
-		conn.setRequestProperty("Content-type", "application/json");
+		// conn.setRequestProperty("Content-type", "application/json");
 		System.out.println("Response code: " + conn.getResponseCode());
 		BufferedReader rd;
 		if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
@@ -115,7 +111,9 @@ public class PpsController {
 
 		// response.setContentType("");
 
-		return sb.toString();
+		model.addAttribute("xml", sb.toString());
+
+		return "godsoft/datagokr/pps/getCntrctInfoListServcPPSSrch";
 
 		// conn.getOutputStream();
 

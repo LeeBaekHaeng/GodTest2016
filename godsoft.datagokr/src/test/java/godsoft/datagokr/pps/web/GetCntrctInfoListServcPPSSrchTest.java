@@ -308,6 +308,7 @@ public class GetCntrctInfoListServcPPSSrchTest {
 				"UTF-8")); /* 검색하고자하는 요청번호, 조회구분이 3인 경우 필수 */
 		urlBuilder.append("&" + URLEncoder.encode("ntceNo", "UTF-8") + "=" + URLEncoder.encode("20151109261",
 				"UTF-8")); /* 검색하고자하는 공고번호(입찰공고번호) 조회구분이 4인 경우 필수 */
+		System.out.println(urlBuilder.toString());
 		URL url = new URL(urlBuilder.toString());
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod("GET");
