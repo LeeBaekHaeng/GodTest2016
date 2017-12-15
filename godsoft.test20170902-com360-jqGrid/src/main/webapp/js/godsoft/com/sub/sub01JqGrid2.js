@@ -75,7 +75,10 @@ function fn_sub01JqGrid_selectSub01List3() {
 					console.log('rowid', rowid);
 					console.log('status', status);
 					console.log('e', e);
-					console.log('e.result', e.result);
+
+					if (!!e) {
+						console.log('e.result', e.result);
+					}
 				},
 
 				// beforeRequest
@@ -126,16 +129,22 @@ function fn_sub01JqGrid_selectSub01List3() {
 				loadComplete : function(data) {
 					console.log('7. loadComplete');
 					console.log('data', data);
+
+					fn_sub01JqGrid_getDataIDs();
 				},
 
 			});
 
 	$("#list2").bind("jqGridSelectRow", function(e, rowid, status) {
 		console.log('jqGridSelectRow');
+
 		console.log('e', e);
-		console.log('e.result', e.result);
 		console.log('rowid', rowid);
 		console.log('status', status);
+
+		if (!!e) {
+			console.log('e.result', e.result);
+		}
 
 		return e.result === undefined ? true : e.result;
 	});
@@ -157,4 +166,31 @@ function fn_sub01JqGrid_selectSub01List3() {
 		console.log('jqGridAfterGridComplete');
 	});
 
+}
+
+function fn_sub01JqGrid_getDataIDs() {
+	// var dataIDs = $('#list2').getDataIDs();
+
+	var dataIDs = $('#list2').jqGrid('getDataIDs');
+
+	for (var i = 0; i < dataIDs.length; i++) {
+		console.log('i', i);
+		console.log('dataIDs[' + i + ']', dataIDs[i]);
+
+		var rowData = $('#list2').getRowData(dataIDs[i]);
+
+		console.log('rowData', rowData);
+		console.log('rowData.codeId', rowData.codeId);
+	}
+}
+
+function fn_sub01JqGrid_setSelection() {
+	$('#list2').jqGrid('setSelection', 2, true);
+}
+
+function fn_sub01JqGrid_trigger_reloadGrid() {
+	$('#list2').setGridParam({}).trigger('reloadGrid');
+
+	$('#list2').setGridParam({});
+	$('#list2').trigger('reloadGrid');
 }
