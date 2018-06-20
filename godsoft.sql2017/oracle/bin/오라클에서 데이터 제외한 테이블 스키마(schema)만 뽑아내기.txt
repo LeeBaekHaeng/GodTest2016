@@ -1,0 +1,19 @@
+Q. 데이터는 제외하고 Schema만 뽑아내고싶다
+
+
+
+데이터를 제외한 덤프파일 만들기
+  - exp 사용자/패스워드 compress=n rows=n file=test.dmp
+
+
+스크립트 생성
+  - imp 사용자/패스워드 full=y file=test.dmp indexfile=test.sql
+
+
+출처: http://boya.tistory.com/37 [Dev. Boya]
+
+exp system/orcl owner=test file=test.dmp log=test-exp.log compress=n rows=n
+
+imp system/orcl file=test.dmp log=test-imp.log indexfile=test.sql full=y
+
+imp system/orcl file=test.dmp log=test-imp.log indexfile=test.sql fromuser=test touser=test ignore=y

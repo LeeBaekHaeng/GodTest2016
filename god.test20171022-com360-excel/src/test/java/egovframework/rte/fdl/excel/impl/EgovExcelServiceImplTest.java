@@ -36,15 +36,19 @@ public class EgovExcelServiceImplTest {
 
 	@Test
 	public void test() {
-		loadWorkbookAllTables();
-		// loadWorkbookAllTabComments();
+		// loadWorkbookAllTables();
 		// loadWorkbookAllTabCols();
-		// loadWorkbookAllColComments();
+		// loadWorkbookAllTabComments();
+		loadWorkbookAllColComments();
 		egovLogger.debug("EgovDateUtil.toString: " + EgovDateUtil.toString(new Date(), "", null));
 	}
 
 	public void loadWorkbookAllTables() {
-		Resource template = ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블 2017-10-22.xls");
+		// Resource template =
+		// ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블
+		// 2017-10-22.xls");
+		Resource template = ctx
+				.getResource("classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TABLES 테이블.xls");
 		String filepath = null;
 		try {
 			filepath = template.getFile().toString();
@@ -84,65 +88,28 @@ public class EgovExcelServiceImplTest {
 		}
 	}
 
-	public void loadWorkbookAllTabComments() {
-		Resource template = ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블코멘트 2017-10-22.xls");
+	public void loadWorkbookAllTabCols() {
+		// Resource template =
+		// ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블컬럼
+		// 2017-10-22.xls");
+		Resource template = ctx
+				.getResource("classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TAB_COLS 테이블컬럼.xls");
 		String filepath = null;
 		try {
 			filepath = template.getFile().toString();
 		} catch (IOException e) {
 			egovLogger.error(e.getMessage());
 		}
-
-		Workbook wb = null;
-		try {
-			wb = egovExcelService.loadWorkbook(filepath);
-		} catch (Exception e) {
-			egovLogger.error(e.getMessage());
-		}
-
-		if (wb == null) {
+		if (filepath == null) {
 			return;
 		}
 
-		egovLogger.debug("wb: " + wb);
-
-		Sheet sheet = wb.getSheetAt(0);
-
-		for (Row row : sheet) {
-			// egovLogger.debug("row: " + row);
-
-			if (row.getRowNum() < 1) {
-				continue;
-			}
-
-			String owner = EgovExcelUtil.getValue(row.getCell(0));
-			String tableName = EgovExcelUtil.getValue(row.getCell(1));
-			String tableType = EgovExcelUtil.getValue(row.getCell(2));
-			String comments = EgovExcelUtil.getValue(row.getCell(3));
-
-			egovLogger.debug("owner: " + owner);
-			egovLogger.debug("tableName: " + tableName);
-			egovLogger.debug("tableType: " + tableType);
-			egovLogger.debug("comments: " + comments);
-		}
-	}
-
-	public void loadWorkbookAllTabCols() {
-		Resource template = ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블컬럼 2017-10-22.xls");
-		String filepath = null;
-		try {
-			filepath = template.getFile().toString();
-		} catch (IOException e) {
-			egovLogger.error(e.getMessage());
-		}
-
 		Workbook wb = null;
 		try {
 			wb = egovExcelService.loadWorkbook(filepath);
 		} catch (Exception e) {
 			egovLogger.error(e.getMessage());
 		}
-
 		if (wb == null) {
 			return;
 		}
@@ -180,13 +147,20 @@ public class EgovExcelServiceImplTest {
 		}
 	}
 
-	public void loadWorkbookAllColComments() {
-		Resource template = ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/컬럼코멘트 2017-10-22.xls");
+	public void loadWorkbookAllTabComments() {
+		// Resource template =
+		// ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/테이블코멘트
+		// 2017-10-22.xls");
+		Resource template = ctx.getResource(
+				"classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_TAB_COMMENTS 테이블코멘트.xls");
 		String filepath = null;
 		try {
 			filepath = template.getFile().toString();
 		} catch (IOException e) {
 			egovLogger.error(e.getMessage());
+		}
+		if (filepath == null) {
+			return;
 		}
 
 		Workbook wb = null;
@@ -195,7 +169,55 @@ public class EgovExcelServiceImplTest {
 		} catch (Exception e) {
 			egovLogger.error(e.getMessage());
 		}
+		if (wb == null) {
+			return;
+		}
 
+		egovLogger.debug("wb: " + wb);
+
+		Sheet sheet = wb.getSheetAt(0);
+
+		for (Row row : sheet) {
+			// egovLogger.debug("row: " + row);
+
+			if (row.getRowNum() < 1) {
+				continue;
+			}
+
+			String owner = EgovExcelUtil.getValue(row.getCell(0));
+			String tableName = EgovExcelUtil.getValue(row.getCell(1));
+			String tableType = EgovExcelUtil.getValue(row.getCell(2));
+			String comments = EgovExcelUtil.getValue(row.getCell(3));
+
+			egovLogger.debug("owner: " + owner);
+			egovLogger.debug("tableName: " + tableName);
+			egovLogger.debug("tableType: " + tableType);
+			egovLogger.debug("comments: " + comments);
+		}
+	}
+
+	public void loadWorkbookAllColComments() {
+		// Resource template =
+		// ctx.getResource("classpath:egovframework/rte/fdl/excel/impl/컬럼코멘트
+		// 2017-10-22.xls");
+		Resource template = ctx.getResource(
+				"classpath:egovframework/rte/fdl/excel/impl/dic 2017-10-27 god/ALL_COL_COMMENTS 컬럼코멘트.xls");
+		String filepath = null;
+		try {
+			filepath = template.getFile().toString();
+		} catch (IOException e) {
+			egovLogger.error(e.getMessage());
+		}
+		if (filepath == null) {
+			return;
+		}
+
+		Workbook wb = null;
+		try {
+			wb = egovExcelService.loadWorkbook(filepath);
+		} catch (Exception e) {
+			egovLogger.error(e.getMessage());
+		}
 		if (wb == null) {
 			return;
 		}

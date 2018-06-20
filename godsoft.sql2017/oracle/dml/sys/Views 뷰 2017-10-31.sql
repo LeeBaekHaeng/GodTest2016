@@ -1,0 +1,42 @@
+select * from ALL_TAB_COLS where 1 = 1
+--    and OWNER = 'TEST'
+--    and TABLE_NAME = 'COMVNUSERMASTER'
+--    and TABLE_NAME = 'COMTCADMINISTCODE_S'
+--    and TABLE_NAME in ('COMTCADMINISTCODE_V', 'COMVNUSERMASTER', 'COMTCADMINISTCODE_S')
+    and COLUMN_NAME = 'OBJECT_NAME'
+order by
+    OWNER, TABLE_NAME, COLUMN_ID
+;
+
+select * from ALL_TAB_COLUMNS where 1 = 1
+    and OWNER = 'TEST'
+--    and TABLE_NAME = 'COMVNUSERMASTER'
+--    and TABLE_NAME = 'COMTCADMINISTCODE_S'
+    and TABLE_NAME in ('COMTCADMINISTCODE_V', 'COMVNUSERMASTER', 'COMTCADMINISTCODE_S')
+;
+
+select * from ALL_OBJECTS where 1 = 1
+    and OWNER = 'TEST'
+--    and OBJECT_NAME = 'COMVNUSERMASTER'
+    and OBJECT_NAME = 'COMTCADMINISTCODE_S'
+    and OBJECT_TYPE in ('TABLE', 'VIEW', 'SYNONYM')
+;
+
+select * from ALL_COL_COMMENTS where 1 = 1
+    and OWNER = 'TEST'
+    and TABLE_NAME in ('COMTCADMINISTCODE_V', 'COMVNUSERMASTER', 'COMTCADMINISTCODE_S')
+;
+
+select * from ALL_SYNONYMS where 1 = 1
+    and OWNER = 'TEST'
+;
+
+select * from ALL_TAB_COMMENTS where 1 = 1
+    and OWNER = 'TEST'
+;
+
+select TABLE_TYPE, count(*) from ALL_TAB_COMMENTS where 1 = 1
+    and OWNER = 'TEST'
+group by
+    TABLE_TYPE
+;
