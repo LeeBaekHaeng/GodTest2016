@@ -1,6 +1,6 @@
 DELIMITER $$
 
-CREATE or replace FUNCTION `pascal_case`(str varchar(128)) RETURNS varchar(128)
+CREATE or replace FUNCTION test.`pascal_case`(str varchar(128)) RETURNS varchar(128)
 BEGIN
 DECLARE n, pos INT DEFAULT 1;
 DECLARE sub, proper VARCHAR(128) DEFAULT '';
