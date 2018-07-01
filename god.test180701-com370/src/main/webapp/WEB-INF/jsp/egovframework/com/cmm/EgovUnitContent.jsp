@@ -8,6 +8,19 @@
 <title>Insert title here</title>
 </head>
 <body>
+
+<ol>
+	<c:forEach items="${selectCmmCodeDetail}" var="result">
+		<li>${result.codeId}, ${result.code}, ${result.codeNm}</li>
+	</c:forEach>
+</ol>
+
+<select>
+	<c:forEach items="${selectCmmCodeDetail}" var="result">
+		<option value="${result.code}">${result.codeNm}</option>
+	</c:forEach>
+</select>
+
 	<c:if test="${loginVO != null}">
 		${loginVO.name }님 환영합니다. <a href="${pageContext.request.contextPath }/uat/uia/actionLogout.do">로그아웃</a>
 	</c:if>
