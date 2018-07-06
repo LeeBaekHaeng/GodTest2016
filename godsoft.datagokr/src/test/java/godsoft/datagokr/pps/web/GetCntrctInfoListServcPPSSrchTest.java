@@ -5,16 +5,25 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Map;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import egovframework.rte.fdl.excel.EgovExcelService;
+import egovframework.rte.fdl.excel.impl.EgovExcelServiceImpl;
+
 public class GetCntrctInfoListServcPPSSrchTest {
+
+	private EgovExcelService egovExcelService = new EgovExcelServiceImpl();
 
 	@Test
 	public void test() throws Exception {
-		// test2();
+		test2();
 		// test3();
-		test4();
+		// test4();
 	}
 
 	public void test2() throws Exception {
@@ -128,7 +137,43 @@ public class GetCntrctInfoListServcPPSSrchTest {
 		}
 		rd.close();
 		conn.disconnect();
-		System.out.println(sb.toString());
+
+		String content = sb.toString();
+
+		System.out.println(content);
+
+		ObjectMapper xmlMapper = new XmlMapper();
+		// XmlMapper xmlMapper = new XmlMapper();
+
+		@SuppressWarnings("unchecked")
+		Map<String, Object> value = xmlMapper.readValue(content, Map.class);
+		// Response value = xmlMapper.readValue(content, Response.class);
+
+		@SuppressWarnings("unchecked")
+		Map<String, Object> header = (Map<String, Object>) value.get("header");
+		System.out.println("resultCode=" + header.get("resultCode"));
+		System.out.println("resultMsg=" + header.get("resultMsg"));
+
+		@SuppressWarnings("unchecked")
+		Map<String, Object> body = (Map<String, Object>) value.get("body");
+		System.out.println("items=" + body.get("items"));
+		System.out.println("numOfRows=" + body.get("numOfRows"));
+		System.out.println("pageNo=" + body.get("pageNo"));
+		System.out.println("totalCount=" + body.get("totalCount"));
+
+		// System.out.println("value=" + value);
+		// System.out.println("resultCode=" +
+		// value.getHeader().get("resultCode"));
+		// System.out.println("resultMsg=" +
+		// value.getHeader().get("resultMsg"));
+		//
+		// System.out.println("items=" + value.getBody().get("items"));
+		// System.out.println("numOfRows=" + value.getBody().get("numOfRows"));
+		// System.out.println("pageNo=" + value.getBody().get("pageNo"));
+		// System.out.println("totalCount=" +
+		// value.getBody().get("totalCount"));
+
+		// egovExcelService.createWorkbook(wb, filepath);
 	}
 
 	public void test3() throws Exception {
@@ -332,3 +377,53 @@ public class GetCntrctInfoListServcPPSSrchTest {
 	}
 
 }
+
+class Response {
+
+	private Map<String, Object> header;
+	private Map<String, Object> body;
+
+	public Map<String, Object> getHeader() {
+		return header;
+	}
+
+	public void setHeader(Map<String, Object> header) {
+		this.header = header;
+	}
+
+	public Map<String, Object> getBody() {
+		return body;
+	}
+
+	public void setBody(Map<String, Object> body) {
+		this.body = body;
+	}
+
+}
+
+// class Response {
+//
+// private Map<String, Object> header;
+// private Body body;
+//
+// public Map<String, Object> getHeader() {
+// return header;
+// }
+//
+// public void setHeader(Map<String, Object> header) {
+// this.header = header;
+// }
+//
+// public Body getBody() {
+// return body;
+// }
+//
+// public void setBody(Body body) {
+// this.body = body;
+// }
+//
+// }
+//
+// class Body {
+//
+// }
