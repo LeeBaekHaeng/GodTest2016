@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+ <!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+	<definition name="god.general"
+		template="/WEB-INF/jsp/god/com/layouts/general/layout.jsp">
+
+		<put-attribute name="title" value="god 갓" />
+
+		<put-attribute name="header"
+			value="/WEB-INF/jsp/god/com/layouts/general/header.jsp" />
+		<put-attribute name="menu"
+			value="/WEB-INF/jsp/god/com/layouts/general/menu.jsp" />
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/god/com/layouts/general/body.jsp" />
+		<put-attribute name="footer"
+			value="/WEB-INF/jsp/god/com/layouts/general/footer.jsp" />
+	</definition>
+
+	<definition name="egovframework/com/cmm/*" extends="god.general">
+		<put-attribute name="title" value="god2 갓2" />
+
+		<put-attribute name="body" value="/WEB-INF/jsp/god/com/cmm/{1}.jsp" />
+	</definition>
+
+</tiles-definitions>
