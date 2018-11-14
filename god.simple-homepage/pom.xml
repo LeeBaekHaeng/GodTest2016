@@ -138,12 +138,12 @@
 
 		<!-- mysql driver -->
 		<!-- 
+        -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.31</version>
         </dependency>
-        -->
 
 		<!-- oracle 10g driver -->
 		<!--
@@ -182,6 +182,7 @@
 
 		<!-- log4jdbc driver -->
         <!--  
+        -->
         <dependency>
             <groupId>com.googlecode.log4jdbc</groupId>
             <artifactId>log4jdbc</artifactId>
@@ -193,7 +194,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        -->
 
 		<dependency>
 			<groupId>commons-fileupload</groupId>
