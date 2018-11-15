@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="OperImprovReq">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="operImprovReqVO" type="egovframework.oe1.cms.srm.service.EgovOe1OperImprovReqVO"/>
+
+	<resultMap id="operImprovReq" class="egovframework.oe1.cms.srm.service.EgovOe1OperImprovReqVO">
+		<result property="operImprvmRequstId"  column="OPER_IMPRVM_REQUST_ID"  />		   			
+		<result property="operImprvmRequstSj"  column="OPER_IMPRVM_REQUST_SJ"  />
+		<result property="operImprvmRequstCn"  column="OPER_IMPRVM_REQUST_CN"  />
+		<result property="operJobSeCode"       column="OPER_JOB_SE_CODE"       />
+		<result property="soperJobSeCode"      column="SOPER_JOB_SE_CODE"      />
+		<result property="operJobSeCodeNm"     column="OPER_JOB_SE_CODE_NM"    />
+		<result property="comptRequstDe"       column="COMPT_REQUST_DE"        />
+		<result property="requstTyCode"        column="REQUST_TY_CODE"         />
+		<result property="requstTyCodeNm"      column="REQUST_TY_CODE_NM"      />
+		<result property="emrgncyProcessAt"    column="EMRGNCY_PROCESS_AT"     />
+		<result property="emrgncyProcessAtNm"  column="EMRGNCY_PROCESS_AT_NM"  />
+		<result property="chargerId"           column="CHARGER_ID"             />
+		<result property="schargerId"          column="SCHARGER_ID"            />
+		<result property="chargerNm"           column="CHARGER_NM"             />
+		<result property="rcepterId"           column="RCEPTER_ID"             />
+		<result property="rceptDt"             column="RCEPT_DT"               />
+		<result property="processComptDe"      column="PROCESS_COMPT_DE"       />
+		<result property="processCn"           column="PROCESS_CN"             />
+		<result property="stsfdg"              column="STSFDG"                 />
+		<result property="stsfdgOpinion"       column="STSFDG_OPINION"         />
+		<result property="requstSttusCode"     column="REQUST_STTUS_CODE"      />
+		<result property="srequstSttusCode"    column="SREQUST_STTUS_CODE"     />
+		<result property="requstSttusCodeNm"   column="REQUST_STTUS_CODE_NM"   />
+		<result property="requstAtchFileId"    column="REQUST_ATCH_FILE_ID"    />
+		<result property="processAtchFileId"   column="PROCESS_ATCH_FILE_ID"   />
+		<result property="atchFileId"          column="ATCH_FILE_ID"           />
+		<result property="returnResn"   	   column="RETURN_RESN"    		   />
+		<result property="frstRegisterPnttm"   column="FRST_REGISTER_PNTTM"    />
+		<result property="frstRegisterId"      column="FRST_REGISTER_ID"       />
+		<result property="frstRegisterNm"      column="FRST_REGISTER_NM"       />
+		<result property="lastUpdusrPnttm"     column="LAST_UPDUSR_PNTTM"      />
+		<result property="lastUpdusrId"        column="LAST_UPDUSR_ID"         />   
+	</resultMap>	
+<!-- 운영개선요청 목록 총 건수 -->	
+	<select id="operImprovReqDAO.selectOperImprovReqListTotCnt" parameterClass="operImprovReqVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNOPERIMPROVREQ A
+			     LEFT OUTER JOIN OE1TNOECOMMDETAILCD B ON B.CODE_ID = 'OE1023' AND A.REQUST_STTUS_CODE = B.CODE
+			     LEFT OUTER JOIN OE1TNOECOMMDETAILCD C ON C.CODE_ID = 'OE1020' AND A.OPER_JOB_SE_CODE = C.CODE
+			     LEFT OUTER JOIN OE1TNUSERINFO X ON X.MBER_ID = A.FRST_REGISTER_ID 
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				A.OPER_IMPRVM_REQUST_SJ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.OPER_IMPRVM_REQUST_CN LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>	
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				X.MBER_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>		
+			<isNotEmpty prepend="AND" property="srequstSttusCode">
+				A.REQUST_STTUS_CODE = #srequstSttusCode#
+			</isNotEmpty>		
+			<isNotEmpty prepend="AND" property="soperJobSeCode">
+				A.OPER_JOB_SE_CODE = #soperJobSeCode#
+			</isNotEmpty>		
+			<isNotEmpty prepend="AND" property="schargerId">
+				A.CHARGER_ID = #schargerId#
+				AND A.REQUST_STTUS_CODE NOT IN ('03','05') 
+			</isNotEmpty>		
+			<isNotEmpty prepend="AND" property="tempValue">
+				A.OPER_IMPRVM_REQUST_ID NOT IN (SELECT OPER_IMPRVM_REQUST_ID FROM OE1TNOPERIMPROVREQRISK WHERE RISK_ID= #tempValue#)
+			</isNotEmpty>			
+	</select>
+<!-- 운영개선요청 목록 조회 -->	
+	<select id="operImprovReqDAO.selectOperImprovReqList" parameterClass="operImprovReqVO" resultClass="egovMap">			
+			SELECT 
+					 A.OPER_IMPRVM_REQUST_ID   
+					,A.OPER_IMPRVM_REQUST_SJ  
+					,A.OPER_IMPRVM_REQUST_CN  
+					,A.OPER_JOB_SE_CODE  
+					,C.CODE_NM OPER_JOB_SE_CODE_NM                
+					,A.COMPT_REQUST_DE          
+					,A.REQUST_TY_CODE 
+					,A.EMRGNCY_PROCESS_AT       
+					,A.CHARGER_ID  
+					,(SELECT Z.MBER_NM FROM OE1TNUSERINFO Z WHERE A.CHARGER_ID=Z.MBER_ID ) CHARGER_NM         
+					,A.RCEPTER_ID          
+					,CAST( DATE_FORMAT( A.RCEPT_DT,'%Y-%m-%d' ) AS CHAR(10) ) RCEPT_DT            
+					,CAST( DATE_FORMAT( A.PROCESS_COMPT_DE,'%Y-%m-%d' ) AS CHAR(10) )PROCESS_COMPT_DE         
+					,A.PROCESS_CN          
+					,A.STSFDG              
+					,A.STSFDG_OPINION    
+					,A.REQUST_STTUS_CODE   
+					,B.CODE_NM REQUST_STTUS_CODE_NM            
+					,A.REQUST_ATCH_FILE_ID       
+					,A.PROCESS_ATCH_FILE_ID
+					,CAST( DATE_FORMAT( A.FRST_REGISTER_PNTTM,'%Y-%m-%d' ) AS CHAR(10) ) FRST_REGISTER_PNTTM 
+					,A.FRST_REGISTER_ID    
+					,X.MBER_NM  FRST_REGISTER_NM    
+					,A.LAST_UPDUSR_PNTTM   
+					,A.LAST_UPDUSR_ID      
+			FROM OE1TNOPERIMPROVREQ A
+			     LEFT OUTER JOIN OE1TNOECOMMDETAILCD B ON B.CODE_ID = 'OE1023' AND A.REQUST_STTUS_CODE = B.CODE
+			     LEFT OUTER JOIN OE1TNOECOMMDETAILCD C ON C.CODE_ID = 'OE1020' AND A.OPER_JOB_SE_CODE = C.CODE
+			     LEFT OUTER JOIN OE1TNUSERINFO X ON X.MBER_ID = A.FRST_REGISTER_ID 
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				A.OPER_IMPRVM_REQUST_SJ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.OPER_IMPRVM_REQUST_CN LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>	
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				X.MBER_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>		
+			<isNotEmpty prepend="AND" property="srequstSttusCode">
+				A.REQUST_STTUS_CODE = #srequstSttusCode#
+			</isNotEmpty>		
+			<isNotEmpty prepend="AND" property="soperJobSeCode">
+				A.OPER_JOB_SE_CODE = #soperJobSeCode#
+			</isNotEmpty>		
+			<isNotEmpty prepend="AND" property="schargerId">
+				A.CHARGER_ID = #schargerId#
+				AND A.REQUST_STTUS_CODE NOT IN ('03','05') 
+			</isNotEmpty>		
+			<isNotEmpty prepend="AND" property="tempValue">
+				A.OPER_IMPRVM_REQUST_ID NOT IN (SELECT OPER_IMPRVM_REQUST_ID FROM OE1TNOPERIMPROVREQRISK WHERE RISK_ID= #tempValue#)
+			</isNotEmpty>			
+			ORDER BY A.FRST_REGISTER_PNTTM DESC
+			limit #firstIndex#, #recordCountPerPage#	
+	</select>
+<!-- 운영개선요청 상세조회 -->
+	<select id="operImprovReqDAO.selectOperImprovReq" resultClass="operImprovReqVO">			
+			SELECT 
+					 A.OPER_IMPRVM_REQUST_ID   operImprvmRequstId   
+					,A.OPER_IMPRVM_REQUST_SJ   operImprvmRequstSj   
+					,A.OPER_IMPRVM_REQUST_CN   operImprvmRequstCn   
+					,A.OPER_JOB_SE_CODE        operJobSeCode
+					,C.CODE_NM                 operJobSeCodeNm          
+					,CONCAT(SUBSTR(A.COMPT_REQUST_DE,1,4),'-',SUBSTR(A.COMPT_REQUST_DE,5,2),'-',SUBSTR(A.COMPT_REQUST_DE,7,2)) comptRequstDe           
+					,A.REQUST_TY_CODE       requstTyCode  
+					,(SELECT Z2.CODE_NM FROM OE1TNOECOMMDETAILCD Z2 WHERE Z2.CODE_ID ='OE1012' AND A.REQUST_TY_CODE=Z2.CODE ) requstTyCodeNm    
+					,A.EMRGNCY_PROCESS_AT   emrgncyProcessAt    
+					,(SELECT Z3.CODE_NM FROM OE1TNOECOMMDETAILCD Z3 WHERE Z3.CODE_ID ='OE1005' AND A.EMRGNCY_PROCESS_AT=Z3.CODE ) emrgncyProcessAtNm  
+					,A.CHARGER_ID           chargerId  
+					,(SELECT Z.MBER_NM FROM OE1TNUSERINFO Z WHERE A.CHARGER_ID=Z.MBER_ID ) chargerNm         
+					,A.RCEPTER_ID           rcepterId         
+					,CAST( DATE_FORMAT( A.RCEPT_DT,'%Y-%m-%d' ) AS CHAR(10) ) rceptDt           
+					,CAST( DATE_FORMAT( A.PROCESS_COMPT_DE,'%Y-%m-%d' ) AS CHAR(10) )     processComptDe         
+					,A.PROCESS_CN           processCn         
+					,A.STSFDG               stsfdg            
+					,A.STSFDG_OPINION       stsfdgOpinion     
+					,A.REQUST_STTUS_CODE    requstSttusCode           
+					,A.REQUST_ATCH_FILE_ID  requstAtchFileId       
+					,A.PROCESS_ATCH_FILE_ID processAtchFileId 
+					,CAST( DATE_FORMAT( A.FRST_REGISTER_PNTTM,'%Y-%m-%d' ) AS CHAR(10) )  frstRegisterPnttm 
+					,A.RETURN_RESN	        returnResn   
+					,A.FRST_REGISTER_ID     frstRegisterId   
+					,X.MBER_NM              frstRegisterNm     
+					,A.LAST_UPDUSR_PNTTM    lastUpdusrPnttm   
+					,A.LAST_UPDUSR_ID       lastUpdusrId     
+					,(SELECT COUNT(*) FROM OE1TNOPERIMPROVREQRISK WHERE OPER_IMPRVM_REQUST_ID = #operImprvmRequstId#) tempValue 
+			FROM OE1TNOPERIMPROVREQ A
+			     LEFT OUTER JOIN OE1TNOECOMMDETAILCD C ON C.CODE_ID = 'OE1020' AND A.OPER_JOB_SE_CODE = C.CODE
+			     LEFT OUTER JOIN OE1TNUSERINFO X ON X.MBER_ID = A.FRST_REGISTER_ID
+			WHERE OPER_IMPRVM_REQUST_ID=#operImprvmRequstId#
+	</select>
+<!-- 운영개선요청 등록 -->	
+	<insert id="operImprovReqDAO.insertOperImprovReq">
+		<![CDATA[
+			INSERT INTO OE1TNOPERIMPROVREQ (   
+					OPER_IMPRVM_REQUST_ID 
+				   ,OPER_IMPRVM_REQUST_SJ 
+				   ,OPER_IMPRVM_REQUST_CN 
+				   ,OPER_JOB_SE_CODE
+				   ,COMPT_REQUST_DE
+				   ,REQUST_TY_CODE                        
+				   ,REQUST_STTUS_CODE  
+				   ,REQUST_ATCH_FILE_ID
+				   ,FRST_REGISTER_PNTTM
+				   ,FRST_REGISTER_ID        
+				 )
+			VALUES ( 
+					#operImprvmRequstId#
+				  , #operImprvmRequstSj#
+				  , #operImprvmRequstCn#
+				  , #operJobSeCode#
+				  , replace(#comptRequstDe#,'-','')
+				  , #requstTyCode#                  
+				  , '01' 
+				  , #requstAtchFileId#     
+				  , now()
+				  , #frstRegisterId#
+				  )
+		]]>
+	</insert>
+<!-- 운영개선요청 수정 -->
+	<update id="operImprovReqDAO.updateOperImprovReq">
+			UPDATE OE1TNOPERIMPROVREQ
+			SET
+				    OPER_IMPRVM_REQUST_SJ  = #operImprvmRequstSj#  
+				   ,OPER_IMPRVM_REQUST_CN  = #operImprvmRequstCn#   
+				   ,OPER_JOB_SE_CODE       = #operJobSeCode# 
+				   ,COMPT_REQUST_DE        = replace(#comptRequstDe#,'-','')    
+				   ,REQUST_ATCH_FILE_ID    = #requstAtchFileId#           
+				   ,LAST_UPDUSR_PNTTM      = now()  
+				   ,LAST_UPDUSR_ID         = #lastUpdusrId#     
+			WHERE  OPER_IMPRVM_REQUST_ID   = #operImprvmRequstId#		
+	</update>
+<!-- 운영개선요청 삭제 -->
+	<delete id="operImprovReqDAO.deleteOperImprovReq">
+			DELETE FROM OE1TNOPERIMPROVREQ 
+			WHERE OPER_IMPRVM_REQUST_ID   = #operImprvmRequstId#
+	</delete>
+<!-- 운영개선요청 작업분배 저장 -->		
+	<update id="operImprovReqProcDAO.updateOperImprovReqDstb">
+			UPDATE OE1TNOPERIMPROVREQ
+			SET
+				    REQUST_TY_CODE       = #requstTyCode#  
+				   ,EMRGNCY_PROCESS_AT   = #emrgncyProcessAt#   
+				   ,RCEPTER_ID           = #rcepterId# 
+				   <isNotEmpty property="chargerId" >
+				   ,CHARGER_ID           = #chargerId#  
+				   </isNotEmpty> 
+				   <isEmpty property="rceptDt" >
+				   ,RCEPT_DT             = now()   
+				   </isEmpty>
+				   ,REQUST_STTUS_CODE    = '02'
+				   ,LAST_UPDUSR_PNTTM    = now()  
+				   ,LAST_UPDUSR_ID       = #lastUpdusrId#     
+			WHERE  OPER_IMPRVM_REQUST_ID = #operImprvmRequstId#		
+	</update>	
+<!-- 운영개선요청 이관관련 정보 저장  -->	
+	<update id="operImprovReqDAO.updateOperImprovReqTransChange">
+			UPDATE OE1TNOPERIMPROVREQ
+			SET			    
+				    REQUST_STTUS_CODE    = #requstSttusCode#
+				   <isEqual property="requstSttusCode" compareValue="03">
+				   ,PROCESS_CN           = '변경이관하였습니다.'
+				   ,CHARGER_ID           = ''
+				   </isEqual>	
+				   <isEqual property="requstSttusCode" compareValue="05">
+				   ,PROCESS_CN           = '변경이관하여 처리완료 되었습니다.'
+				   </isEqual>
+				   <isNotEmpty property="processComptDe" >
+				   ,PROCESS_COMPT_DE     = replace(#processComptDe#,'-','')  
+				   </isNotEmpty>				   	
+				   ,LAST_UPDUSR_PNTTM    = now()  
+				   ,LAST_UPDUSR_ID       = #lastUpdusrId#     
+			WHERE  OPER_IMPRVM_REQUST_ID = #operImprvmRequstId#		
+	</update>	
+<!-- 운영개선요청 처리결과 저장 -->
+	<update id="operImprovReqProcDAO.updateOperImprovReqProc">
+			UPDATE OE1TNOPERIMPROVREQ
+			SET
+				    REQUST_STTUS_CODE    = #requstSttusCode#
+				   ,PROCESS_COMPT_DE     = replace(#processComptDe#,'-','')
+				   ,PROCESS_CN           = #processCn#
+				   ,PROCESS_ATCH_FILE_ID = #processAtchFileId#   
+				   ,LAST_UPDUSR_PNTTM    = now()  
+				   ,LAST_UPDUSR_ID       = #lastUpdusrId#     
+			WHERE  OPER_IMPRVM_REQUST_ID = #operImprvmRequstId#		
+	</update>
+<!-- 운영개선요청 만족도 저장 -->		
+	<update id="operImprovReqDAO.updateOperImprovReqEnd">
+			UPDATE OE1TNOPERIMPROVREQ
+			SET
+				    STSFDG               = #stsfdg#
+				   <isNotEmpty property="stsfdgOpinion" >
+				   ,STSFDG_OPINION       = #stsfdgOpinion#  
+				   </isNotEmpty>
+				   ,LAST_UPDUSR_PNTTM    = now()  
+				   ,LAST_UPDUSR_ID       = #lastUpdusrId#     
+			WHERE  OPER_IMPRVM_REQUST_ID = #operImprvmRequstId#		
+	</update>	
+<!-- 처리완료 메일발송 정보 -->
+	<select id="operImprovReqProcDAO.selectOperImprovReqResultMailInfo" resultClass="operImprovReqVO">			
+			SELECT 
+					 A.OPER_IMPRVM_REQUST_ID   operImprvmRequstId   
+					,A.OPER_IMPRVM_REQUST_SJ   operImprvmRequstSj        
+					,CAST( DATE_FORMAT( A.RCEPT_DT,'%Y-%m-%d' ) AS CHAR(10) ) rceptDt           
+					,CAST( DATE_FORMAT( A.PROCESS_COMPT_DE,'%Y-%m-%d' ) AS CHAR(10) )     processComptDe    
+					,A.REQUST_STTUS_CODE       requstSttusCode          
+					,CAST( DATE_FORMAT( A.FRST_REGISTER_PNTTM,'%Y-%m-%d' ) AS CHAR(10) )  frstRegisterPnttm   
+					,X.MBER_NM                 frstRegisterNm        
+					,X.MBER_EMAIL_ADRES        tempValue 
+			FROM OE1TNOPERIMPROVREQ A
+			     , OE1TNUSERINFO X
+			WHERE OPER_IMPRVM_REQUST_ID=#operImprvmRequstId#
+			  AND X.MBER_ID = A.FRST_REGISTER_ID
+	</select>						
+<!-- 운영개선요청 통계 -->
+	<select id="operImprovReqProcDAO.selectOperImprovReqStatus" parameterClass="operImprovReqVO"  resultClass="egovMap">	
+	<![CDATA[
+			select   sum(T4.rceptCount)  	as  rceptCount
+					,sum(T4.processCount) as  processCount
+					,sum(T4.endCount) 	  as  endCount
+			 		,sum(T4.endCountIn) 	as  endCountIn
+					,sum(T4.endCountOver) as  endCountOver
+					,T4.division  			  as  division
+			from (
+						select (case  when a.REQUST_STTUS_CODE = '02' or a.REQUST_STTUS_CODE = '04' or a.REQUST_STTUS_CODE = '06' then 1
+						           else 0
+						             end) as rceptCount
+						         , (case a.REQUST_STTUS_CODE when '04' then 1
+						           else 0
+						             end) as processCount
+						         , (case a.REQUST_STTUS_CODE when '06' then 1
+						           else 0
+						             end) as endCount
+						         , (case when a.REQUST_STTUS_CODE = '06' and a.COMPT_REQUST_DE >= a.PROCESS_COMPT_DE then 1
+						             else 0
+						             end) as endCountIn
+						         , (case when a.REQUST_STTUS_CODE = '06' and a.COMPT_REQUST_DE < a.PROCESS_COMPT_DE then 1
+						             else 0
+						             end) as endCountOver   
+						         ,  (case #statusCondition# when '1' then    SUBSTR( CAST( DATE_FORMAT( a.FRST_REGISTER_PNTTM,'%Y-%m-%d' ) AS CHAR(10) ),1,7)
+						            when '2' then				T1.code_nm
+						            when '3' then				T2.code_nm
+						            when '4' then				T3.mber_nm
+						            end )      as division
+						         ,  (case #statusCondition# when '1' then    SUBSTR( CAST( DATE_FORMAT( a.FRST_REGISTER_PNTTM,'%Y-%m-%d' ) AS CHAR(10) ),1,7)
+						            when '2' then				T1.code
+						            when '3' then				T2.code
+						            when '4' then				T3.mber_nm
+						            end )      as order_id
+						from OE1TNOPERIMPROVREQ a
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T1 on T1.CODE_ID = 'OE1020' AND a.OPER_JOB_SE_CODE  = T1.CODE
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T2 on T2.CODE_ID = 'OE1012' AND a.REQUST_TY_CODE    = T2.CODE  
+						LEFT OUTER JOIN OE1TNUSERINFO       T3 on T3.MBER_ID = a.CHARGER_ID
+						where a.REQUST_STTUS_CODE <> '01'
+						  and a.REQUST_STTUS_CODE <> '03' 
+						  and a.REQUST_STTUS_CODE <> '05'
+						  and a.REQUST_STTUS_CODE <> '07'
+						]]>	
+							<isNotEmpty prepend="AND" property="fromDate">
+								CAST( DATE_FORMAT( a.FRST_REGISTER_PNTTM,'%Y%m%d' ) AS CHAR(8)) between REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','')	
+							</isNotEmpty>
+					) T4
+					group by T4.division 
+					order by T4.order_id ASC
+					
+	</select>
+	
+<!-- 운영개선요청 통계- 총건수 -->	
+    <select id="operImprovReqProcDAO.selectOperImprovReqStatusTot" parameterClass="operImprovReqVO" resultClass="operImprovReqVO">
+	select   sum(t.totRequstCount)   as  totRequstCount
+			,sum(t.preRceptCount)    as  preRceptCount
+			,sum(t.changeTransCount) as  changeTransCount
+			,sum(t.returnCount)      as  returnCount
+		from (
+					select 1 as totRequstCount
+							,(case  when a.REQUST_STTUS_CODE = '01' then 1 else 0
+					             end) as preRceptCount
+					        , (case when a.REQUST_STTUS_CODE = '03' or a.REQUST_STTUS_CODE = '05' then 1 else 0
+					             end) as changeTransCount
+					        , (case when a.REQUST_STTUS_CODE = '07' then 1 else 0
+					             end) as returnCount	
+					from OE1TNOPERIMPROVREQ a
+            		WHERE 1=1
+					<isNotEmpty prepend="AND" property="fromDate">
+			            CAST( DATE_FORMAT( a.FRST_REGISTER_PNTTM,'%Y%m%d' ) AS CHAR(8)) BETWEEN REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','')	
+			        </isNotEmpty>             			
+				) t
+    </select>	
+<!-- 운영개선요청 반려사유 저장 -->		
+	<update id="operImprovReqDAO.updateOperImprovReqReturn">
+			UPDATE OE1TNOPERIMPROVREQ
+			SET
+				    REQUST_STTUS_CODE = #requstSttusCode#
+				   ,RCEPT_DT             = now() 
+				   <isNotEmpty property="returnResn" >
+				   ,RETURN_RESN       = #returnResn#  
+				   </isNotEmpty>
+				   ,LAST_UPDUSR_PNTTM    = now()  
+				   ,LAST_UPDUSR_ID       = #lastUpdusrId#     
+			WHERE  OPER_IMPRVM_REQUST_ID = #operImprvmRequstId#		
+	</update>    			
+</sqlMap>

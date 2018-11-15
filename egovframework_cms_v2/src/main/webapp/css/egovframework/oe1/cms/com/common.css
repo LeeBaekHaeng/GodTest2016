@@ -1,0 +1,379 @@
+@charset "utf-8";
+@import url(addition.css);
+/* common css */
+
+/* Type Selector */
+*{margin:0; padding:0;margin:0; padding:0;}
+img, fieldset, button{border:none;}
+li{list-style-type:none;}
+hr, button img{display:none;}
+a{text-decoration:none;}
+a:hover, a:active, a:focus{text-decoration:underline;color:#666666;font-family:"돋움",dotum; font-size:12px;}
+textarea{font-family:"굴림", Gulim, AppleGothic, Sans-serif; font-size:11px;overflow:auto;}
+legend {position:absolute; top:0; left:0; width:0; height:0; overflow:hidden; visibility:hidden; font-size:0; line-height:0;} /* For Screen Reader */
+caption{display:none;}
+img{border:0}
+html, body{margin:0; padding:0; font-family:"굴림", Gulim, AppleGothic, Sans-serif;font-size:11px;}
+h1{font-family:"굴림", Gulim, AppleGothic, Sans-serif; font-size:13px;}
+
+/* Layout */
+#wrap{margin-bottom:0;margin-left:auto;margin-right:auto;margin-top:0;width:980px;}
+#header{background-image:url('/oe1/images/egovframework/oe1/cms/com/bg_head.jpg');background-position:left top;background-repeat:no-repeat; width:980px;height:56px; }
+#logoarea{clear:both;float:left;margin-top:12px;padding-left:24px;}
+#status{float:right;padding-right:10px;padding-top:25px;color:#ffffff;}
+#status ul{list-style-type:none;font-size:10px;color:#ffffff;}
+#status li {display:inline;padding-right:3px;}
+
+/* 수정 20100817 */
+#topnavi{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/bg_topnavi.gif');background-position:left top;background-repeat:no-repeat; width:980px;height:37px; }
+#topnavi ul{list-style-type:none;padding-top:13px;padding-left:20px;}
+#topnavi li {display:inline;font-size:12px;color:#7c7c7c;font-weight:bold;padding-right:4px;padding-left:4px;letter-spacing:-1px;}
+#topnavi li a{font-size:12px;color:#7c7c7c;font-weight:bold;}
+#topnavi li a:hover{font-size:12px;color:#f58500;font-weight:bold;text-decoration:none;}
+#topnavi li a:visited{color:#7c7c7c;font-weight:bold;text-decoration:none;}
+#topnavi .topnavi_gap{color:#cacaca;}
+
+#lefttitle_style{background-image:url('/oe1/images/egovframework/oe1/cms/com/bg_lefttop01.jpg');background-position:left top;background-repeat:no-repeat;width:183px;height:31px;margin-left:3px;margin-top:6px;}
+#lefttitle_style span{font-size:12px;color:#ffffff;font-weight:bold;padding-left:10px;position:relative;top:10px;}
+
+#leftmenu{float:left;width:187px;min-height:440px; height:auto !important; height:440px;background-color:#f9f9f9;}
+#leftmenu_subdiv{background-color:#f9f9f9; width:181px;}
+#leftmenu_wrap{margin-top:3px; border:1px solid #d5d5d5;width:181px;min-height:400px; height:auto !important; height:400px;margin-left:2px;}
+#leftmenu_wrap ul{list-style-type:none;color:#1c94c4;padding:5px;margin:1px;}
+#leftmenu_wrap ul li{list-style-type:none;font-size:12px;padding-left:0px;}
+#leftmenu_wrap ul li a{font-family:"돋움",dotum;font-size:12px;color:#1c94c4;font-weight:bold;background-image:url('/oe1/images/egovframework/oe1/cms/com/bl_arrow_gray.gif');background-position:0px 2px;background-repeat:no-repeat;padding-left:8px;}
+#leftmenu_wrap ul li a:hover{font-family:"돋움",dotum;font-size:12px;color:#f58500;font-weight:bold;text-decoration:none;background-image:url('/oe1/images/egovframework/oe1/cms/com/bl_arrow_orange.gif');background-position:0px 2px;background-repeat:no-repeat;}
+#leftmenu_wrap ul li a:visited{font-family:"돋움",dotum;font-size:12px;color:#1c94c4;font-weight:bold;text-decoration:none;}
+#leftmenu_wrap ul li ul{list-style-type:none;color:#666666; background-image:none;}
+#leftmenu_wrap ul li ul li {font-size:11px;font-weight:normal;text-decoration:none;list-style-type:none; background-image:none;padding:2px;}
+#leftmenu_wrap ul li ul li a{color:#666666;font-weight:normal;text-decoration:none; background-image:none;font-size:11px;}
+#leftmenu_wrap ul li ul li a:visited{color:#666666;font-weight:normal;text-decoration:none; background-image:none;font-size:11px;}
+#leftmenu_wrap ul li ul li a:hover{color:#ec8e0c;font-weight:normal;text-decoration:none; background-image:none;font-size:11px;}
+
+#container{clear:both;float:left;margin-top:0px;width:978px;min-height:440px; height:100% !important; height:440px;border:1px;border-style:solid;border-color:#d0d0d0;border-collapse:collapse;}
+#content{float:left;min-height:441px; height:auto !important; height:441px;width:790px;}
+#footer{clear:both;float:left;width:978px;height:50px;background-color:#f5f5f5;font-size:90%;border-top-width:1px;border-top-style:solid;border-top-color:#d0d0d0;border-top-width:1px;border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#d0d0d0;border-collapse:collapse;}
+#mopaslogo{float:left;padding-left:22px;padding-top:9px;}
+#address{float:left;padding-top:16px;padding-left:18px;}
+
+/* 검색 영역 */
+#search_area01{background-image:url('/oe1/images/egovframework/oe1/cms/com/bg_searcharea01.gif');background-position:left top;background-repeat:no-repeat;padding-top:12px;margin-left:15px;margin-top:10px;width:755px;height:47px;}
+#search_area01 ul{list-style-type:none;}
+#search_area01 ul li{display:inline;vertical-align:middle;}
+#search_area01 select{width:120px;border:1px solid #d5d5d5;font-size:12px;vertical-align:middle;}
+#search_area01 input{width:60%;height:15px;border:1px solid #d5d5d5;padding-top:2px;vertical-align:middle;}
+#search_area01 .input01{width:200px;height:15px;border:1px solid #d5d5d5;font-size:11px;margin-left:10px;margin-right:10px;}
+#search_area01 .input02{width:350px;height:15px;border:1px solid #d5d5d5;font-size:11px;margin-left:10px;margin-right:10px;}
+#search_area01 .ulleft{padding-left:10px;font-weight:bold;}
+.imgs{vertical-align:middle;padding-left:18px;}
+.btn_search{vertical-align:middle;padding-left:5px;}
+
+#search_area02{background-image:url('/oe1/images/egovframework/oe1/cms/com/bg_searcharea01.gif');background-position:left top;background-repeat:no-repeat;padding-top:12px;margin-left:15px;margin-top:10px;width:755px;height:47px;}
+#search_area02 ul{list-style-type:none;}
+#search_area02 ul li{display:inline;vertical-align:middle;}
+#search_area02 select{width:120px;border:1px solid #d5d5d5;font-size:12px;vertical-align:middle;}
+#search_area02 input{width:20%;height:15px;border:1px solid #d5d5d5;padding-top:2px;vertical-align:middle;}
+#search_area02 .input01{width:200px;height:15px;border:1px solid #d5d5d5;font-size:11px;margin-left:10px;margin-right:10px;}
+#search_area02 .input02{width:350px;height:15px;border:1px solid #d5d5d5;font-size:11px;margin-left:10px;margin-right:10px;}
+#search_area02 .ulleft{padding-left:10px;font-weight:bold;}
+
+#search_area_p{background-image:url('/oe1/images/egovframework/oe1/cms/com/bg_searcharea01.gif');background-position:left top;background-repeat:no-repeat;padding-top:12px;margin-left:15px;margin-top:10px;width:700px;height:47px;}
+#search_area_p ul{list-style-type:none;}
+#search_area_p ul li{display:inline;vertical-align:middle;}
+#search_area_p select{width:120px;border:1px solid #d5d5d5;font-size:12px;vertical-align:middle;}
+#search_area_p input{width:60%;height:15px;border:1px solid #d5d5d5;padding-top:2px;vertical-align:middle;}
+#search_area_p .input01{width:200px;height:15px;border:1px solid #d5d5d5;font-size:11px;margin-left:10px;margin-right:10px;}
+#search_area_p .ulleft{padding-left:10px;font-weight:bold;}
+
+/* 검색결과 테이블 스타일 */
+#result_table{padding-top:10px;padding-left:15px;}
+#result_table table{width:750px;text-align:center;border:1px solid #c5c6c8;border-collapse:collapse;word-break:break-all;table-layout:fixed;}
+#result_table th{background-image:url('/oe1/images/egovframework/oe1/cms/com/th_bgtable01.gif');background-position:left bottom;background-repeat:repeat-x;height:21px;border-right:1px solid #c5c6c8;font-size:11px;color:#666666;padding-top:4px;}
+#result_table td{height:22px;border:1px solid #c5c6c8;border-collapse:collapse;font-size:11px;padding-left:5px;padding-right:5px;}
+
+.td_span{white-space:nowrap; overflow:hidden;text-overflow:ellipsis;width:350px; height:1em;float:left;}
+
+.result_table2{padding-top:10px;padding-left:15px;}
+.result_table2 table{width:750px;text-align:center;border:word-break:break-all;table-layout:fixed;border-top:1px solid #d5d5d5;border-bottom:1px solid #d5d5d5;border-left:1px solid #d5d5d5;}
+.result_table2 th{background-color:#f4f9fc;height:21px;font-size:11px;color:#666666;border-bottom:1px solid #D5D5D5;border-right:1px solid #D5D5D5;border-collapse:collapse;}
+.result_table2 td{height:22px;;font-size:11px;border-right:1px solid #d5d5d5;}
+.td_span{white-space:nowrap; overflow:hidden;text-overflow:ellipsis;width:350px; height:1em;float:left;}
+
+/* 검색결과 테이블 스타일 POPUP*/
+#result_table_p{padding-top:10px;padding-left:15px;}
+#result_table_p table{width:700px;text-align:center;border:1px solid #c5c6c8;border-collapse:collapse;}
+#result_table_p th{background-image:url('/oe1/images/egovframework/oe1/cms/com/th_bgtable01.gif');background-position:left top;background-repeat:repeat-x;height:21px;border-right:1px solid #c5c6c8;font-size:11px;}
+#result_table_p td{height:22px;border:1px solid #c5c6c8;border-collapse:collapse;font-size:11px;}
+
+/* 페이지리스팅 */
+#pagenav_div{position:relative; padding-top:20px;text-align:center;}
+.page_img{vertical-align:bottom;border:0;}
+.pagenavi li{display:inline;border-right:1px solid #eaeaea;border-left:1px solid #eaeaea; padding-left:3px;padding-right:3px;border-collapse:collapse;}
+.pagenavi a{color:#4488c8;font-size:12px;}
+.pagenavi a:hover{color:#4488c8;background-color:#eaeaea;}
+.pagenavi a:visited{color:#4488c8;}
+
+#filediv{position:relative; padding-top:20px;text-align:left;}
+.filediv li{display:inline;border-right:1px solid #eaeaea;border-left:1px solid #eaeaea; padding-left:3px;padding-right:3px;border-collapse:collapse;}
+
+/* 테이블 스타일2 */
+#datail_table{padding-top:15px;padding-left:15px;}
+#datail_table table{width:750px;border:2px solid #e4e4e4;border-collapse:collapse;}
+#datail_table th{border:1px solid #c5c6c8;border-collapse:collapse;font-size:11px;background-color:#f7f7f7;font-size:11px;color:#000000;}
+#datail_table td{padding-left:5px;height:25px;width:80%;border:1px solid #c5c6c8;border-collapse:collapse;font-size:11px;word-break:break-all;word-wrap:break-word;}
+.inputlarge{height:14px;width:97%;border:1px solid #d5d5d5;font-size:11px;}
+.inputsmall{height:14px;width:90%;border:1px solid #d5d5d5;font-size:11px;}
+.inputsmall_readOnly{height:14px;width:90%;border:1px solid #d5d5d5;font-size:11px;color:#4f6fbb;}
+.inputsmall01{height:14px;width:80%;border:1px solid #d5d5d5;font-size:11px;}
+.inputsmall02{height:14px;width:25%;border:1px solid #d5d5d5;font-size:11px;}
+.inputsmall01_readOnly{height:14px;width:80%;border:1px solid #d5d5d5;font-size:11px;color:#4f6fbb;}
+.opselect_large01{width:97%; border:1px solid #d5d5d5;font-size:11px;}
+.opselect_smaill01{width:50%; border:1px solid #d5d5d5;font-size:11px;}
+.list_td_left{padding-left:5px;}
+.textarea{width:90%;border:1px solid #d5d5d5;font-size:11px;margin-top:3px;margin-bottom:3px;}
+.textarea_readOnly{width:90%;border:1px solid #d5d5d5;font-size:11px;color:#4f6fbb;}
+.th_add{background-image:url('/oe1/images/egovframework/oe1/cms/com/bullet_star.gif');background-position:4px;;background-repeat:no-repeat;width:5px;height:11px;padding-left:15px;}
+
+/* 테이블 스타일3 */
+#datail_table2{padding-top:15px;padding-left:15px;}
+#datail_table2 table{width:750px;border:2px solid #e4e4e4;border-collapse:collapse;}
+#datail_table2 th{width:200px;border:1px solid #c5c6c8;border-collapse:collapse;font-size:11px;background-color:#f7f7f7;font-size:11px;color:#000000;}
+#datail_table2 td{width:500px;padding-left:5px;height:25px;border:1px solid #c5c6c8;border-collapse:collapse;font-size:11px;word-break:break-all;word-wrap:break-word;}
+
+/* 테이블 스타일4 */
+#datail_table3{padding-top:15px;padding-left:15px;}
+#datail_table3 table{width:350px;border:2px solid #e4e4e4;border-collapse:collapse;}
+#datail_table3 th{width:150px;border:1px solid #c5c6c8;border-collapse:collapse;font-size:11px;background-color:#f7f7f7;font-size:11px;color:#000000;}
+#datail_table3 td{width:200px;padding-left:5px;height:25px;border:1px solid #c5c6c8;border-collapse:collapse;font-size:11px;word-break:break-all;word-wrap:break-word;}
+
+/* leftmenu 적용 */
+#accordion .remove_lst{list-style-type:none;}
+#accordion li a:hover{text-decoration:underline;color:#eb8f00;font-weight:bold;}
+
+/* accordion ul style적용 */
+.append{font-size:11px;min-height:440px; height:auto !important; height:440px;;background-color:#F1F1F1;width:170px;}
+
+/* content영역 h2*/
+#h2_topnav {padding-top:15px;padding-left:15px;padding-right:15px}
+#h2_topnav h1{font-size:12px;background-image:url('/oe1/images/egovframework/oe1/cms/com/bu_h2blue.gif');background-position:1px 0px;background-repeat:no-repeat;padding-left:10px;color:#7c7c7c;border-bottom:2px solid #eaeaea;}
+
+#h2_topnav1 {padding-top:15px;padding-left:15px;padding-right:15px}
+#h2_topnav1 h1{font-size:12px;width:750px; background-image:url('/oe1/images/egovframework/oe1/cms/com/bu_h2blue.gif');background-position:1px 0px;background-repeat:no-repeat;padding-left:10px;color:#7c7c7c;border-bottom:2px solid #eaeaea;}
+
+
+#h2_topnav2 h2{font-size:12px;width:750px; color:#7c7c7c;border-bottom:2px solid #eaeaea;}
+
+/* 테이블 내부 보기 20100903*/
+.btn_detail_bg{background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_detail_bg.gif');background-position:left top;background-repeat:no-repeat;width:63px;height:18px;margin:0 auto;}
+.btn_detail_bg a,a:link, a:visited{font-family: "돋움",dotum;font-size:11px;text-decoration:none;color:#0A6DA2;font-weight:bold;} 
+.btn_detail_bg a:hover{color:#9168CD; font-family: "돋움",dotum;font-size:11px;text-decoration:none;font-weight:bold;}
+
+
+/* 버튼 css 스타일 */
+.btn01_leftbg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn01_leftbg.gif');background-position:left top;background-repeat:no-repeat;width:7px;height:22px;}
+.btn01_rightbg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn01_rightbg.gif');background-position:left top;background-repeat:no-repeat;width:11px; height:22px;}
+.btn01_middlebg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn01_middlebg.gif');background-position:left top;background-repeat:repeat-x ;height:22px;padding-left:5px;padding-right:5px;padding-top:5px;}
+.btn01_middlebg a,a:link, a:visited{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#666666;font-weight:bold;}
+.btn01_middlebg a:hover{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#0acc00;font-weight:bold;}
+
+/* css버튼 */
+#btn_style01{clear:both;float:right;padding-right:20px;padding-top:10px;margin-bottom:3px;}
+#btn_style01 a{display:block; background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle01.gif') left 0; float:left; font-size:12px;color:#777777; padding-left:16px; text-decoration:none; height:27px; cursor:pointer; margin-right:3px; overflow:hidden;}
+#btn_style01 a:hover{background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle01.gif') left -27px;}
+#btn_style01 a span{display:block; float:left; background:url('/oe1/images/bg_btnstyle01.gif') right top; line-height:240%; padding-right:16px; height:27px; overflow:hidden;}
+#btn_style01 a:hover span{background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle01.gif') right -27px; color:#000000;}
+
+#btn_style02{clear:both;padding-left:10px;padding-right:10px;padding-top:3px;margin-bottom:3px;}
+#btn_style02 a{display:block; background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle02.gif') left 0; float:left; font-size:12px;color:#777777; padding-left:16px; text-decoration:none; height:18px; cursor:pointer; margin-right:3px; overflow:hidden;}
+#btn_style02 a:hover{background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle02.gif') left -18px;}
+#btn_style02 a span{display:block; float:left; background:url('/oe1/images/bg_btnstyle02.gif') right top; line-height:160%; padding-right:16px; height:18px; overflow:hidden;}
+#btn_style02 a:hover span{background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle02.gif') right -18px; color:#000000;}
+.btn_arrow_position{padding-top:5px;}
+
+#btn_style03{padding-left:10px;padding-right:10px;padding-top:3px;margin-bottom:3px;}
+#btn_style03 a{display:block; background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle02.gif') left 0; float:left; font-size:12px;color:#777777; padding-left:16px; text-decoration:none; height:18px; cursor:pointer; margin-right:3px; overflow:hidden;}
+#btn_style03 a:hover{background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle02.gif') left -18px;}
+#btn_style03 a span{display:block; float:left; background:url('/oe1/images/bg_btnstyle02.gif') right top; line-height:160%; padding-right:16px; height:18px; overflow:hidden;}
+#btn_style03 a:hover span{background:url('/oe1/images/egovframework/oe1/cms/com/bg_btnstyle02.gif') right -18px; color:#000000;}
+
+.btn02_leftbg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn01_leftbg.gif');background-position:left top;background-repeat:no-repeat;width:7px;height:24px;}
+.btn02_rightbg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_non_arrow_right01.gif');background-position:left top;background-repeat:no-repeat;width:5px; height:24px;}
+.btn02_middlebg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn01_middlebg.gif');background-position:left top;background-repeat:repeat-x ;height:24px;padding-left:15px;padding-right:15px;padding-top:5px;}
+.btn02_middlebg a,a:link, a:visited{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#666666;font-weight:bold;}
+.btn02_middlebg a:hover{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#666666;font-weight:bold;}
+
+
+.btn_search_leftbg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_gray_left01.gif');background-position:left top;background-repeat:no-repeat;width:5px;height:24px;}
+.btn_search_rightbg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_gray_right01.gif');background-position:left top;background-repeat:no-repeat;width:5px; height:24px;}
+.btn_search_middlebg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_gray_middle01.gif');background-position:left top;background-repeat:repeat-x ;height:24px;padding-left:15px;padding-right:15px;padding-top:5px;}
+.btn_search_middlebg a,a:link, a:visited{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#666666;font-weight:bold;}
+.btn_search_middlebg a:hover{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#ebaa1f;font-weight:bold;}
+
+/* btn_height18 */
+.btn_height18{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_h18_left01.gif');background-position:left top;background-repeat:no-repeat;width:5px;height:18px;}
+.btn_height18_rightbg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_h18_right01.gif');background-position:left top;background-repeat:no-repeat;width:5px; height:18px;}
+.btn_height18_middlebg{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_h18_middle01.gif');background-position:left top;background-repeat:repeat-x ;height:18px;padding-left:15px;padding-right:15px;padding-top:5px;}
+.btn_height18_middlebg a,a:link, a:visited{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#666666;font-weight:bold;}
+.btn_height18_middlebg a:hover{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#ebaa1f;font-weight:bold;}
+
+/* 버튼영역 DIV */
+.subbtn_align{float:right;padding-right:22px;padding-top:10px;padding-bottom:10px;}
+.subbtn_align ul{list-style-type:none;}
+.subbtn_align ul li{display:inline;}
+
+/* 회원가입/아이디패스워드 css ▼ */
+#idpw_box {margin:0 auto; width:980px; height:300px; border:0px #666666 solid;	}
+#idpw_box #id_search01 {background:url('/oe1/images/egovframework/oe1/cms/com/login/id_box.gif') no-repeat; width:288px; height:98px; float:left; margin:45px 62px 0px 111px; _margin:45px 62px 0px 55px; padding:52px 0 0 22px;} /* ie6용 마진버그 _margin:20px 62px 0px 55px; 사용 */
+#idpw_box #id_search02 {background:url('/oe1/images/egovframework/oe1/cms/com/login/pw_box.gif') no-repeat; width:310px; height:190px; float:left; margin:45px 0px 0px 50px; padding:52px 0 0 22px;}
+#idpw_box #id_search03 {background:url('/oe1/images/egovframework/oe1/cms/com/login/pw_box01.gif') no-repeat; width:288px; height:98px; float:left; margin:45px 62px 0px 327px; _margin:45px 62px 0px 165px; padding:52px 0 0 22px;}/* ie6용 마진버그 _margin:20px 62px 0px 55px; 사용 */
+#idpw_box #id_search04 {background:url('/oe1/images/egovframework/oe1/cms/com/login/id_box.gif') no-repeat; width:288px; height:98px; float:left; margin:45px 62px 0px 327px; _margin:45px 62px 0px 165px; padding:52px 0 0 22px;}/* ie6용 마진버그 _margin:20px 62px 0px 55px; 사용 */
+#idpw_box .boxin { font-size:11px; color:#5ea5fe; letter-spacing:-1px;}
+#idpw_box .boxin input {border:1px #e5e5e5 solid; }
+#idpw_box .boxin li {padding:3px 0 3px 0;}
+.id_result_area {padding: 10px 0 0 0}
+.id_result_area li {display:inline; }
+#idpw_box .boxin .pl40 {padding:5px 0 0 53px;}
+#idpw_box label { display:none}
+/* 회원가입/아이디패스워드 css ▲ */
+
+/* 마우스 오버*/
+.over{background-color:#d2ecff;} 
+
+#tabdiv{padding-top:15px;padding-left:15px;padding-bottom:6px;}
+.tab_1{width:756px; background:url('/oe1/images/egovframework/oe1/cms/com/bg_tab.gif') repeat-x left bottom; overflow:hidden;}
+.tab_1 li{float:left;display:inline; margin-right:-1px; border:1px solid #D4D4D4; color:#333;}
+.tab_1 li a{float:left; display:block; height:20px; padding:9px 18px 0 19px; color:#666; text-decoration:none;}
+.tab_1 li a:hover{background:#F4F4F4;}
+.tab_1 li.selected{border-bottom:1px solid #F4F4F4; background:#F4F4F4;}
+.tab_1 li.selected a{font-weight:bold; letter-spacing:-1px;}
+
+.odd{background-color:#f4f4f4;}
+.even{background-color:#ffffff;}
+
+.search_area_calendar{float:left;position:relative;left:14px;width:756px;height:80px;border:1px solid #d5d5d5; margin-top:10px;background-color:#F8FFFA;top:10px;}
+
+.search_area_calendar_div{float:left;padding-left:30px;padding-top:10px;}
+
+.calendar_table{float:left;padding-top:20px;padding-left:14px;padding-bottom:10px;}
+
+.calendar_table table{border:1px solid #d5d5d5; border-collapse:collapse;width:756px;margin-bottom:20px table-layout:fixed;overflow:hidden;}
+
+.calendar_table table th{border-left:1px solid #95c9fe; border-right:1px solid #95c9fe;border-top:2px solid #95c9fe;border-bottom:1px solid #95c9fe;border-collapse:collapse;height:26px; background-color:#F2F8FF;text-align:center;color:#397abc;}
+
+.calendar_table table tr{border:1px solid #95c9fe; border-collapse:collapse;}
+
+.calendar_table table td{width:108px;font-size:12px;font-weight:normal;border:1px solid #95c9fe; border-collapse:collapse;height:80px; vertical-align:top;padding-top:5px;padding-left:5px;color:#397abc;}
+
+.calendar_table a{font-size:12px;font-weight:normal;color:#397abc;}
+
+.calendar_table a:hover,a:selected, a:visited, a:link{font-size:12px;font-weight:normal;color:#397abc;}
+
+.calendar_option{border:1px solid #d5d5d5;width:100px;}
+
+.calenday_year{float:left;padding-left:20px;}
+
+.calenday_year .spanimg{position: relative; top: 3px;padding-right:5px;}
+
+.calenday_month{float:left;padding-left:40px;}
+
+.calenday_month .spanimg{position: relative; top: 3px;padding-right:5px;}
+
+.calendar_boxtext{float:left;padding-top:20px;padding-left:10px;font-size:12px;}
+
+.inner_div{word-break:break-all;color:#666666;width:100px;height:50px;overflow:hidden;font-size:11px;padding-top:6px;}
+
+ 
+
+.calendar_table_list{float:left;padding-top:20px;padding-left:14px;}
+
+.calendar_table_list table{border:1px solid #d5d5d5; border-collapse:collapse;width:756px;margin-bottom:20px table-layout:fixed;overflow:hidden;}
+
+.calendar_table_list table th{border-left:1px solid #95c9fe; border-right:1px solid #95c9fe;border-top:2px solid #95c9fe;border-bottom:1px solid #95c9fe;border-collapse:collapse;height:26px; background-color:#F2F8FF;text-align:center;color:#397abc;}
+
+.calendar_table_list table tr{border:1px solid #95c9fe; border-collapse:collapse;}
+
+.calendar_table_list table td{font-size:12px;font-weight:normal;border:1px solid #95c9fe; border-collapse:collapse;height:26px; vertical-align:top;padding-top:5px;padding-left:5px;color:#397abc;}
+
+
+/* search area 20100831 */
+.search_area_submit{background-image:url('/oe1/images/egovframework/oe1/cms/com/bg_searcharea01.gif');background-position:left top;background-repeat:no-repeat;padding-top:12px;margin-left:15px;margin-top:10px;width:755px;height:47px;}
+.search_area_submit ul{list-style-type:none;}
+.search_area_submit ul li{display:inline;float:left;}
+.search_area_submit select{width:120px;border:1px solid #d5d5d5;font-size:12px;vertical-align:middle;margin-left:5px;margin-top:2px;}
+.search_area_submit .input01{width:250px;height:15px;border:1px solid #d5d5d5;font-size:11px;margin-left:10px;margin-right:10px;margin-top:3px;}
+.search_area_submit .searchimg{padding-left:14px;padding-top:3px;}
+
+/* submit-background:none 적용 20100903 */
+.submit_textstyle{float:left;text-align:left;background-image:none; background-color:#ffffff;height:24px;padding-left:5px;padding-right:5px;border:none; vertical-align:top;font-weight:bold;color:#666666;font-family:"돋움",dotum; font-size:11px;width:290px;overflow:hidden;color:#0A6DA2;letter-spacing:-1px;}
+
+/* submit 탑부분 위치 적용  20100903*/
+.submit_btn_top{float:left;}
+.submit_btn_top ul{list-style-type:none;}
+.submit_btn_top ul li{display:inline;}
+.submit_btn01_left{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_submit_left01.gif');background-position:left top;background-repeat:no-repeat;width:5px;height:24px;}
+.submit_btn01_right{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_submit_right01.gif');background-position:left top;background-repeat:no-repeat;width:7px;height:24px;}
+.submit_btn01{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_submit_middle01.gif');background-position:left top;background-repeat:repeat-x ;height:24px;border:none;font-weight:bold;color:#666666;font-family:"돋움",dotum;padding-left:15px;padding-right:15px;}
+/* submit-background:none 적용 20100903 */
+.submit_btn_input{background:none;border:none;font-size:12px;font-weight:bold;color:#666666;padding-top: 5px; cursor:hand;}
+
+/* submit 검색영역부분 적용 20100903*/
+.submit_gray_btn_top{float:left;}
+.submit_gray_btn_top ul{list-style-type:none;}
+.submit_gray_btn_top ul li{display:inline;}
+.submit_gray_btn_left{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_gray_left01.gif');background-position:left top;background-repeat:no-repeat;width:5px;height:24px;}
+.submit_gray_btn_right{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_gray_right01.gif');background-position:left top;background-repeat:no-repeat;width:7px;height:24px;}
+.submit_gray_btn_middle{float:left;background-image:url('/oe1/images/egovframework/oe1/cms/com/btn/btn_gray_middle01.gif');background-position:left top;background-repeat:repeat-x ;height:24px;border:none;font-weight:bold;color:#666666;font-family:"돋움",dotum;padding-left:10px;padding-right:10px;}
+
+/* a style board, text 20100904 */
+a.board_text_link, a.board_text_link:link, a.board_text_link:visited{text-align:LEFT;font-family: "돋움",dotum;font-size:11px;text-decoration:none;color:#0A6DA2;font-weight:bold;}
+a.board_text_link:hover{color:#9168CD; font-family: "돋움",dotum;font-size:11px;text-decoration:none;font-weight:bold;}
+
+/* a style button  20100904*/
+a.btn_link, a.btn_link:link, a.btn_link:visited{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#666666;font-weight:bold;}
+a.btn_link:hover{font-family: "돋움",dotum;font-size:12px;text-decoration:none;color:#666666;font-weight:bold;}
+
+/* td에서   글자가 줄바뀜이 안되고 레이아웃이 넘치는 문제  20100914*/
+.hardbreak
+{
+width: 74px;
+white-space: pre-wrap; /* css-3 */
+white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+white-space: -pre-wrap; /* Opera 4-6 */
+white-space: -o-pre-wrap; /* Opera 7 */
+word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.cal9999 {
+border:1px solid #95C9FE;
+border-collapse:collapse;
+color:#397ABC;
+font-size:12px;
+font-weight:normal;
+height:21px;
+padding-left:0;
+padding-top:5px;
+vertical-align:top;
+width:103px;
+}
+
+.calendar_table_new{float:left;padding-top:20px;padding-left:14px;padding-bottom:10px;}
+
+
+
+.calendar_table table_new{border:1px solid #d5d5d5; border-collapse:collapse;width:756px;margin-bottom:20px table-layout:fixed;overflow:hidden;}
+
+.calendar_table_new table th{border-left:1px solid #95c9fe; border-right:1px solid #95c9fe;border-top:2px solid #95c9fe;border-bottom:1px solid #95c9fe;border-collapse:collapse;height:26px; background-color:#F2F8FF;text-align:center;color:#397abc;}
+
+.calendar_table_new table tr{border:1px solid #95c9fe; border-collapse:collapse;}
+
+.calendar_table_new table td{width:108px;font-size:12px;font-weight:normal;border:1px solid #95c9fe; border-collapse:collapse; vertical-align:top;padding-top:3px;padding-left:0px;color:#397abc;}
+
+.calendar_table_new a{font-size:12px;font-weight:normal;color:#397abc;}
+
+.calendar_table_new a:hover,a:selected, a:visited, a:link{font-size:12px;font-weight:normal;color:#397abc;}
+
+
+/* 스킵네비게이션 */  
+#skip { display:none;}
+
+.invisible{visibility:hidden;}

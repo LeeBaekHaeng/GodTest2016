@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UIAdaptorInfo">
+
+	<typeAlias  alias="egovOe1ComDefaultVO" type="egovframework.oe1.cms.com.service.EgovOe1ComDefaultVO"/>
+	<typeAlias  alias="egovOe1UIAdaptorInfoVO" type="egovframework.oe1.cms.arc.service.EgovOe1UIAdaptorInfoVO"/>
+
+	<resultMap id="UIAdaptor"       class="egovOe1UIAdaptorInfoVO">
+		<result property="uiAdaptDc" column="UI_ADAPT_DC"/>
+		<result property="uiAdaptId" column="UI_ADAPT_ID"/>
+		<result property="uiAdaptNm" column="UI_ADAPT_NM"/>
+		<result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDUSR_PNTTM"/>
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+	</resultMap> 
+
+	<insert id="EgovOe1UIAdaptorInfoDAO.insertUIAdaptorInfo" parameterClass="egovOe1UIAdaptorInfoVO">
+		<![CDATA[
+			INSERT INTO OE1TNUIADAPTORINFO
+					(
+						UI_ADAPT_ID
+				    ,   UI_ADAPT_NM
+					,   UI_ADAPT_DC
+					,   FRST_REGISTER_PNTTM
+					,   FRST_REGISTER_ID
+					,   LAST_UPDUSR_PNTTM
+					,   LAST_UPDUSR_ID
+					) 
+					VALUES
+					(
+					 	#uiAdaptId#
+					,   #uiAdaptNm#
+					,   #uiAdaptDc#
+					,   now()
+					,   #frstRegisterId#
+					,   now()
+					,   #lastUpdusrId#
+					);
+		]]>
+	</insert>
+	
+	<update id="EgovOe1UIAdaptorInfoDAO.updateUIAdaptorInfo" parameterClass="egovOe1UIAdaptorInfoVO">
+		<![CDATA[
+			UPDATE OE1TNUIADAPTORINFO
+			SET 
+				   UI_ADAPT_ID = #uiAdaptId#
+				,  UI_ADAPT_NM = #uiAdaptNm#
+				,  UI_ADAPT_DC = #uiAdaptDc#
+				,  LAST_UPDUSR_PNTTM = now()
+				,  LAST_UPDUSR_ID = #lastUpdusrId#
+			WHERE
+				   UI_ADAPT_ID = #uiAdaptId#
+		]]>
+	</update>
+	
+	
+	<delete id="EgovOe1UIAdaptorInfoDAO.deleteUIAdaptorInfo" parameterClass="egovOe1UIAdaptorInfoVO">
+		<![CDATA[
+			DELETE FROM OE1TNUIADAPTORINFO 
+			WHERE UI_ADAPT_ID = #uiAdaptId#
+		]]>
+	</delete>
+	
+	<select id="EgovOe1UIAdaptorInfoDAO.selectUIAdaptorInfo" resultMap="UIAdaptor">
+		<![CDATA[
+		SELECT 
+				  UI_ADAPT_ID
+				, UI_ADAPT_NM
+				, UI_ADAPT_DC
+				, FRST_REGISTER_PNTTM
+				, FRST_REGISTER_ID
+				, LAST_UPDUSR_PNTTM
+				, LAST_UPDUSR_ID 
+		FROM 
+				OE1TNUIADAPTORINFO
+		WHERE
+				UI_ADAPT_ID = #uiAdaptId#
+		]]>
+	</select>
+	
+	<select id="EgovOe1UIAdaptorInfoDAO.selectUIAdaptorInfoList" parameterClass="egovOe1ComDefaultVO" resultMap="UIAdaptor">
+			SELECT 
+					  UI_ADAPT_ID
+					, UI_ADAPT_NM
+					, UI_ADAPT_DC
+					, FRST_REGISTER_PNTTM
+					, FRST_REGISTER_ID
+					,DATE_FORMAT(LAST_UPDUSR_PNTTM,'%Y-%m-%d %H:%i:%s') AS LAST_UPDUSR_PNTTM		     
+					, LAST_UPDUSR_ID 
+			FROM 
+					OE1TNUIADAPTORINFO
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						UI_ADAPT_ID LIKE CONCAT('%',#searchKeyword#,'%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						UI_ADAPT_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					</isEqual>
+				
+			ORDER BY UI_ADAPT_ID DESC
+			limit #firstIndex#, #recordCountPerPage#	
+	</select>
+					
+	<select id="EgovOe1UIAdaptorInfoDAO.countUIAdaptorInfoList" parameterClass="egovOe1ComDefaultVO" resultClass="int">
+			SELECT COUNT(*) AS total
+			FROM OE1TNUIADAPTORINFO
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						UI_ADAPT_ID LIKE CONCAT('%',#searchKeyword#,'%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						UI_ADAPT_NM LIKE CONCAT('%',#searchKeyword#,'%')
+					</isEqual>
+	</select>
+
+</sqlMap>

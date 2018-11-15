@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sim/EgovOe1ChangeRequestManage_mysql_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sim/EgovOe1ChangeRequestProcess_mysql_SQL.xml" />	
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sim/EgovOe1ChangeWorkExecute_mysql_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sim/EgovOe1ChangeWorkExmnt_mysql_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sim/EgovOe1ChangeRequestProgrs_mysql_SQL.xml" />
+	
+</sqlMapConfig>

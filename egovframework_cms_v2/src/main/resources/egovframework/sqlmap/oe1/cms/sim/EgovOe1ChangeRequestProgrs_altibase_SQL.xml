@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="EgovOe1ChangeRequestProgs">
+	
+<typeAlias  alias="ChangeWorkPlanVO" type="egovframework.oe1.cms.sim.service.EgovOe1ChangeWorkPlanVO"/>
+<typeAlias  alias="ChangeWorkProgrsVO" type="egovframework.oe1.cms.sim.service.EgovOe1ChangeWorkProgrsVO"/>
+
+<resultMap id="progrs" class="egovframework.oe1.cms.sim.service.EgovOe1ChangeWorkPlanVO">
+        <result property="changeRequstProcessId" column="CHANGE_REQUST_PROCESS_ID" columnIndex="1"/>
+        <result property="changeProcessSttusCodeNm" column="CHANGE_PROCESS_STTUS_CODE_NM" columnIndex="2"/>
+        <result property="changeProcessSttusCode" column="CHANGE_PROCESS_STTUS_CODE" columnIndex="3"/>
+        <result property="emrgncyProcessAt" column="EMRGNCY_PROCESS_AT" columnIndex="4"/>
+        <result property="changeSeCode" column="CHANGE_SE_CODE" columnIndex="5"/> 
+        <result property="changeRceptDe" column="CHANGE_RCEPT_DE" columnIndex="6"/>
+        <result property="changeOpertorNm" column="CHANGE_OPERTOR_NM" columnIndex="7"/>                
+        <result property="changeRequstNm" column="CHANGE_REQUST_NM" columnIndex="8"/>
+        <result property="changeRequstDe" column="CHANGE_REQUST_DE" columnIndex="9"/>
+        <result property="planBeginDe" column="PLAN_BEGIN_DE" columnIndex="10"/>
+        <result property="planEndDe" column="PLAN_END_DE" columnIndex="11"/>
+        <result property="comptRequstDe" column="COMPT_REQUST_DE" columnIndex="12"/>
+        <result property="realOpertBeginDe" column="REAL_OPERT_BEGIN_DE" columnIndex="13"/>
+        <result property="realOpertEndDe" column="REAL_OPERT_END_DE" columnIndex="14"/> 
+        <result property="changeRequstId" column="CHANGE_REQUST_ID" columnIndex="15"/>
+    </resultMap>
+		
+<resultMap id="status" class="egovframework.oe1.cms.sim.service.EgovOe1ChangeWorkProgrsVO">
+        <result property="registCount" column="REGIST_COUNT" columnIndex="1"/>
+        <result property="workingCount" column="WORKING_COUNT" columnIndex="2"/>
+        <result property="comptCount" column="COMPT_COUNT" columnIndex="3"/>
+        <result property="comptInEndReq" column="COMPT_IN_END_REQ" columnIndex="4"/>
+        <result property="comptOverEndReq" column="COMPT_OVER_END_REQ" columnIndex="5"/> 
+        <result property="comptInPlan" column="COMPT_IN_PLAN" columnIndex="6"/>
+        <result property="comptOverPlan" column="COMPT_OVER_PLAN" columnIndex="7"/>               
+        <result property="division" column="DIVISION" columnIndex="8"/>      
+    </resultMap>		
+
+<!-- 변경작업진행상황 목록 조회 -->
+    <select id="egovOe1ChangeRequestProgrsDAO.selectChangeWorkProgrsList" parameterClass="ChangeWorkProgrsVO"  resultMap="progrs">
+     <![CDATA[
+	SELECT * FROM (SELECT ROWNUM rn, TB.* FROM (    
+			SELECT 
+			A.CHANGE_REQUST_PROCESS_ID
+			, A.CHANGE_PROCESS_STTUS_CODE
+			, TO_CHAR(TO_DATE(A.CHANGE_RCEPT_DE, 'yyyymmdd'), 'yyyy-mm-dd')   AS CHANGE_RCEPT_DE
+			, TO_CHAR(TO_DATE(A.PLAN_BEGIN_DE, 'yyyymmdd'), 'yyyy-mm-dd')   	  AS PLAN_BEGIN_DE
+			, TO_CHAR(TO_DATE(A.PLAN_END_DE, 'yyyymmdd'), 'yyyy-mm-dd')   AS PLAN_END_DE
+			, TO_CHAR(TO_DATE(A.REAL_OPERT_BEGIN_DE, 'yyyymmdd'), 'yyyy-mm-dd')   AS REAL_OPERT_BEGIN_DE
+			, TO_CHAR(TO_DATE(A.REAL_OPERT_END_DE, 'yyyymmdd'), 'yyyy-mm-dd')  AS REAL_OPERT_END_DE
+			, B.CHANGE_REQUST_NM 	
+			, TO_CHAR(TO_DATE(B.CHANGE_REQUST_DE, 'yyyymmdd'), 'yyyy-mm-dd')  AS CHANGE_REQUST_DE
+			, TO_CHAR(TO_DATE(B.COMPT_REQUST_DE, 'yyyymmdd'), 'yyyy-mm-dd') AS COMPT_REQUST_DE
+			, B.CHANGE_REQUST_ID
+			, T1.CODE_NM AS CHANGE_PROCESS_STTUS_CODE_NM
+			, T2.CODE_NM AS EMRGNCY_PROCESS_AT
+			, T3.CODE_NM AS CHANGE_SE_CODE
+			, NVL(U1.MBER_NM,'') AS CHANGE_OPERTOR_NM
+			FROM OE1TNCHANGEPROCINFO A 
+			LEFT OUTER JOIN OE1TNCHANGEREQUSTINFO B ON A.CHANGE_REQUST_PROCESS_ID = B.CHANGE_REQUST_PROCESS_ID
+			LEFT OUTER JOIN OE1TNOECOMMDETAILCD T1 on T1.CODE_ID = 'OE1003' AND A.CHANGE_PROCESS_STTUS_CODE  = T1.CODE
+			LEFT OUTER JOIN OE1TNOECOMMDETAILCD T2 on T2.CODE_ID = 'OE1005' AND A.EMRGNCY_PROCESS_AT  = T2.CODE
+			LEFT OUTER JOIN OE1TNOECOMMDETAILCD T3 on T3.CODE_ID = 'OE1016' AND A.CHANGE_SE_CODE  = T3.CODE
+			LEFT OUTER JOIN OE1TNUSERINFO U1 on U1.MBER_ID = A.CHANGE_OPERTOR_ID
+			WHERE A.CHANGE_PROCESS_STTUS_CODE NOT IN ('01','02')
+	    ]]> 
+				<isNotEmpty prepend="AND" property="emrgncyProcessAt">
+                   A.EMRGNCY_PROCESS_AT = #emrgncyProcessAt#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="changeProcessSttusCode">
+                   A.CHANGE_PROCESS_STTUS_CODE = #changeProcessSttusCode#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="changeSeCode">
+                   A.CHANGE_SE_CODE = #changeSeCode#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="fromDate">
+                   B.COMPT_REQUST_DE BETWEEN  REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','') 
+            	</isNotEmpty>
+        <![CDATA[
+             ORDER BY B.COMPT_REQUST_DE ASC
+		    ) TB ) WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]> 
+    </select>
+
+<!-- 변경작업진행상황 총건수 조회 -->
+    <select id="egovOe1ChangeRequestProgrsDAO.selectChangeWorkProgrsListTotCnt" parameterClass="ChangeWorkProgrsVO" resultClass="int">
+        <![CDATA[
+			SELECT COUNT(*) totcnt
+            FROM OE1TNCHANGEPROCINFO A
+            LEFT OUTER JOIN  OE1TNCHANGEREQUSTINFO B ON  A.CHANGE_REQUST_PROCESS_ID = B.CHANGE_REQUST_PROCESS_ID
+            WHERE A.CHANGE_PROCESS_STTUS_CODE NOT IN ('01','02')
+        ]]> 
+				<isNotEmpty prepend="AND" property="emrgncyProcessAt"> 
+	                A.EMRGNCY_PROCESS_AT = #emrgncyProcessAt#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="changeProcessSttusCode">
+	                A.CHANGE_PROCESS_STTUS_CODE = #changeProcessSttusCode#
+	         	</isNotEmpty>
+				<isNotEmpty prepend="AND" property="changeSeCode">
+	                A.CHANGE_SE_CODE = #changeSeCode#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="fromDate">
+	                B.COMPT_REQUST_DE BETWEEN  REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','') 
+	         	</isNotEmpty>
+    </select>
+    
+<!-- 변경작업통계 목록 조회 -->
+    <select id="egovOe1ChangeRequestProgrsDAO.selectChangeWorkStatus" parameterClass="ChangeWorkProgrsVO"  resultMap="status">
+        <![CDATA[
+			select  sum(T7.REGIST_COUNT)   as  REGIST_COUNT
+						,sum(T7.WORKING_COUNT) as WORKING_COUNT
+						,sum(T7.COMPT_COUNT) as  COMPT_COUNT
+			 			,sum(T7.COMPT_IN_END_REQ) as  COMPT_IN_END_REQ
+						,sum(T7.COMPT_OVER_END_REQ) as  COMPT_OVER_END_REQ
+						,sum(T7.COMPT_IN_PLAN)  as COMPT_IN_PLAN
+						,sum(T7.COMPT_OVER_PLAN) as  COMPT_OVER_PLAN
+						,T7.DIVISION  as  DIVISION
+						, T7.order_id as order_id
+			from (
+						select (case  when  b.CHANGE_PROCESS_STTUS_CODE > '01' then 1
+						           else 0
+						             end) as REGIST_COUNT
+						         , (case when b.CHANGE_PROCESS_STTUS_CODE  != '01' and b.CHANGE_PROCESS_STTUS_CODE  != '02' and b.CHANGE_PROCESS_STTUS_CODE  != '07 '  then 1
+						           else 0
+						             end) as WORKING_COUNT
+						         , (case b.CHANGE_PROCESS_STTUS_CODE when  '07' then 1
+						           else 0
+						             end) as COMPT_COUNT
+						         , (case when a.COMPT_REQUST_DE >= b.REAL_OPERT_END_DE and b.CHANGE_PROCESS_STTUS_CODE =  '07' then 1
+						             else 0
+						             end) as COMPT_IN_END_REQ
+						         , (case when b.REAL_OPERT_END_DE > a.COMPT_REQUST_DE and b.CHANGE_PROCESS_STTUS_CODE =  '07'  then 1
+						             else 0
+						             end) as COMPT_OVER_END_REQ
+						         , (case when b.PLAN_END_DE >= b.REAL_OPERT_END_DE and b.CHANGE_PROCESS_STTUS_CODE = '07' then 1
+						             else 0
+						             end) as COMPT_IN_PLAN
+						         , (case when b.REAL_OPERT_END_DE > b.PLAN_END_DE  and b.CHANGE_PROCESS_STTUS_CODE  =  '07' then 1
+						             else 0
+						             end) as COMPT_OVER_PLAN       
+						         ,  (case cast(#statusCondition# as varchar(1) ) when '1' then    substr(a.CHANGE_REQUST_DE,1,4) || '-' || substr(a.CHANGE_REQUST_DE,5,2) 
+						            when '2' then             T1.code_nm
+						            when '3' then             T2.code_nm
+						            when '4' then            T3.code_nm
+						            when '5' then            T4.code_nm
+						            when '6' then            T5.mber_nm
+						            when '7' then 			  T6.code_nm
+						       		when '8'then 			  T7.code_nm
+						            end )      as DIVISION
+						         ,  (case cast(#statusCondition# as varchar(1) )  when '1' then     substr(a.CHANGE_REQUST_DE,1,6)
+						            when '2' then             T1.code
+						            when '3' then             T2.code
+						            when '4' then            T3.code
+						            when '5' then            T4.code
+						            when '6' then            T5.mber_nm
+						            when '7' then 			  T6.code
+						       		when '8'then 			  T7.code
+						            end )      as order_id
+						from  OE1TNCHANGEREQUSTINFO a
+						left outer join OE1TNCHANGEPROCINFO b on a.CHANGE_REQUST_PROCESS_ID = b.CHANGE_REQUST_PROCESS_ID
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T1 on T1.CODE_ID = 'OE1016' AND b.CHANGE_SE_CODE        = T1.CODE
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T2 on T2.CODE_ID = 'OE1005' AND b.EMRGNCY_PROCESS_AT    = T2.CODE 
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T3 on T3.CODE_ID = 'OE1017' AND b.CHANGE_AFFC_SE_CODE = T3.CODE         
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T4 on T4.CODE_ID = 'OE1018' AND b.CHANGE_SCOPE_SE_CODE  = T4.CODE
+						LEFT OUTER JOIN OE1TNUSERINFO     T5 on b.CHANGE_OPERTOR_ID = T5.MBER_ID
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T6 on T6.CODE_ID = 'OE1020' AND a.OPER_JOB_SE_CODE = T6.CODE
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T7 on T7.CODE_ID = 'OE1002' AND a.CHANGE_REQUST_RESN_CODE = T7.CODE
+						where 1=1
+		        ]]> 
+				            <isNotEmpty prepend="AND" property="fromDate">
+							     	a.CHANGE_REQUST_DE between REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','')
+							</isNotEmpty>
+        <![CDATA[
+					) T7
+					where T7.DIVISION is not null
+					group by T7.DIVISION, T7.order_id  
+					order by T7.order_id ASC
+		  ]]> 
+    </select>
+    
+<!-- 총 요청건수-접수건수 조회 -->
+    <select id="egovOe1ChangeRequestProgrsDAO.selectTotalCount" parameterClass="ChangeWorkProgrsVO" resultClass="ChangeWorkProgrsVO">
+        <![CDATA[
+			SELECT COUNT(CHANGE_REQUST_ID) totalRequstCount
+			, COUNT(CHANGE_REQUST_PROCESS_ID) totalRegistCount
+            FROM OE1TNCHANGEREQUSTINFO
+             WHERE 1=1
+        ]]> 
+			<isNotEmpty prepend="AND" property="fromDate">
+	            CHANGE_REQUST_DE BETWEEN  REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','') 
+	         </isNotEmpty>
+    </select>
+    
+</sqlMap>

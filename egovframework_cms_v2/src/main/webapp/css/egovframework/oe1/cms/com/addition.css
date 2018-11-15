@@ -1,0 +1,66 @@
+/*----------------------------------------------------
+Basic style sheet 
+
+Fr : ie6, ie7, ie8, safari(), firefox(),chrome()
+Version : 1.0
+Author : Yeonwoo Kim
+Email : hwangjin2@empal.com
+------------------------------------------------------*/
+
+
+/* 게시판넘버 수정 css ▼ */
+#pagenav_div img {vertical-align:middle; padding:0px 4px;}
+#pagenav_div strong {font-weight:bold; font-size:12px; color:#1aa1e9}
+#pagenav_div a {font-weight:normal; color:#666666; }
+/* 게시판넘버 수정 css ▲ */
+
+/* 로그인 css ▼ */
+#new_login_bg { background:url('/oe1/images/egovframework/oe1/cms/com/login/new_login.jpg') no-repeat; width:980px; height:449px; margin:0 auto; position:relative;}
+#new_login_bg #id_pw_form { position:absolute; left:586px; top:312px; }
+#new_login_bg #id_pw_form input{ border:1px #e5e5e5 solid; }
+#new_login_bg #id_pw_form .id_box { position:absolute; left:0px; top:0px;}
+#new_login_bg #id_pw_form .pw_box { position:absolute; left:0px; top:24px;}
+#new_login_bg #id_pw_form .check_box { position:absolute; left:0px; top:48px; width:100px;}
+#new_login_bg #id_pw_form .login_btn { position:absolute; left:122px; top:-2px;}
+/* 로그인 css ▲ */
+/* 로그인 버튼 css ▼ */
+#new_login_bg #btn_area { position:absolute; top:397px; left:530px; }
+#new_login_bg #btn_area li {display:inline;}
+/* 로그인 버튼 css ▲ */
+/* 회원가입/아이디패스워드 css ▼ */
+#idpw_box {margin:0 auto; width:980px; height:300px; border:0px #666666 solid;	}
+#idpw_box #id_search01 {background:url(../images/id_box.gif) no-repeat; width:288px; height:98px; float:left; margin:45px 62px 0px 111px; _margin:45px 62px 0px 55px; padding:52px 0 0 22px;} /* ie6용 마진버그 _margin:20px 62px 0px 55px; 사용 */
+#idpw_box #id_search02 {background:url(../images/pw_box.gif) no-repeat; width:310px; height:190px; float:left; margin:45px 0px 0px 50px; padding:52px 0 0 22px;}
+#idpw_box #id_search03 {background:url(../images/pw_box01.gif) no-repeat; width:288px; height:98px; float:left; margin:45px 62px 0px 327px; _margin:45px 62px 0px 165px; padding:52px 0 0 22px;}/* ie6용 마진버그 _margin:20px 62px 0px 55px; 사용 */
+#idpw_box #id_search04 {background:url(../images/id_box.gif) no-repeat; width:288px; height:98px; float:left; margin:45px 62px 0px 327px; _margin:45px 62px 0px 165px; padding:52px 0 0 22px;}/* ie6용 마진버그 _margin:20px 62px 0px 55px; 사용 */
+#idpw_box .boxin { font-size:11px; color:#5ea5fe; letter-spacing:-1px;}
+#idpw_box .boxin input {border:1px #e5e5e5 solid; }
+#idpw_box .boxin li {padding:3px 0 3px 0;}
+.id_result_area {padding: 10px 0 0 0}
+.id_result_area li {display:inline; }
+#idpw_box .boxin .pl40 {padding:5px 0 0 53px;}
+#idpw_box label { display:none}
+/* 회원가입/아이디패스워드 css ▲ */
+
+/* 에러페이지 css ▼ */
+#error_box {margin:0 auto; width:625px; height:376px; border:9px #d6dfe5 solid; margin-top:80px; position:relative;}
+#error_box #error_message_box {position:absolute; top:92px; left:47px; width:519px; height:229px; border:0px #0033CC solid; background:url(../images/waring-ic.gif) no-repeat ; }
+#error_box #error_message_box #error_message {padding:35px 0 0 80px}
+#error_box #error_message_box #error_message .title_t{font-size:17px; font-weight:bold;  color:#3a5870;}
+#error_box #error_message_box #error_message .detail_t{font-size:12px; color:#7d7d7d; padding:12px 0 0 0;}
+#error_box #error_message_box #error_message .detail_t ul li { padding: 3px 0 5px 0; line-height:120%;}
+#go_main { position:absolute; left:243px; top:336px;}
+
+/* 에러페이지 css ▲ */
+
+
+
+
+
+
+
+
+
+
+
+

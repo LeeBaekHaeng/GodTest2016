@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+        <form name="progrmMngVO">
+        	<field property="progrmNm" depends="required">
+        		<arg0 key="progrm.progrmNm" />
+			</field>
+        	<field property="fileUrl" depends="required">
+        		<arg0 key="progrm.fileUrl" />
+			</field>						
+        </form>
+   </formset>
+   
+       <formset>
+        <form name="menuMngVO">
+        	<field property="menuNm" depends="required">
+        		<arg0 key="menu.menuNm" />
+			</field>
+        	<field property="menuOrdr" depends="required">
+        		<arg0 key="menu.menuOrdr" />
+			</field>
+        	<field property="upperMenuId" depends="required">
+        		<arg0 key="menu.upperMenuId" />
+			</field>
+        	<field property="progrmId" depends="required">
+        		<arg0 key="menu.progrmId" />
+			</field>
+        	<field property="useAt" depends="required">
+        		<arg0 key="menu.useAt" />
+			</field>			
+        </form>
+   </formset>
+   
+       <formset>
+        <form name="loginPolicy">
+            <field property="ipInfo" depends="required, maxlength">
+                <arg0 key="IP정보" resource="false"/>   
+                <arg1 key="23" resource="false"/>
+                <var>
+                <var-name>maxlength</var-name>
+                <var-value>23</var-value>
+                </var>                     
+            </field>
+            <field property="lmttAt" depends="required">
+                <arg0 key="IP제한여부" resource="false"/>
+            </field>           
+        </form>
+    </formset>
+
+       <formset>
+        <form name="sanctionSubmitVO">
+            <field property="drftSj" depends="required">
+                <arg0 key="제목" />   
+            </field>
+            <field property="drftCn" depends="required">
+                <arg0 key="내용" />
+            </field>           
+        </form>
+    </formset>    
+    
+        <formset>
+        <form name="menuCreatVO">
+			<field property="menuId" depends="required">
+        		<arg0 key="메뉴ID" resource="false"/>
+			</field> 
+			<field property="menuOrdr" depends="required">
+        		<arg0 key="메뉴순서" resource="false"/>
+			</field>
+            <field property="menuNm" depends="required">
+        		<arg0 key="메뉴명" resource="false"/>
+			</field> 
+			<field property="upperMenuId" depends="required">
+        		<arg0 key="상위메뉴ID" resource="false"/>
+			</field>
+			<field property="progrmId" depends="required">
+        		<arg0 key="프로그램파일ID" resource="false"/>
+			</field> 
+			<field property="menuDesc" depends="required">
+        		<arg0 key="메뉴설명" resource="false"/>
+			</field> 			
+		</form>
+    </formset>
+    
+    <formset>
+    <form name="userManageVO">
+		<field property="mberEmailAdres" depends="email">
+       		<arg0 key="이메일" resource="false"/>
+		</field> 
+		<field property="moblphonNo" depends="required">
+       		<arg0 key="핸드폰번호" resource="false"/>
+		</field> 		
+    </form>
+    </formset>
+    
+ </form-validation>
+        

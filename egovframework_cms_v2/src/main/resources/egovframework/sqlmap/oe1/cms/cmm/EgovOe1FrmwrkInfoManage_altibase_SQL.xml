@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FrmInfoManage">
+
+    <typeAlias  alias="frmwrkinfovo" type="egovframework.oe1.cms.cmm.service.EgovOe1FrmwrkInfoManageVO"/>
+  
+       <resultMap id="frame" class="egovframework.oe1.cms.cmm.service.EgovOe1FrmwrkInfoManageVO">
+        <result property="frmwrkInfoId" column="FRMWRK_INFO_ID" columnIndex="1"/>
+        <result property="presnatnlyr" column="PRESNATNLYR" columnIndex="2"/>
+        <result property="persstnlyr" column="PERSSTNLYR" columnIndex="3"/>
+        <result property="dbmsKindCode" column="DBMS_KIND_CODE" columnIndex="4"/>
+        <result property="wasKindCode" column="WAS_KIND_CODE" columnIndex="5"/>      
+        <result property="osKindCode" column="OS_KIND_CODE" columnIndex="6"/>        
+        <result property="infoChghy" column="INFO_CHGHY" columnIndex="7"/>    
+        <result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM" columnIndex="8"/>    
+    </resultMap>
+   
+    <!-- 프레임웍환경정보  총건수 조회 -->
+	<select id="frmwrkInfoManageDAO.selectFrmfrkInfoListTotCnt" parameterClass="frmwrkinfovo" resultClass="int">
+	<![CDATA[	
+		SELECT COUNT(*) totcnt
+		FROM   OE1TNFRMWRKINFO
+		WHERE 1=1
+		]]>
+		<isNotEmpty prepend="AND" property="fromDate">
+			TO_CHAR(FRST_REGISTER_PNTTM,'yyyy-mm-dd')  BETWEEN  #fromDate#  AND  #toDate#
+		</isNotEmpty>
+	</select>
+    
+	<!-- 프레임웍환경정보 목록 조회 -->
+    <select id="frmwrkInfoManageDAO.selectFrmwrkInfoList" parameterClass="frmwrkinfovo" resultMap="frame">
+        <![CDATA[
+	SELECT * FROM (SELECT ROWNUM rn, TB.* FROM ( 
+		SELECT   
+			A.FRMWRK_INFO_ID  as FRMWRK_INFO_ID
+			, C1.CODE_NM as PRESNATNLYR
+			, C2.CODE_NM as PERSSTNLYR
+			, C3.CODE_NM  as DBMS_KIND_CODE
+			, C5.CODE_NM  as WAS_KIND_CODE
+			, C6.CODE_NM  as OS_KIND_CODE
+			, A.INFO_CHGHY  as INFO_CHGHY
+			, TO_CHAR(A.FRST_REGISTER_PNTTM,'yyyy-mm-dd : HH24:mi:ss')   as FRST_REGISTER_PNTTM
+		FROM OE1TNFRMWRKINFO  A
+		LEFT OUTER JOIN OE1TNOECOMMDETAILCD C1 on C1.CODE_ID = 'OE1041' AND A.PRESNATNLYR   = C1.CODE
+		LEFT OUTER JOIN OE1TNOECOMMDETAILCD C2 on C2.CODE_ID = 'OE1042' AND A.PERSSTNLYR   = C2.CODE
+		LEFT OUTER JOIN OE1TNOECOMMDETAILCD C3 on C3.CODE_ID = 'OE1043' AND A.DBMS_KIND_CODE   = C3.CODE
+		LEFT OUTER JOIN OE1TNOECOMMDETAILCD C5 on C5.CODE_ID = 'OE1045' AND A.WAS_KIND_CODE   = C5.CODE
+		LEFT OUTER JOIN OE1TNOECOMMDETAILCD C6 on C6.CODE_ID = 'OE1046' AND A.OS_KIND_CODE   = C6.CODE
+		WHERE 1=1
+		]]>
+		<isNotEmpty prepend="AND" property="fromDate">
+			TO_CHAR(A.FRST_REGISTER_PNTTM,'yyyy-mm-dd')   BETWEEN  #fromDate#  AND  #toDate#
+		</isNotEmpty>
+        <![CDATA[
+		ORDER BY A.FRST_REGISTER_PNTTM DESC
+		) TB ) WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]>
+    </select>
+
+	<!-- 프레임웍환경정보 등록 -->
+    <insert id="frmwrkInfoManageDAO.insertFrmwrkInfo" parameterClass="frmwrkinfovo">
+        <![CDATA[
+			INSERT INTO OE1TNFRMWRKINFO
+                  ( FRMWRK_INFO_ID
+                  , PRESNATNLYR
+                  , PERSSTNLYR
+                  , DBMS_KIND_CODE
+                  , DBMS_VER
+                  , WEBS_KIND_CODE
+                  , WEBS_VER
+                  , WAS_KIND_CODE
+                  , WAS_VER
+                  , OS_KIND_CODE
+                  , OS_VER
+                  , JDK_VER_CODE
+                  , SERVER_SCRTY_APPLC_AT
+                  , GPKI_APPLC_AT
+                  , OGCR_LOGIN_APPLC_AT
+                  , ETC_INFO_01
+                  , ETC_INFO_02
+                  , ETC_INFO_03
+                  , INFO_CHGHY
+                  , FRST_REGISTER_PNTTM
+                  , FRST_REGISTER_ID
+                  , LAST_UPDUSR_PNTTM
+                  , LAST_UPDUSR_ID )
+			VALUES ( #frmwrkInfoId#
+					,#presnatnlyr#
+					,#persstnlyr#
+					,#dbmsKindCode#
+					,#dbmsVer#
+					,#websKindCode#
+					,#websVer#
+					,#wasKindCode#
+					,#wasVer#
+					,#osKindCode#
+					,#osVer#
+					,#jdkVerCode#
+					,#serverScrtyApplcAt#
+					,#gpkiApplcAt#
+					,#ogcrLoginApplcAt#
+					,#etcInfo01#
+					,#etcInfo02#
+					,#etcInfo03#
+					,#infoChghy#
+           		  	, SYSDATE
+           		  	, #frstRegisterId#
+           		  	, SYSDATE
+           		  	, #frstRegisterId#
+           		  	)
+        ]]> 
+    </insert>
+
+	<!-- 프레임웍환경정보 수정   -->
+    <update id="frmwrkInfoManageDAO.updateFrmwrkInfo" parameterClass="frmwrkinfovo">
+        <![CDATA[
+            UPDATE OE1TNFRMWRKINFO
+			SET
+				 PRESNATNLYR = #presnatnlyr#
+				, PERSSTNLYR = #persstnlyr#
+				, DBMS_KIND_CODE = #dbmsKindCode#
+				, DBMS_VER = #dbmsVer#
+				, WEBS_KIND_CODE = #websKindCode#
+				, WEBS_VER = #websVer#
+				, WAS_KIND_CODE = #wasKindCode#
+				, WAS_VER = #wasVer#
+				, OS_KIND_CODE = #osKindCode#
+				, OS_VER = #osVer#
+				, JDK_VER_CODE = #jdkVerCode#
+				, SERVER_SCRTY_APPLC_AT = #serverScrtyApplcAt#
+				, GPKI_APPLC_AT = #gpkiApplcAt#
+				, OGCR_LOGIN_APPLC_AT = #ogcrLoginApplcAt#
+				, ETC_INFO_01 = #etcInfo01#
+				, ETC_INFO_02 = #etcInfo02#
+				, ETC_INFO_03 = #etcInfo03#
+				, INFO_CHGHY = #infoChghy#
+				, LAST_UPDUSR_PNTTM  = SYSDATE
+				, LAST_UPDUSR_ID     = #lastUpdusrId#
+			WHERE  FRMWRK_INFO_ID   = #frmwrkInfoId#
+            ]]>
+    </update>
+
+	<!-- 프레임웍환경정보 삭제 -->
+    <delete id="frmwrkInfoManageDAO.deleteFrmwrkInfo" parameterClass="frmwrkinfovo">
+        <![CDATA[
+			DELETE FROM  OE1TNFRMWRKINFO
+			WHERE  FRMWRK_INFO_ID = #frmwrkInfoId#
+            ]]>
+    </delete>
+
+    <!-- 프레임웍환경정보 상세 조회      -->
+    <select id="frmwrkInfoManageDAO.selectFrmwrkInfo" parameterClass="frmwrkinfovo" resultClass="frmwrkinfovo">
+        <![CDATA[
+			SELECT
+				 A.FRMWRK_INFO_ID	as frmwrkInfoId
+				, A.PRESNATNLYR as presnatnlyr
+				, A.PERSSTNLYR as persstnlyr
+				, A.DBMS_KIND_CODE as dbmsKindCode
+				, A.DBMS_VER as dbmsVer
+				, A.WEBS_KIND_CODE as websKindCode
+				, A.WEBS_VER as websVer
+				, A.WAS_KIND_CODE as wasKindCode
+				, A.WAS_VER as wasVer
+				, A.OS_KIND_CODE as osKindCode
+				, A.OS_VER as osVer
+				, A.JDK_VER_CODE as jdkVerCode
+				, A.SERVER_SCRTY_APPLC_AT as serverScrtyApplcAt
+				, A.GPKI_APPLC_AT as gpkiApplcAt
+				, A.OGCR_LOGIN_APPLC_AT as ogcrLoginApplcAt
+				, A.ETC_INFO_01 as etcInfo01
+				, A.ETC_INFO_02 as etcInfo02
+				, A.ETC_INFO_03 as etcInfo03
+				, A.INFO_CHGHY as infoChghy
+    			, TO_CHAR(A.FRST_REGISTER_PNTTM,'yyyy-mm-dd : HH24:mi:ss')   as frstRegisterPnttm
+				, A.FRST_REGISTER_ID as frstRegisterId
+    			, TO_CHAR(A.LAST_UPDUSR_PNTTM,'yyyy-mm-dd : HH24:mi:ss')   as lastUpdusrPnttm
+				, A.LAST_UPDUSR_ID 	as  lastUpdusrId
+				, B.MBER_NM as manager
+			FROM OE1TNFRMWRKINFO A
+			LEFT OUTER JOIN OE1TNUSERINFO B  ON A.LAST_UPDUSR_ID = B.MBER_ID
+            WHERE  FRMWRK_INFO_ID = #frmwrkInfoId#
+        ]]>
+    </select>
+
+</sqlMap>

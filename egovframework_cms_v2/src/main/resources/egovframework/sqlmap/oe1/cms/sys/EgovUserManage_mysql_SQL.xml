@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="User">
+
+    <typeAlias  alias="egovMap"      type = "egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="userSearchVO" type = "egovframework.oe1.cms.com.service.EgovOe1ComDefaultVO"/>
+    <typeAlias  alias="userVO"       type = "egovframework.oe1.cms.sys.service.EgovOe1UserManageVO"/>
+    
+    <!-- 입력한 사용자아이디의 중복여부를 체크하여 사용가능여부를 확인 -->
+        <select id="userManageDAO.checkIdDplct_S" resultClass="int">
+        <![CDATA[
+            SELECT COUNT(*) usedCnt
+            FROM OE1TNUSERINFO
+            WHERE MBER_ID = #checkId#
+        ]]>
+    </select>
+    
+    <!-- 사용자의 기본정보를 화면에서 입력하여 항목의 정합성을 체크하고 데이터베이스에 저장 -->
+    <insert id="userManageDAO.insertUser_S">
+        <![CDATA[
+            INSERT INTO OE1TNUSERINFO
+            ( MBER_ID, MBER_NM, PASSWORD, PASSWORD_HINT, PASSWORD_CNSR, 
+              IHIDNUM, SEXDSTN_CODE, UNIQ_ID, MBER_STTUS,
+              ZIP, ADRES, DETAIL_ADRES,  
+              AREA_NO, MIDDLE_TELNO, END_TELNO, MOBLPHON_NO, MBER_FXNUM, MBER_EMAIL_ADRES, 
+              PSTINST_CODE, PSTINST_NM, SUB_DN, GROUP_ID, SBSCRB_DE )
+            VALUES
+            ( #mberId#, #mberNm#, #password#, #passwordHint#, #passwordCnsr#,
+               #ihidnum#, #sexdstnCode#, #uniqId#, #mberSttus#,
+               #zip#, #adres#, #detailAdres#, 
+               #areaNo#, #middleTelno#, #endTelno#, #moblphonNo#, #mberFxnum#, #mberEmailAdres#,
+               #pstinstCode#, #pstinstNm#, #subDn#, #groupId#, date_format(now(),'%Y%m%d') )
+        ]]>
+    </insert>
+    
+    <!-- 사용자 정보 수정 -->
+    <update id="userManageDAO.updateUser_S">
+        <![CDATA[
+            UPDATE OE1TNUSERINFO 
+            SET 
+                PASSWORD_HINT = #passwordHint#, 
+                PASSWORD_CNSR = #passwordCnsr#, 
+                IHIDNUM = #ihidnum#, 
+                SEXDSTN_CODE = #sexdstnCode#, 
+                MBER_STTUS = #mberSttus#, 
+                ZIP = #zip#, 
+                ADRES = #adres#, 
+                DETAIL_ADRES = #detailAdres#, 
+                AREA_NO = #areaNo#, 
+                MIDDLE_TELNO = #middleTelno# ,
+                END_TELNO = #endTelno#    ,
+                MOBLPHON_NO = #moblphonNo#, 
+                MBER_FXNUM = #mberFxnum#, 
+                MBER_EMAIL_ADRES = #mberEmailAdres#, 
+                PSTINST_CODE = #pstinstCode#,
+                PSTINST_NM = #pstinstNm#, 
+                SUB_DN = #subDn#, 
+                GROUP_ID = #groupId#        
+            WHERE UNIQ_ID = #uniqId#
+        ]]>
+    </update>
+    
+    <!-- 사용자 정보 수정 시 히스토리 정보 추가  -->
+        <insert id="userManageDAO.insertUserHistory_S">
+        <![CDATA[
+			INSERT INTO OE1TNUSERINFOCHANGEDTLS 
+				(  MBER_ID, MBER_NM, PASSWORD_HINT, PASSWORD_CNSR, 
+				SEXDSTN_CODE, UNIQ_ID, MBER_STTUS, 
+				ZIP, ADRES, DETAIL_ADRES,  
+				AREA_NO, MIDDLE_TELNO, END_TELNO, MOBLPHON_NO, MBER_FXNUM, MBER_EMAIL_ADRES, 
+				PSTINST_CODE, PSTINST_NM, SUB_DN, GROUP_ID, SBSCRB_DE, CHANGE_DE )
+			SELECT 
+				MBER_ID,  MBER_NM, PASSWORD_HINT, PASSWORD_CNSR,  
+				SEXDSTN_CODE, UNIQ_ID, MBER_STTUS, 
+				ZIP, ADRES, DETAIL_ADRES,  
+				AREA_NO, MIDDLE_TELNO, END_TELNO, MOBLPHON_NO, MBER_FXNUM, MBER_EMAIL_ADRES, 
+				PSTINST_CODE, PSTINST_NM, SUB_DN, GROUP_ID, SBSCRB_DE, NOW()
+			FROM OE1TNUSERINFO
+			WHERE UNIQ_ID = #uniqId#    
+         ]]>
+    </insert>
+    
+    <!-- 사용자 정보 삭제 -->
+        <delete id="userManageDAO.deleteUser_S">
+        <![CDATA[
+            DELETE FROM OE1TNUSERINFO 
+            WHERE UNIQ_ID=#uniqId#
+        ]]>
+    </delete>
+    
+    <!-- 사용자 정보 상세 조회 -->
+        <select id="userManageDAO.selectUser_S" resultClass="userVO">
+        <![CDATA[
+            SELECT  A.MBER_ID          mberId
+                 ,  A.MBER_NM          mberNm
+                 ,  A.PASSWORD         password
+                 ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1026' AND X.CODE = A.PASSWORD_HINT) passwordHint
+                 ,  A.PASSWORD_CNSR    passwordCnsr
+                 ,  A.IHIDNUM          ihidnum
+                 ,  A.UNIQ_ID          uniqId
+                 ,  A.SEXDSTN_CODE     sexdstnCode
+                 ,  A.MBER_STTUS       mberSttus
+                 ,  A.ZIP              zip
+                 ,  A.ADRES            adres
+                 ,  A.DETAIL_ADRES     detailAdres
+                 ,  A.AREA_NO          areaNo
+                 ,  A.MIDDLE_TELNO     middleTelno
+                 ,  A.END_TELNO        endTelno
+                 ,  A.MOBLPHON_NO      moblphonNo
+                 ,  A.MBER_FXNUM       mberFxnum
+                 ,  A.MBER_EMAIL_ADRES mberEmailAdres
+                 , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1038' AND X.CODE = A.PSTINST_CODE)     pstinstCode
+                 ,  A.PSTINST_NM       pstinstNm
+                 ,  A.SUB_DN           subDn
+                 , (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1039' AND X.CODE = (SELECT RTRIM(B.GROUP_ID) FROM OE1TNUSERINFO B WHERE B.UNIQ_ID = #uniqId#))         groupId
+                 , date_format( A.SBSCRB_DE, '%Y-%m-%d') sbscrbDe
+              FROM  OE1TNUSERINFO A
+             WHERE  A.UNIQ_ID = #uniqId#
+       ]]>
+    </select>
+ 
+     <!-- 사용자 정보 수정을 위한 상세조회 -->
+        <select id="userManageDAO.selectUser_U" resultClass="userVO">
+        <![CDATA[
+            SELECT  A.MBER_ID          mberId
+                 ,  A.MBER_NM          mberNm
+                 ,  A.PASSWORD         password
+                 ,  A.PASSWORD_HINT passwordHint
+                 ,  A.PASSWORD_CNSR    passwordCnsr
+                 ,  A.IHIDNUM          ihidnum
+                 ,  A.UNIQ_ID          uniqId
+                 ,  A.SEXDSTN_CODE     sexdstnCode
+                 ,  A.MBER_STTUS       mberSttus
+                 ,  A.ZIP              zip
+                 ,  A.ADRES            adres
+                 ,  A.DETAIL_ADRES     detailAdres
+                 ,  A.AREA_NO          areaNo
+                 ,  A.MIDDLE_TELNO     middleTelno
+                 ,  A.END_TELNO        endTelno
+                 ,  A.MOBLPHON_NO      moblphonNo
+                 ,  A.MBER_FXNUM       mberFxnum
+                 ,  A.MBER_EMAIL_ADRES mberEmailAdres
+                 , 	A.PSTINST_CODE     pstinstCode
+                 ,  A.PSTINST_NM       pstinstNm
+                 ,  A.SUB_DN           subDn
+                 ,  trim(A.GROUP_ID) 		groupId
+                 , date_format(A.SBSCRB_DE, '%Y-%m-%d') sbscrbDe
+              FROM  OE1TNUSERINFO A
+             WHERE  A.UNIQ_ID = #uniqId#
+       ]]>
+    </select>
+       
+	<!-- 사용자 정보 목록 조회 -->
+    <select id="userManageDAO.selectUserList_S" parameterClass="userSearchVO" resultClass="egovMap">
+    <![CDATA[
+    	SELECT 
+    			MBER_ID mberId,  
+                MBER_NM mberNm,  
+                PASSWORD password,   
+                PASSWORD_HINT passwordHint,   
+                PASSWORD_CNSR passwordCnsr,   
+                IHIDNUM ihidnum,   
+                UNIQ_ID uniqId,  
+                SEXDSTN_CODE sexdntnCode,   
+                MBER_STTUS mberSttus,   
+                ZIP zip,   
+                ADRES adres,   
+                DETAIL_ADRES detailAdres,   
+                AREA_NO areaNo,   
+                MIDDLE_TELNO middleTelno,  
+                END_TELNO endTelno,  
+                MOBLPHON_NO moblphonNo,   
+                MBER_FXNUM mberFxnum,   
+                MBER_EMAIL_ADRES mberEmailAdres,   
+                PSTINST_CODE pstinstCode,   
+                PSTINST_NM pstinstNm,   
+                SUB_DN subDn,   
+                trim(GROUP_ID) groupId,          
+                date_format(SBSCRB_DE, '%Y-%m-%d') sbscrbDe
+        FROM OE1TNUSERINFO
+        WHERE 1=1
+        ]]>
+        <isNotEqual prepend="AND" property="sbscrbSttus" compareValue="0">
+            MBER_STTUS LIKE  #sbscrbSttus#
+        </isNotEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="0">
+            MBER_ID LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+            MBER_NM LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        ORDER BY SBSCRB_DE DESC
+        LIMIT #firstIndex#, #recordCountPerPage# 
+    </select>        
+    
+    <!-- 사용자 정보 총 갯수를 조회 -->
+    <select id="userManageDAO.selectUserListTotCnt_S" parameterClass="userSearchVO" resultClass="int">
+    <![CDATA[
+            SELECT COUNT(*) AS totcnt
+             FROM OE1TNUSERINFO
+	        WHERE 1=1
+	 ]]>
+            <isNotEqual prepend="AND" property="sbscrbSttus" compareValue="0">
+                MBER_STTUS LIKE  #sbscrbSttus#
+            </isNotEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="0">
+                MBER_ID LIKE CONCAT('%', #searchKeyword#, '%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                MBER_NM LIKE CONCAT('%', #searchKeyword#, '%')
+            </isEqual>
+    </select>
+    
+    <!-- 비밀번호 수정 -->
+    <update id="userManageDAO.updatePassword_S">
+        <![CDATA[
+            UPDATE OE1TNUSERINFO 
+            SET PASSWORD   =  #newPassword#
+            WHERE  UNIQ_ID  = #uniqId#
+        ]]>
+    </update>
+    
+    <!-- 비밀번호 확인 -->
+        <select id="userManageDAO.selectPassword_S" resultClass="userVO">
+        <![CDATA[
+            SELECT PASSWORD password
+            FROM    OE1TNUSERINFO
+            WHERE   UNIQ_ID = #uniqId#
+        ]]>
+    </select>
+    
+	<!-- 사용자 목록 Excel 다운로드 -->
+	<select id="userManageDAO.selectUserListExcelDown" parameterClass="userSearchVO" resultClass="userVO">
+		SELECT  A.MBER_ID          mberId
+		  ,  A.MBER_NM          mberNm
+		  ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1026' AND X.CODE = A.PASSWORD_HINT) passwordHint
+		  ,  A.SEXDSTN_CODE     sexdstnCode
+		  ,  CONCAT(CONCAT(SUBSTRING(A.ZIP, 1, 3), '-'), SUBSTRING(A.ZIP, 4, 3))                  zip
+		  ,  A.ADRES            adres
+		  ,  A.DETAIL_ADRES     detailAdres
+		  ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1037' AND X.CODE = A.AREA_NO) areaNo
+		  ,  A.MIDDLE_TELNO     middleTelno
+		  ,  A.END_TELNO        endTelno
+		  ,  A.MOBLPHON_NO      moblphonNo
+		  ,  A.MBER_FXNUM       mberFxnum
+		  ,  A.MBER_EMAIL_ADRES mberEmailAdres
+		  ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1038' AND X.CODE = A.PSTINST_CODE) pstinstNm
+		  ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1039' AND X.CODE = TRIM(A.GROUP_ID)) groupId
+		  ,  A.SBSCRB_DE        sbscrbDe
+		FROM  OE1TNUSERINFO A
+		WHERE 1=1
+        <isNotEqual prepend="AND" property="sbscrbSttus" compareValue="0">
+            A.MBER_STTUS LIKE  #sbscrbSttus#
+        </isNotEqual>		
+        <isEqual prepend="AND" property="searchCondition" compareValue="0">
+            A.MBER_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+            A.MBER_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+        </isEqual>		
+		ORDER BY SBSCRB_DE DESC
+	</select> 
+
+    <!-- 사용자 연락처 정보 조회 -->
+    <select id="userManageDAO.selectUserContact" resultClass="userVO">
+        <![CDATA[
+            SELECT  A.MBER_ID          mberId
+                 ,  A.MBER_NM          mberNm
+                 ,  A.AREA_NO          areaNo
+                 ,  A.MIDDLE_TELNO     middleTelno
+                 ,  A.END_TELNO        endTelno
+                 ,  A.MOBLPHON_NO      moblphonNo
+                 ,  A.MBER_EMAIL_ADRES mberEmailAdres
+              FROM  OE1TNUSERINFO A
+             WHERE  A.MBER_ID = #mberId#
+       ]]>
+    </select>
+		
+</sqlMap>

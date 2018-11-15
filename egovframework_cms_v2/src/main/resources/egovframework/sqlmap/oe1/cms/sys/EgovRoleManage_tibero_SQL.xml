@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RoleManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="roleManageVO" type="egovframework.oe1.cms.sys.service.EgovOe1RoleManageVO"/>
+    <typeAlias  alias="roleManage" type="egovframework.oe1.cms.sys.service.RoleManage"/>
+
+    <resultMap id="role" class="egovframework.oe1.cms.sys.service.EgovOe1RoleManageVO">
+        <result property="roleCode" column="ROLE_CODE" columnIndex="1"/>
+        <result property="roleNm" column="ROLE_NM" columnIndex="2"/>
+        <result property="rolePttrn" column="ROLE_PTTRN" columnIndex="3"/>
+        <result property="roleDc" column="ROLE_DC" columnIndex="4"/>
+        <result property="roleTy" column="ROLE_TY" columnIndex="5"/>
+        <result property="roleSort" column="ROLE_SORT" columnIndex="6"/>
+        <result property="roleCreatDe" column="ROLE_CREAT_DE" columnIndex="7"/>
+    </resultMap>
+
+
+    <select id="roleManageDAO.selectRole" resultMap="role">
+        <![CDATA[
+            SELECT ROLE_CODE, 
+                   ROLE_NM, 
+                   ROLE_PTTRN, 
+                   ROLE_DC, 
+                   ROLE_TY, 
+                   ROLE_SORT, 
+                   ROLE_CREAT_DE
+              FROM OE1TNROLEINFO
+             WHERE ROLE_CODE = #roleCode#		         
+        ]]>
+    </select>
+
+    <select id="roleManageDAO.selectRoleList" parameterClass="roleManageVO" resultMap="role">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        
+        /* 구현 Sql */
+        <![CDATA[
+            SELECT ROLE_CODE, 
+                   ROLE_NM, 
+                   ROLE_PTTRN, 
+                   ROLE_DC, 
+                   (SELECT CODE_NM 
+                      FROM OE1TNOECOMMDETAILCD
+                     WHERE CODE_ID = 'OE1040' 
+                       AND CODE = ROLE_TY) AS ROLE_TY, 
+                   ROLE_SORT, 
+                   ROLE_CREAT_DE
+              FROM OE1TNROLEINFO
+             WHERE 1=1
+        ]]>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                ROLE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+            </isEqual>
+            ORDER BY ROLE_CREAT_DE DESC
+        /* 구현 Sql */
+        
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+    </select>
+
+	<insert id="roleManageDAO.insertRole" parameterClass="roleManage">
+		<![CDATA[
+			INSERT INTO OE1TNROLEINFO 
+				  ( ROLE_CODE
+				  , ROLE_NM
+                  , ROLE_PTTRN
+                  , ROLE_DC
+                  , ROLE_TY
+				  , ROLE_SORT
+				  , ROLE_CREAT_DE )
+		   VALUES ( #roleCode#
+			      , #roleNm#
+				  , #rolePttrn#
+                  , #roleDc#
+                  , #roleTy#
+                  , #roleSort#
+				  , TO_CHAR(sysdate, 'YYYYMMDD')
+				  )
+		]]>
+	</insert>
+
+	<update id="roleManageDAO.updateRole" parameterClass="roleManage">
+		<![CDATA[
+			UPDATE OE1TNROLEINFO 
+			   SET ROLE_NM       = #roleNm#
+                 , ROLE_PTTRN    = #rolePttrn#
+                 , ROLE_DC       = #roleDc#
+                 , ROLE_TY       = #roleTy#
+                 , ROLE_SORT     = #roleSort#
+				 , ROLE_CREAT_DE = TO_CHAR(sysdate, 'YYYYMMDD')
+		  	 WHERE ROLE_CODE     =#roleCode#
+		]]>
+	</update>
+
+	<delete id="roleManageDAO.deleteRole">
+		<![CDATA[
+			DELETE FROM OE1TNROLEINFO 
+			 WHERE ROLE_CODE = #roleCode#
+		]]>
+	</delete>
+
+	<select id="roleManageDAO.selectAuthorListTotCnt" parameterClass="roleManageVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNROLEINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				ROLE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+	</select>
+
+    <select id="roleManageDAO.selectRoleAllList" parameterClass="roleManageVO" resultMap="role">
+            SELECT  ROLE_CODE
+                 ,  ROLE_NM
+                 ,  ROLE_PTTRN
+                 ,  ROLE_DC
+                 ,  ROLE_TY
+                 ,  ROLE_SORT
+                 ,  ROLE_CREAT_DE
+              FROM  OE1TNROLEINFO
+    </select>
+    
+    <select id="roleManageDAO.selectRoleListForAuthorCode"  parameterClass="roleManageVO" resultClass="RoleManageVO">
+            <![CDATA[
+	          SELECT  A.ROLE_CODE   roleCode,
+	                  A.ROLE_NM     roleNm,
+	                  A.ROLE_PTTRN  rolePttrn,
+	                  A.ROLE_DC     roleDc,
+	                  A.ROLE_TY     roleTy,
+	                  A.ROLE_SORT   roleSort,
+	                  B.AUTHOR_CODE authorCode,
+	                  B.CREAT_DT    creatDt
+	            FROM  OE1TNROLEINFO A
+	               ,  (
+	                  SELECT  AUTHOR_CODE
+	                       ,  ROLE_CODE
+	                       ,  '' CREAT_DT
+	                    FROM  OE1TNAUTHORROLERELATE
+	                   WHERE  AUTHOR_CODE IN (SELECT  AUTHOR_CODE ACODE
+	                                            FROM  OE1TNAUTHORROLERELATE
+	                                           WHERE  AUTHOR_CODE = #authorCode#
+	                                          UNION
+	                                          SELECT  T1.UPPER_ROLE ACODE
+	                                            FROM  OE1TNROLESHIERARCHY T1
+	                                            LEFT 
+	                                            JOIN  OE1TNROLESHIERARCHY T2 ON (T1.LWPRT_ROLE = T2.UPPER_ROLE)
+	                                           WHERE  T1.LWPRT_ROLE = #authorCode#
+	                                         )
+	                  ) B
+	           WHERE  A.ROLE_CODE = B.ROLE_CODE
+           ]]>
+    </select>
+
+</sqlMap>

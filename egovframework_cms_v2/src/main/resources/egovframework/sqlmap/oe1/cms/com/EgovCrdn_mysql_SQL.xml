@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Crdn">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="crdnVO" type="egovframework.oe1.cms.com.service.EgovOe1CrdnVO"/>
+
+	<resultMap id="crdn" class="egovframework.oe1.cms.com.service.EgovOe1CrdnVO">
+		<result property="crdnsId" column="CRDNS_ID"/>
+		<result property="crdnsNm" column="CRDNS_NM"/>
+		<result property="crdnsAdres" column="CRDNS_ADRES"/>
+		<result property="crdnsTelNo" column="CRDNS_TELNO"/>
+		<result property="crdnsFxnum" column="CRDNS_FXNUM"/>
+	</resultMap>
+
+    <!-- 입력한 유관기관명 중복여부를 체크하여 사용가능여부를 확인 -->
+        <select id="crdnDAO.checkCrdnsNm" resultClass="int">
+        <![CDATA[
+            SELECT COUNT(*) usedCnt
+            FROM OE1TNCRDN
+            WHERE CRDNS_NM = trim(#crdnsNm#)
+        ]]>
+    </select>
+    
+	<insert id="crdnDAO.insertCrdn">
+		<![CDATA[
+				INSERT INTO OE1TNCRDN
+						(CRDNS_ID, 
+						 CRDNS_NM, 
+						 CRDNS_ADRES, 
+						 CRDNS_TELNO, 
+						 CRDNS_FXNUM,
+						 FRST_REGISTER_PNTTM,
+						 FRST_REGISTER_ID,
+						 LAST_UPDUSR_PNTTM,
+						 LAST_UPDUSR_ID) 
+				VALUES (#crdnsId#, 
+						#crdnsNm#, 
+						#crdnsAdres#, 
+						#crdnsTelNo#, 
+						#crdnsFxnum#,
+						SYSDATE(),
+						#frstRegisterId#,
+						SYSDATE(),
+						#lastUpdusrId#)
+		]]>
+	</insert>
+	
+	<update id="crdnDAO.updateCrdn">
+		<![CDATA[
+			UPDATE OE1TNCRDN 
+				SET CRDNS_ID = #crdnsId# , 
+			  		CRDNS_NM = #crdnsNm#, 
+			  		CRDNS_ADRES = #crdnsAdres#, 
+			  		CRDNS_TELNO = #crdnsTelNo#, 
+			  		CRDNS_FXNUM = #crdnsFxnum#, 
+			  		LAST_UPDUSR_PNTTM = SYSDATE(),
+			  		LAST_UPDUSR_ID = #lastUpdusrId#
+				WHERE CRDNS_ID = #crdnsId#
+		]]>
+	</update>
+	
+	<delete id="crdnDAO.deleteCrdn">
+		<![CDATA[
+			DELETE FROM OE1TNCRDN 
+				WHERE CRDNS_ID = #crdnsId#
+		]]>
+	</delete>
+	
+	<select id="crdnDAO.selectCrdn" resultMap="crdn">
+		<![CDATA[
+			SELECT 
+				CRDNS_ID, 
+				CRDNS_NM, 
+				CRDNS_ADRES, 
+				CRDNS_TELNO, 
+				CRDNS_FXNUM 
+			FROM OE1TNCRDN
+			WHERE CRDNS_ID = #crdnsId#
+		]]>
+	</select>
+	
+	<select id="crdnDAO.selectCrdnList" parameterClass="crdnVO" resultClass="egovMap">			
+			SELECT 
+				CRDNS_ID, 
+				CRDNS_NM, 
+				CRDNS_ADRES, 
+				CRDNS_TELNO, 
+				CRDNS_FXNUM 
+			FROM OE1TNCRDN
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CRDNS_ID  LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				CRDNS_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			ORDER BY CRDNS_ID DESC
+			limit #firstIndex#, #recordCountPerPage#	
+	</select>
+	
+	<select id="crdnDAO.selectCrdnListTotCnt" parameterClass="crdnVO" resultClass="int">
+
+			SELECT COUNT(*) totcnt
+			FROM OE1TNCRDN
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CRDNS_ID  = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				CRDNS_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1DataDic">
+	
+	<typeAlias  alias="egovMap"       type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="dataDic" 	  type="egovframework.oe1.cms.cmm.service.DataDic"/>
+	<typeAlias  alias="dataDicDetail" type="egovframework.oe1.cms.cmm.service.DataDicDetail"/>
+	<typeAlias  alias="searchVO" 	  type="egovframework.oe1.cms.cmm.service.MetaDataSearchVO"/>
+	
+	<resultMap id="dataDicHistMap" class="egovframework.oe1.cms.cmm.service.DataDic">
+        <result property="dtaDicaryId"     column="dtaDicaryId"     columnIndex="1"/>
+        <result property="dtaDicarySn"     column="dtaDicarySn"     columnIndex="2"/>
+        <result property="dtaDicaryNm"     column="dtaDicaryNm"     columnIndex="3"/>
+        <result property="dtaDicaryEngNm"  column="dtaDicaryEngNm"  columnIndex="4"/>
+        <result property="sttusCode"       column="sttusCode"       columnIndex="5"/>
+        <result property="processPrvonsh"  column="processPrvonsh"  columnIndex="6"/>
+        <result property="domnNm"          column="domnNm"          columnIndex="7"/>
+        <result property="dataTy"          column="dataTy"          columnIndex="8"/>
+        <result property="dataLt"          column="dataLt"          columnIndex="9"/>
+        <result property="useAt"           column="useAt"           columnIndex="10"/>
+        <result property="frstRegistPnttm" column="frstRegistPnttm" columnIndex="11"/>
+        <result property="frstRegisterId"  column="frstRegisterId"  columnIndex="12"/>
+        <result property="frstRegisterNm"  column="frstRegisterNm"  columnIndex="13"/>
+    </resultMap>
+	
+	<resultMap id="dataDicMap" class="egovframework.oe1.cms.cmm.service.DataDic">
+        <result property="dtaDicaryId"    column="dtaDicaryId"    columnIndex="1"/>
+        <result property="dtaDicaryNm"    column="dtaDicaryNm"    columnIndex="2"/>
+        <result property="dtaDicaryEngNm" column="dtaDicaryEngNm" columnIndex="3"/>
+        <result property="domnNm"         column="domnNm"         columnIndex="4"/>
+        <result property="dataTy"         column="dataTy"         columnIndex="5"/>
+        <result property="dataLt"         column="dataLt"         columnIndex="6"/>
+        <result property="useAt"          column="useAt"          columnIndex="7"/>
+        <result property="lastUpdtPnttm"  column="lastUpdtPnttm"  columnIndex="8"/>
+        <result property="lastUpdusrId"   column="lastUpdusrId"   columnIndex="9"/>
+        <result property="lastUpdusrNm"   column="lastUpdusrNm"   columnIndex="10"/>
+    </resultMap>
+
+	<!-- 자료사전명 등록건수조회 -->
+	<select id="dataDicDAO.selectDataDicNmCnt" parameterClass="dataDic" resultClass="dataDic">
+        SELECT  DTA_DICARY_ID        dtaDicaryId
+             ,  DTA_DICARY_NM        dtaDicaryNm
+             ,  DTA_DICARY_ENG_NM    dtaDicaryEngNm
+             ,  DOMN_NM              domnNm
+             ,  DATA_TY              dataTy
+             ,  DATA_LT              dataLt
+          FROM  OE1TNDATADIC A
+         WHERE  A.DTA_DICARY_ID = ( SELECT  MAX(DTA_DICARY_ID) DTA_DICARY_ID
+                                      FROM  OE1TNDATADIC
+                                     WHERE  DTA_DICARY_NM  = #dtaDicaryNm#
+                                    <isNotEmpty prepend="AND" property="dtaDicaryId" >
+                                            DTA_DICARY_ID != #dtaDicaryId#
+                                    </isNotEmpty>
+                                  )
+    </select>
+    	
+	<!-- 자료사전목록총수조회 -->
+	<select id="dataDicDAO.selectDataDicListTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+          FROM  OE1TNDATADIC A
+         WHERE  DTA_DICARY_NM LIKE CONCAT(CONCAT('%', #srchDtaDicaryNm#), '%')
+		<isNotEmpty prepend="AND" property="srchUseAt" >
+                USE_AT = #srchUseAt#
+        </isNotEmpty>
+		<isNotEmpty prepend="AND" property="srchLastUpdusrNm" >
+				(SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchLastUpdusrNm#),'%')
+        </isNotEmpty>
+    </select>	
+	<!-- 자료사전목록조회 -->
+	<select id="dataDicDAO.selectDataDicList" parameterClass="searchVO" resultMap="dataDicMap">
+        SELECT  DTA_DICARY_ID        dtaDicaryId
+             ,  DTA_DICARY_NM        dtaDicaryNm
+             ,  DTA_DICARY_ENG_NM    dtaDicaryEngNm
+             ,  DOMN_NM              domnNm
+             ,  DATA_TY              dataTy
+             ,  DATA_LT              dataLt
+		     ,  USE_AT               useAt         
+		     ,  DATE_FORMAT(LAST_UPDT_PNTTM,'%Y-%m-%d') lastUpdtPnttm
+		     ,  LAST_UPDUSR_ID       lastUpdusrId
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNDATADIC A
+         WHERE  DTA_DICARY_NM LIKE CONCAT(CONCAT('%', #srchDtaDicaryNm#), '%')
+		<isNotEmpty prepend="AND" property="srchUseAt" >
+                USE_AT = #srchUseAt#
+        </isNotEmpty>
+		<isNotEmpty prepend="AND" property="srchLastUpdusrNm" >
+				(SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchLastUpdusrNm#),'%')
+        </isNotEmpty>
+        ORDER BY LAST_UPDT_PNTTM DESC
+		 LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+
+	</select>
+	
+	<!-- 자료사전상세조회 -->
+	<select id="dataDicDAO.selectDataDic" parameterClass="dataDic" resultClass="dataDic">
+        SELECT  DTA_DICARY_ID        dtaDicaryId
+             ,  DTA_DICARY_NM        dtaDicaryNm
+             ,  DTA_DICARY_ENG_NM    dtaDicaryEngNm
+             ,  DOMN_NM              domnNm
+             ,  DATA_TY              dataTy
+             ,  DATA_LT              dataLt
+		     ,  USE_AT               useAt         
+		     ,  DATE_FORMAT(LAST_UPDT_PNTTM,'%Y-%m-%d') lastUpdtPnttm
+		     ,  LAST_UPDUSR_ID       lastUpdusrId
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNDATADIC A
+         WHERE  DTA_DICARY_ID      = #dtaDicaryId#
+	</select>	
+		
+	<!-- 자료사전등록 -->
+	<insert id="dataDicDAO.insertDataDic">
+	<![CDATA[
+        INSERT
+          INTO  OE1TNDATADIC
+             (  DTA_DICARY_ID
+             ,  DTA_DICARY_NM
+             ,  DTA_DICARY_ENG_NM
+             ,  DOMN_NM
+             ,  DATA_TY
+             ,  DATA_LT
+             ,  USE_AT
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             ,  LAST_UPDT_PNTTM
+             ,  LAST_UPDUSR_ID
+             )
+        VALUES
+             (  #dtaDicaryId#
+             ,  #dtaDicaryNm#
+             ,  #dtaDicaryEngNm#
+             ,  #domnNm#
+             ,  #dataTy#
+             ,  #dataLt#
+             ,  #useAt#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+             )
+	]]>
+	</insert>
+	
+	<!-- 자료사전수정 -->
+	<update id="dataDicDAO.updateDataDic">
+	<![CDATA[
+        UPDATE  OE1TNDATADIC
+           SET  DTA_DICARY_NM      = #dtaDicaryNm#
+             ,  DTA_DICARY_ENG_NM  = #dtaDicaryEngNm#
+             ,  DOMN_NM            = #domnNm#
+             ,  DATA_TY            = #dataTy#
+             ,  DATA_LT            = #dataLt#
+             ,  USE_AT             = #useAt#
+		     ,  LAST_UPDT_PNTTM    = SYSDATE()
+		     ,  LAST_UPDUSR_ID     = #lastUpdusrId#
+         WHERE  DTA_DICARY_ID      = #dtaDicaryId#
+	]]>
+	</update>
+	
+	<!-- 자료사전삭제 -->
+	<update id="dataDicDAO.deleteDataDic">
+	<![CDATA[
+        UPDATE  OE1TNDATADIC
+           SET  USE_AT             = #useAt#
+		     ,  LAST_UPDT_PNTTM    = SYSDATE()
+		     ,  LAST_UPDUSR_ID     = #lastUpdusrId#
+         WHERE  DTA_DICARY_ID      = #dtaDicaryId#
+	]]>
+	
+
+	</update>
+		
+	<!-- 자료사전이력목록조회 -->
+	<select id="dataDicDAO.selectDataDicHistList" parameterClass="dataDic" resultMap="dataDicHistMap">
+        SELECT  DTA_DICARY_ID       dtaDicaryId
+             ,  DTA_DICARY_SN       dtaDicarySn
+             ,  DTA_DICARY_NM       dtaDicaryNm
+             ,  DTA_DICARY_ENG_NM   dtaDicaryEngNm
+		     ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1102' AND X.CODE = A.STTUS_CODE) sttusCode     
+             ,  PROCESS_PRVONSH     processPrvonsh
+             ,  DOMN_NM             domnNm
+             ,  DATA_TY             dataTy
+             ,  DATA_LT             dataLt
+             ,  USE_AT              useAt
+		     ,  DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') frstRegistPnttm
+		     ,  FRST_REGISTER_ID    frstRegisterId 
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1THDATADICHIST A
+         WHERE  DTA_DICARY_ID     = #dtaDicaryId#
+	</select>
+	
+	<!-- 자료사전이력상세조회 -->
+	<select id="dataDicDAO.selectDataDicHist" parameterClass="dataDic" resultClass="dataDic">
+        SELECT  DTA_DICARY_ID       dtaDicaryId
+             ,  DTA_DICARY_SN       dtaDicarySn
+             ,  DTA_DICARY_NM       dtaDicaryNm
+             ,  DTA_DICARY_ENG_NM   dtaDicaryEngNm
+		     ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1102' AND X.CODE = A.STTUS_CODE) sttusCode     
+             ,  PROCESS_PRVONSH     processPrvonsh
+             ,  DOMN_NM             domnNm
+             ,  DATA_TY             dataTy
+             ,  DATA_LT             dataLt
+             ,  USE_AT              useAt
+		     ,  DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') frstRegistPnttm
+		     ,  FRST_REGISTER_ID    frstRegisterId 
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1THDATADICHIST A
+         WHERE  DTA_DICARY_ID     = #dtaDicaryId#
+           AND  DTA_DICARY_SN     = #dtaDicarySn#
+
+	</select>	
+		
+	<!-- 자료사전이력등록 -->
+	<insert id="dataDicDAO.insertDataDicHist">
+	<selectKey resultClass="java.lang.Long" keyProperty="dtaDicarySn">
+		SELECT  IFNULL(MAX(DTA_DICARY_SN),0)+1 dtaDicarySn  
+		  FROM  OE1THDATADICHIST
+		 WHERE  DTA_DICARY_ID     = #dtaDicaryId#
+	</selectKey>	
+   
+	<![CDATA[
+        INSERT
+          INTO  OE1THDATADICHIST
+             (  DTA_DICARY_SN
+             ,  DTA_DICARY_ID
+             ,  DTA_DICARY_NM
+             ,  DTA_DICARY_ENG_NM
+             ,  DOMN_NM
+             ,  DATA_TY
+             ,  DATA_LT
+             ,  USE_AT
+             ,  STTUS_CODE
+             ,  PROCESS_PRVONSH
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             )
+        VALUES
+             (  #dtaDicarySn#
+             ,  #dtaDicaryId#
+             ,  #dtaDicaryNm#
+             ,  #dtaDicaryEngNm#
+             ,  #domnNm#
+             ,  #dataTy#
+             ,  #dataLt#
+             ,  #useAt#
+             ,  #sttusCode#
+             ,  #processPrvonsh#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+             )
+
+	]]>
+	</insert>
+
+	<!-- 자료사전상세목록조회 -->
+	<select id="dataDicDAO.selectDataDicDetailList" parameterClass="dataDicDetail" resultClass="dataDicDetail">
+	<![CDATA[
+        SELECT  DTA_DICARY_ID        dtaDicaryId
+             ,  SORT_ORDR            sortOrdr
+             ,  WORD_ENG_ABRV_NM     wordEngAbrvNm
+             ,  WORD_NM              wordNm
+             ,  (SELECT COUNT(X.USE_AT) FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM AND X.USE_AT = 'Y') useAt
+		     ,  DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') frstRegistPnttm
+		     ,  FRST_REGISTER_ID     frstRegisterId 
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1TNDATADICDETAIL A
+         WHERE  DTA_DICARY_ID      = #dtaDicaryId#
+        ORDER BY SORT_ORDR ASC
+	]]>
+	</select>
+	
+	<!-- 자료사전상세등록 -->
+	<insert id="dataDicDAO.insertDataDicDetail">
+	<selectKey resultClass="java.lang.Long" keyProperty="sortOrdr">
+		SELECT  IFNULL(MAX(SORT_ORDR),0)+1 sortOrdr  
+		  FROM  OE1TNDATADICDETAIL
+		 WHERE  DTA_DICARY_ID     = #dtaDicaryId#
+	</selectKey>	
+	
+	<![CDATA[
+        INSERT
+          INTO  OE1TNDATADICDETAIL
+             (  DTA_DICARY_ID
+             ,  SORT_ORDR
+             ,  WORD_ENG_ABRV_NM
+             ,  WORD_NM
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             )
+        VALUES
+             (  #dtaDicaryId#
+             ,  #sortOrdr#
+             ,  #wordEngAbrvNm#
+             ,  #wordNm#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+             )
+	]]>
+	</insert>
+
+	<!-- 자료사전상세삭제 -->
+	<delete id="dataDicDAO.deleteDataDicDetail">
+	<![CDATA[
+        DELETE
+          FROM  OE1TNDATADICDETAIL
+         WHERE  DTA_DICARY_ID      = #dtaDicaryId#
+	]]>
+	</delete>
+                                        
+	
+</sqlMap>

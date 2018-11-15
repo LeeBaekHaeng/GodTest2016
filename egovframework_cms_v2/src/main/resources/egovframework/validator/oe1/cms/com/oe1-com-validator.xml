@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+        <form name="crdnVO">
+        	<field property="crdnsNm" depends="required , maxlength">
+        		<arg0 key="crdns.crdnsNm" />
+        		<arg1 key="20" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="crdnsAdres" depends="maxlength">
+				<arg0 key="crdns.crdnsAdres" />
+                <arg1 key="50" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>50</var-value>
+				</var>
+            </field>
+        	<field property="crdnsTelNo" depends="maxlength">
+        		<arg0 key="crdns.crdnsTelNo" />
+        		<arg1 key="20" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="crdnsFxnum" depends="maxlength">
+				<arg0 key="crdns.crdnsFxnum" />
+        		<arg1 key="20" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>
+        </form>
+   </formset>
+   <formset>  
+      <form name="partcpntVO">
+        	<field property="partcpntNm" depends="required,maxlength">
+        		<arg0 key="relation.partcpntNm" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>60</var-value>
+				</var>
+			</field>
+			<field property="relate" depends="required">
+                <arg0 key="relation.partcpntCd" />
+            </field>
+			<field property="partcpntOrg" depends="required,maxlength">
+                <arg0 key="relation.partcpntOrg" />
+                <arg1 key="100" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+            </field>
+        	<field property="partcpntOrgAdres" depends="maxlength">
+        		<arg0 key="relation.partcpntOrgAdres" />
+        		<arg1 key="100" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+			<field property="partcpntTelNo" depends="maxlength">
+        		<arg0 key="relation.partcpntTelNo" />
+        		<arg1 key="20" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="partcpntFaxNo" depends="maxlength">
+        		<arg0 key="relation.partcpntFaxNo" />
+        		<arg1 key="20" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="partcpntMbtlnum" depends="maxlength">
+        		<arg0 key="relation.partcpntMbtlnum" />
+        		<arg1 key="20" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="partcpntEmail" depends="maxlength, email">
+        		<arg0 key="relation.partcpntEmail" />
+        		<arg1 key="100" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+			<field property="partcpntDetailDc" depends="maxlength">
+        		<arg0 key="relation.partcpntDetailDc" />
+        		<arg1 key="120" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>120</var-value>
+				</var>
+			</field>
+        </form>
+    </formset>
+    
+    <formset>
+        <form name="loginVO">
+        	<field property="mberId" depends="required">
+        		<arg0 key="login.loginId" />
+			</field>
+			<field property="pw" depends="required">
+                <arg0 key="login.loginPw" />
+            </field>
+        </form>
+   </formset>    
+
+</form-validation>

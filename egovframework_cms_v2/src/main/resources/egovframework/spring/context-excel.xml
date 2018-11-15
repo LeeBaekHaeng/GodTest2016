@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="excelService"	class="egovframework.rte.fdl.excel.impl.EgovExcelServiceImpl">
+		<property name="propertyPath" value="excelInfo.xml" />
+		<property name="mapClass" value="egovframework.oe1.cms.arc.service.impl.EgovOe1ExcelScrinMapping" />
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+</beans>

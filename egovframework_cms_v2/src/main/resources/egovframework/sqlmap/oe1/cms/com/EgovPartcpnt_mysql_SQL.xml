@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Partcpnt">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="partcpntVO" type="egovframework.oe1.cms.com.service.EgovOe1PartcpntVO"/>
+
+	<resultMap id="relation" class="egovframework.oe1.cms.com.service.EgovOe1PartcpntVO">
+		<result property="partcpntId" column="PARTCPNT_ID"/>
+		<result property="partcpntNm" column="PARTCPNT_NM"/>
+		<result property="relate" column="RELATE"/>
+		<result property="partcpntOrg" column="PARTCPNT_ORG"/>
+		<result property="partcpntOrgAdres" column="PARTCPNT_ORG_ADRES"/>
+		<result property="partcpntTelNo" column="PARTCPNT_TEL_NO"/>
+		<result property="partcpntFaxNo" column="PARTCPNT_FAX_NO"/>
+		<result property="partcpntMbtlnum" column="PARTCPNT_MBTLNUM"/>
+		<result property="partcpntEmail" column="PARTCPNT_EMAIL"/>
+		<result property="partcpntDetailDc" column="PARTCPNT_DETAIL_DC"/>
+	</resultMap>
+
+	<insert id="partcpntDAO.insertPartcpnt">
+		<![CDATA[
+				INSERT INTO OE1TNPARTCPNT
+						(PARTCPNT_ID, 
+						 PARTCPNT_NM, 
+						 RELATE, 
+						 PARTCPNT_ORG, 
+						 PARTCPNT_ORG_ADRES, 
+						 PARTCPNT_TEL_NO, 
+						 PARTCPNT_FAX_NO, 
+						 PARTCPNT_MBTLNUM, 
+						 PARTCPNT_EMAIL,
+						 PARTCPNT_DETAIL_DC,
+						 FRST_REGISTER_PNTTM,
+						 FRST_REGISTER_ID,
+						 LAST_UPDUSR_PNTTM,
+						 LAST_UPDUSR_ID) 
+				VALUES (#partcpntId#, 
+						#partcpntNm#, 
+						#relate#, 
+						#partcpntOrg#, 
+						#partcpntOrgAdres#, 
+						#partcpntTelNo#, 
+						#partcpntFaxNo#, 
+						#partcpntMbtlnum#, 
+						#partcpntEmail#,
+						#partcpntDetailDc#,
+						SYSDATE(),
+						#frstRegisterId#,
+						SYSDATE(),
+						#lastUpdusrId#)
+		]]>
+	</insert>
+	
+	<update id="partcpntDAO.updatePartcpnt">
+		<![CDATA[
+			UPDATE OE1TNPARTCPNT 
+				SET PARTCPNT_ID = #partcpntId# , 
+					PARTCPNT_NM = #partcpntNm#,
+					RELATE      =  #relate#,
+					PARTCPNT_ORG = #partcpntOrg#, 
+					PARTCPNT_ORG_ADRES = #partcpntOrgAdres#, 
+					PARTCPNT_TEL_NO = #partcpntTelNo#, 
+					PARTCPNT_FAX_NO = #partcpntFaxNo#, 
+					PARTCPNT_MBTLNUM = #partcpntMbtlnum#, 
+					PARTCPNT_EMAIL = #partcpntEmail#,
+					PARTCPNT_DETAIL_DC = #partcpntDetailDc#,
+					LAST_UPDUSR_PNTTM = SYSDATE(),
+					LAST_UPDUSR_ID = #lastUpdusrId#
+			WHERE PARTCPNT_ID=#partcpntId#
+		]]>
+	</update>
+	
+	<delete id="partcpntDAO.deletePartcpnt">
+		<![CDATA[
+			DELETE FROM OE1TNPARTCPNT 
+				WHERE PARTCPNT_ID = #partcpntId# 
+		]]>
+	</delete>
+	
+	<select id="partcpntDAO.selectPartcpnt" resultMap="relation">
+		<![CDATA[
+			SELECT 
+				a.PARTCPNT_ID, 
+				a.PARTCPNT_NM,
+				a.RELATE, 
+				b.CODE_NM as RELATE_NM,
+				a.PARTCPNT_ORG, 
+				a.PARTCPNT_ORG_ADRES, 
+				a.PARTCPNT_TEL_NO, 
+				a.PARTCPNT_FAX_NO, 
+				a.PARTCPNT_MBTLNUM, 
+				a.PARTCPNT_EMAIL,
+				a.PARTCPNT_DETAIL_DC 
+			FROM OE1TNPARTCPNT a
+			LEFT OUTER JOIN 
+				(SELECT CODE_ID, CODE, CODE_NM FROM 
+					OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1019' AND USE_AT='Y') b
+				ON a.RELATE = b.CODE
+			WHERE a.PARTCPNT_ID = #partcpntId#
+		]]>
+	</select>
+	
+	<select id="partcpntDAO.selectPartcpntList" parameterClass="partcpntVO" resultClass="egovMap">			
+			SELECT 
+				PARTCPNT_ID, 
+				PARTCPNT_NM, 
+				PARTCPNT_ORG, 
+				PARTCPNT_ORG_ADRES, 
+				PARTCPNT_TEL_NO, 
+				PARTCPNT_FAX_NO, 
+				PARTCPNT_MBTLNUM, 
+				PARTCPNT_EMAIL 
+			FROM OE1TNPARTCPNT
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				PARTCPNT_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				PARTCPNT_ORG LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			ORDER BY PARTCPNT_ID DESC
+			limit #firstIndex#, #recordCountPerPage#	
+	</select>
+	
+	<select id="partcpntDAO.selectPartcpntListTotCnt" parameterClass="partcpntVO" resultClass="int">
+
+			SELECT COUNT(*) totcnt
+			FROM OE1TNPARTCPNT
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				PARTCPNT_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				PARTCPNT_ORG LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

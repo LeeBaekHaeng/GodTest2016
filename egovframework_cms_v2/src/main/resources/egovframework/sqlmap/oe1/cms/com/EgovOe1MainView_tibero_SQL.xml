@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MainView">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="EgovOe1MenuMngVO" type="egovframework.oe1.cms.sys.service.EgovOe1MenuMngVO"/>
+
+	<select id="MainViewDAO.selectBarMenuList" resultClass="egovMap">
+		<![CDATA[
+            SELECT  M3.MENU_ID         
+                 ,  M3.MENU_NM         
+                 ,  MENU.MENU_ORDR       
+                 ,  MENU.PROGRM_ID                       
+                 ,  P.FILE_URL        
+			  FROM OE1TNMENUINFO   M
+           , OE1TNMENUINFO   M3
+			     , OE1TNPROGRMINFO P
+			     , (SELECT MIN(PROGRM_ID) PROGRM_ID 
+					  FROM OE1TNMENUINFO   M
+					 WHERE UPPER_MENU_ID IN (
+								SELECT MIN(MENU_ID) MENU_ID
+								  FROM OE1TNMENUINFO 
+								 WHERE UPPER_MENU_ID IN (SELECT MENU_ID FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0')
+								GROUP BY UPPER_MENU_ID	
+						    )
+					   AND MENU_ID IN  (SELECT MENU_ID FROM OE1TNMENUCREATE WHERE AUTHOR_CODE = #authorCode#)
+					GROUP BY UPPER_MENU_ID	
+					) O
+			       , (SELECT MENU_ID FROM OE1TNMENUCREATE WHERE AUTHOR_CODE = #authorCode#) C
+			       , (   SELECT '1' LV, A.UPPER_MENU_ID MENU_ID_F0, A.MENU_ID MENU_ID_F1, '' MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT FROM OE1TNMENUINFO A WHERE A.UPPER_MENU_ID = '0'
+                        UNION ALL
+                        SELECT '2' LV, X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                          FROM OE1TNMENUINFO A
+                             , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+                         WHERE A.UPPER_MENU_ID = X.MENU_ID_F1
+                        UNION ALL
+                        SELECT '3' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, A.MENU_ID MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                          FROM OE1TNMENUINFO A
+                             , (SELECT X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                                  FROM OE1TNMENUINFO A
+                                     , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+                                 WHERE A.UPPER_MENU_ID = X.MENU_ID_F1) X
+                         WHERE A.UPPER_MENU_ID = X.MENU_ID_F2
+                        UNION ALL
+                        SELECT '4' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, X.MENU_ID_F3, A.MENU_ID MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                          FROM OE1TNMENUINFO A
+                             , (SELECT '3' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, A.MENU_ID MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                                  FROM OE1TNMENUINFO A
+                                     , (SELECT X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                                          FROM OE1TNMENUINFO A
+                                             , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+                                         WHERE A.UPPER_MENU_ID = X.MENU_ID_F1) X
+                                 WHERE A.UPPER_MENU_ID = X.MENU_ID_F2) X
+                         WHERE A.UPPER_MENU_ID = X.MENU_ID_F3
+                    ) MENU
+			 WHERE O.PROGRM_ID = M.PROGRM_ID
+			   AND O.PROGRM_ID = P.PROGRM_ID		
+               AND M.MENU_ID   = MENU.MENU_ID_F3
+			   AND C.MENU_ID   = MENU.MENU_ID_F3
+			   AND M3.MENU_ID  = MENU.MENU_ID_F1
+			ORDER BY MENU.MENU_ID_F1
+
+
+		]]>
+	</select>
+
+	<select id="MainViewDAO.selectLeftMenuList" parameterClass="EgovOe1MenuMngVO"  resultClass="egovMap">
+		<![CDATA[
+	
+            SELECT  MENU.LV                
+                 ,  MENU.MENU_ID_F0        
+                 ,  MENU.MENU_ID_F1        
+                 ,  MENU.MENU_ID_F2        
+                 ,  MENU.MENU_ID_F3        
+                 ,  MENU.MENU_ID_F4        
+                 ,  MENU.MENU_ID           
+                 ,  MENU.MENU_NM           
+                 ,  MENU.MENU_DC           
+                 ,  MENU.MENU_ORDR         
+                 ,  MENU.PROGRM_ID         
+                 ,  MENU.USE_AT            
+                 ,  PRGM.PROGRM_NM         
+                 ,  PRGM.PROGRM_DC         
+                 ,  PRGM.FILE_PATH         
+                 ,  PRGM.FILE_URL          
+              FROM  (   SELECT '1' LV, A.UPPER_MENU_ID MENU_ID_F0, A.MENU_ID MENU_ID_F1, '' MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT FROM OE1TNMENUINFO A WHERE A.UPPER_MENU_ID = '0'
+                        UNION ALL
+                        SELECT '2' LV, X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                          FROM OE1TNMENUINFO A
+                             , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+                         WHERE A.UPPER_MENU_ID = X.MENU_ID_F1
+                        UNION ALL
+                        SELECT '3' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, A.MENU_ID MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                          FROM OE1TNMENUINFO A
+                             , (SELECT X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                                  FROM OE1TNMENUINFO A
+                                     , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+                                 WHERE A.UPPER_MENU_ID = X.MENU_ID_F1) X
+                         WHERE A.UPPER_MENU_ID = X.MENU_ID_F2
+                        UNION ALL
+                        SELECT '4' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, X.MENU_ID_F3, A.MENU_ID MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                          FROM OE1TNMENUINFO A
+                             , (SELECT '3' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, A.MENU_ID MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                                  FROM OE1TNMENUINFO A
+                                     , (SELECT X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT
+                                          FROM OE1TNMENUINFO A
+                                             , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+                                         WHERE A.UPPER_MENU_ID = X.MENU_ID_F1) X
+                                 WHERE A.UPPER_MENU_ID = X.MENU_ID_F2) X
+                         WHERE A.UPPER_MENU_ID = X.MENU_ID_F3
+                    ) MENU
+                 ,  OE1TNPROGRMINFO PRGM
+                 ,  (SELECT MENU_ID FROM OE1TNMENUCREATE WHERE AUTHOR_CODE = #authorCode#) C
+             WHERE  MENU.PROGRM_ID  = PRGM.PROGRM_ID
+               AND  MENU.MENU_ID_F1 = #menuId#
+               AND  MENU.MENU_ID    = C.MENU_ID
+            ORDER BY NVL(MENU.MENU_ID_F1,' '), NVL(MENU.MENU_ID_F2,' '), NVL(MENU.MENU_ID_F3,' '), NVL(MENU.MENU_ID_F4,' ')    
+
+		]]>
+	</select>
+
+	
+</sqlMap>            

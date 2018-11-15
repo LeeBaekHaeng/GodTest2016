@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="EgovOe1ChangeWorkExmnt">
+
+<typeAlias  alias="ChangeWorkPlanVO" type="egovframework.oe1.cms.sim.service.EgovOe1ChangeWorkPlanVO"/>
+
+<!-- 최대 변경작업계획 검토일련번호 가져오기  -->
+    <select id="egovOe1ChangeWorkExmntDAO.getMaxExmntSn" parameterClass="ChangeWorkPlanVO" resultClass="int">
+            SELECT MAX(EXMNT_SN) 
+            FROM OE1TNCHANGEEXMNTINFO
+             WHERE CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#
+             AND EXMNT_SE_CODE =#exmntSeCode#
+    </select>
+    
+<!-- 변경작업/계획 검토정보 검토일련번호 증가 -->
+	<update id="egovOe1ChangeWorkExmntDAO.updateChangeExmntSn" parameterClass="ChangeWorkPlanVO">
+        <![CDATA[
+            UPDATE  OE1TNCHANGEEXMNTINFO	 
+            SET EXMNT_SN = #maxExmntSn# 
+			WHERE CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#  AND EXMNT_SE_CODE = #exmntSeCode# AND EXMNT_SN = 0
+        ]]>
+    </update>
+    
+<!-- 변경승인 요청 건 목록 조회 -->
+    <select id="egovOe1ChangeWorkExmntDAO.selectChangeConfmReqList" parameterClass="ChangeWorkPlanVO" resultClass="ChangeWorkPlanVO">
+            SELECT 
+            		A.CHANGE_REQUST_PROCESS_ID		AS changeRequstProcessId
+                 , (SELECT CODE_NM
+                     FROM OE1TNOECOMMDETAILCD
+                     WHERE CODE_ID = 'OE1003' 
+                     AND CODE = A.CHANGE_PROCESS_STTUS_CODE) 		AS changeProcessSttusCodeNm
+				 , A.CHANGE_PROCESS_STTUS_CODE AS changeProcessSttusCode
+                 , (SELECT CODE_NM
+                     FROM OE1TNOECOMMDETAILCD
+                     WHERE CODE_ID = 'OE1005' 
+                     AND CODE = A.EMRGNCY_PROCESS_AT) 		AS emrgncyProcessAt
+                 , B.CHANGE_REQUST_NM AS changeRequstNm
+                 , (SELECT CODE_NM
+                     FROM OE1TNOECOMMDETAILCD
+                     WHERE CODE_ID = 'OE1016' 
+                     AND CODE = A.CHANGE_SE_CODE) 	AS changeSeCode
+                 , DATE_FORMAT(B.CHANGE_REQUST_DE,'%Y-%m-%d') 	AS changeRequstDe
+                 , DATE_FORMAT(A.CHANGE_RCEPT_DE,'%Y-%m-%d')  AS changeRceptDe
+                 , DATE_FORMAT(B.COMPT_REQUST_DE ,'%Y-%m-%d')  AS comptRequstDe
+                 , (SELECT IFNULL(C.MBER_NM,'') 
+                     FROM OE1TNUSERINFO as C
+                     WHERE C.MBER_ID = A.CHANGE_OPERTOR_ID)  	AS changeOpertorNm	     
+                 , (SELECT DATE_FORMAT(EXMNT_REQUST_DE,'%Y-%m-%d') 
+                 	 FROM OE1TNCHANGEEXMNTINFO 
+                 	 WHERE CHANGE_REQUST_PROCESS_ID = 	A.CHANGE_REQUST_PROCESS_ID
+                 	 AND EXMNT_SE_CODE="1" AND EXMNT_SN = 0) 	AS planExmntReqDt 
+                 , (SELECT DATE_FORMAT(EXMNT_DE,'%Y-%m-%d') 
+                 	 FROM OE1TNCHANGEEXMNTINFO 
+                 	 WHERE CHANGE_REQUST_PROCESS_ID = 	A.CHANGE_REQUST_PROCESS_ID
+                 	 AND EXMNT_SE_CODE="1" AND EXMNT_SN = 0) 	AS planExmnDt                  	
+                 , (SELECT DATE_FORMAT(EXMNT_REQUST_DE,'%Y-%m-%d') 
+                 	 FROM OE1TNCHANGEEXMNTINFO
+                 	 WHERE CHANGE_REQUST_PROCESS_ID = 	A.CHANGE_REQUST_PROCESS_ID
+                 	 AND EXMNT_SE_CODE="2" AND EXMNT_SN = 0) 	AS comptExmntReqDt          
+                  , A.CHANGE_OPERTOR_ID  AS changeOpertorId               	
+             FROM OE1TNCHANGEPROCINFO AS A , OE1TNCHANGEREQUSTINFO AS B
+             WHERE A.CHANGE_PROCESS_STTUS_CODE IN ('04', '06')
+             AND A.CHANGE_REQUST_PROCESS_ID = B.CHANGE_REQUST_PROCESS_ID
+                 <isNotEmpty prepend="AND" property="emrgncyProcessAt">
+                   A.EMRGNCY_PROCESS_AT = #emrgncyProcessAt#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="changeProcessSttusCode">
+                   A.CHANGE_PROCESS_STTUS_CODE = #changeProcessSttusCode#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="fromDate">
+                     A.CHANGE_RCEPT_DE BETWEEN  REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','') 
+            	</isNotEmpty>
+             ORDER BY A.FRST_REGISTER_PNTTM DESC
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#      
+    </select>
+    
+<!-- 변경승인 요청 총건수 조회 -->
+    <select id="egovOe1ChangeWorkExmntDAO.selectChangeConfmReqListTotCnt" parameterClass="ChangeWorkPlanVO" resultClass="int">
+            SELECT COUNT(*) totcnt
+            FROM OE1TNCHANGEPROCINFO
+             WHERE CHANGE_PROCESS_STTUS_CODE IN ('04','06')       
+                <isNotEmpty prepend="AND" property="emrgncyProcessAt">
+                   EMRGNCY_PROCESS_AT = #emrgncyProcessAt#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="changeProcessSttusCode">
+                   CHANGE_PROCESS_STTUS_CODE = #changeProcessSttusCode#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="fromDate">
+                     CHANGE_RCEPT_DE BETWEEN  REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','') 
+            	</isNotEmpty>
+    </select>
+        
+<!-- 검토  -->
+    <update id="egovOe1ChangeWorkExmntDAO.confmChange" parameterClass="ChangeWorkPlanVO">
+        <![CDATA[
+            UPDATE OE1TNCHANGEEXMNTINFO	 
+            SET EXMNT_RESULT_CODE = #exmntResultCode#
+                  , EXMNT_CN =#exmntCn#
+				  , EXMNT_DE = date_format(now(),'%Y%m%d')
+				  , CHCKER_ID = #lastUpdusrId#
+			      , LAST_UPDUSR_ID =#lastUpdusrId#
+			      , LAST_UPDUSR_PNTTM = sysdate()
+             WHERE CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#
+             AND EXMNT_SE_CODE = #exmntSeCode# AND EXMNT_SN = 0
+        ]]> 
+	</update> 
+	
+<!-- 검토이력조회 -->
+    <select id="egovOe1ChangeWorkExmntDAO.changeWorkExmntInfo" parameterClass="ChangeWorkPlanVO" resultClass="ChangeWorkPlanVO">
+            SELECT 
+            		EXMNT_SN AS exmntSn
+          			, (SELECT IFNULL(U.MBER_NM,'') 
+                    	FROM OE1TNUSERINFO as U
+                    	WHERE U.MBER_ID =CHCKER_ID )	AS chckerNm	     
+                    , DATE_FORMAT(EXMNT_REQUST_DE,'%Y-%m-%d') 	AS exmntRequstDe
+                    , DATE_FORMAT(EXMNT_DE,'%Y-%m-%d') 	AS exmntDe
+          			, EXMNT_CN AS exmntCn
+          			, EXMNT_RESULT_CODE AS exmntResultCode
+          			, EXMNT_SE_CODE AS exmntSeCode
+          		FROM OE1TNCHANGEEXMNTINFO
+          		WHERE CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#
+          		AND EXMNT_SE_CODE = #exmntSeCode#
+          		AND EXMNT_SN NOT IN("0")
+          		ORDER BY EXMNT_SN ASC 	
+    </select>
+    
+</sqlMap>

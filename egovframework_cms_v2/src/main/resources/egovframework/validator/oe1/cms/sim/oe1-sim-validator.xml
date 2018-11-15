@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC
+          "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.0//EN"
+          "http://jakarta.apache.org/commons/dtds/validator_1_0.dtd">
+
+<form-validation>
+
+    <formset>
+        <form name="egovOe1ChangeRequestVO">
+        	<field property="changeRequstNm" depends="required, maxlength">
+        		<arg0 key="변경요청명" resource="false"/>
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>
+			</field>
+			<field property="operJobSeCode" depends="required">
+        		<arg0 key="업무구분" resource="false"/>
+			</field>
+			<field property="emrgncyRequstAt" depends="required">
+        		<arg0 key="긴급여부" resource="false"/>
+			</field>
+			<field property="changeRequstResnCode" depends="required">
+        		<arg0 key="요청사유분류" resource="false"/>
+			</field>
+      	 	<field property="comptRequstDe" depends="required, date">
+        		<arg0 key="완료요청일" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+			<field property="changeRequstCn" depends="required, maxlength">
+        		<arg0 key="요청내용" resource="false"/>
+        		<arg1 key="1000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>1000</var-value>
+				</var>
+			</field>
+		</form>
+        <form name="egovOe1ChangeRequestProcessVO">
+			<field property="changeSeCode" depends="required">
+        		<arg0 key="변경구분" resource="false"/>
+			</field>
+			<field property="emrgncyProcessAt" depends="required">
+        		<arg0 key="긴급처리여부" resource="false"/>
+			</field>
+			<field property="changeAffcSeCode" depends="required">
+        		<arg0 key="변경영향도" resource="false"/>
+			</field>
+			<field property="changeScopeSeCode" depends="required">
+        		<arg0 key="변경범위" resource="false"/>
+			</field>
+      	 	<field property="changeConfmDe" depends="date">
+        		<arg0 key="CCB승인일" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+			<field property="changeExmntOpinion" depends="maxlength">
+        		<arg0 key="CCB검토의견" resource="false"/>
+        		<arg1 key="200" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>200</var-value>
+				</var>
+			</field>
+			<field property="changeOpertorId" depends="required">
+        		<arg0 key="변경담당자" resource="false"/>
+			</field>
+			
+			<!-- 
+			<field property="changeOpertorNm" depends="required">
+        		<arg0 key="변경담당자" resource="false"/>
+			</field>
+ 			-->			
+		</form>
+        <form name="changeWorkPlanVO">
+           <field property="planBeginDe" depends="required, date">
+        		<arg0 key="계획작업기간(시작)" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+		  	<field property="planEndDe" depends="required, date">
+        		<arg0 key="계획작업기간(종료)" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+			<field property="opertPlanCn" depends="required, maxlength">
+        		<arg0 key="작업계획" resource="false"/>
+        		<arg1 key="200" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>200</var-value>
+				</var>
+			</field>
+		</form>
+		
+		<form name="changeWorkVO">
+           <field property="realOpertBeginDe" depends="required, date">
+        		<arg0 key="실제작업기간(시작)" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+		  	<field property="realOpertEndDe" depends="required, date">
+        		<arg0 key="실제작업기간(종료)" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+			<field property="changeOpertCn" depends="required, maxlength">
+        		<arg0 key="작업내용" resource="false"/>
+        		<arg1 key="1000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>1000</var-value>
+				</var>
+			</field>
+			<field property="opertComptAt" depends="required">
+        		<arg0 key="작업완료" resource="false"/>
+			</field>
+		</form>
+    	 <form name="changeWorkPlanConfm">
+			<field property="planExmntCn" depends="required, maxlength">
+        		<arg0 key="작업계획검토내용" resource="false"/>
+        		<arg1 key="200" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>200</var-value>
+				</var>
+			</field>
+			<field property="planExmntResultCode" depends="required">
+        		<arg0 key="계획검토결과" resource="false"/>
+			</field>
+		</form>	
+
+		 <form name="changeWorkComptConfm">
+			<field property="comptExmntCn" depends="required, maxlength">
+        		<arg0 key="완료검토내용" resource="false"/>
+        		<arg1 key="200" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>200</var-value>
+				</var>
+			</field>
+			<field property="comptExmntResultCode" depends="required">
+        		<arg0 key="완료검토결과" resource="false"/>
+			</field>
+		</form>		
+						
+	</formset>
+</form-validation>

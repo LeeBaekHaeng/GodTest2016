@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1DomainClassRequest">
+	
+	<typeAlias  alias="egovMap" 			    type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="domainClassRequestInfo" 	type="egovframework.oe1.cms.cmm.service.DomainClassRequestInfo"/>
+	<typeAlias  alias="searchVO" 	            type="egovframework.oe1.cms.cmm.service.MetaDataSearchVO"/>
+
+	<resultMap id="domainClassRequestInfoMap" class="egovframework.oe1.cms.cmm.service.DomainClassRequestInfo">
+        <result property="reqstProcessId" column="reqstProcessId" columnIndex="1"/>
+        <result property="reqstProcessSn" column="reqstProcessSn" columnIndex="2"/>
+        <result property="applcntNm" column="applcntNm" columnIndex="3"/>
+        <result property="jobSeCode" column="jobSeCode" columnIndex="4"/>
+        <result property="processSttusCode" column="processSttusCode" columnIndex="5"/>
+        <result property="reqstDe" column="reqstDe" columnIndex="6"/>
+        <result property="domnClNm" column="domnClNm" columnIndex="7"/>
+    </resultMap>
+	
+	<!-- 도메인분류신청목록총수조회 -->
+	<select id="domainClRequestDAO.selectDomainClRequestInfoListTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+          FROM  OE1TNDOMAINCLASSREQUESTINFO A
+             ,  OE1TNMETADATAREQUESTINFO    B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+           AND  A.REQST_PROCESS_SN = (SELECT MAX(REQST_PROCESS_SN) FROM OE1TNDOMAINCLASSREQUESTINFO X WHERE X.REQST_PROCESS_ID = A.REQST_PROCESS_ID)
+           AND  A.DOMN_CL_NM LIKE CONCAT(CONCAT('%', #srchDomnClNm#), '%')
+        <isNotEmpty prepend="AND" property="srchApplcntNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchApplcntNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchProcessSttusCode" >
+                PROCESS_STTUS_CODE = #srchProcessSttusCode#
+        </isNotEmpty>
+    </select>	
+    
+	<!-- 도메인분류신청목록조회 -->
+	<select id="domainClRequestDAO.selectDomainClRequestInfoList" parameterClass="searchVO" resultMap="domainClassRequestInfoMap">
+
+        SELECT  A.REQST_PROCESS_ID reqstProcessId
+             ,  A.REQST_PROCESS_SN reqstProcessSn
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) applcntNm
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1103' AND X.CODE = B.JOB_SE_CODE) jobSeCode
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1104' AND X.CODE = B.PROCESS_STTUS_CODE) processSttusCode
+             ,  B.REQST_DE         reqstDe
+             ,  A.DOMN_CL_NM       domnClNm
+          FROM  OE1TNDOMAINCLASSREQUESTINFO A
+             ,  OE1TNMETADATAREQUESTINFO    B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+           AND  A.REQST_PROCESS_SN = (SELECT MAX(REQST_PROCESS_SN) FROM OE1TNDOMAINCLASSREQUESTINFO X WHERE X.REQST_PROCESS_ID = A.REQST_PROCESS_ID)
+           AND  A.DOMN_CL_NM LIKE CONCAT(CONCAT('%', #srchDomnClNm#), '%')
+        <isNotEmpty prepend="AND" property="srchApplcntNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchApplcntNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchProcessSttusCode" >
+                PROCESS_STTUS_CODE = #srchProcessSttusCode#
+        </isNotEmpty>
+        ORDER BY A.REQST_PROCESS_ID DESC
+         LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+	
+	<!-- 도메인분류신청상세조회 -->
+	<select id="domainClRequestDAO.selectDomainClRequestInfo" parameterClass="domainClassRequestInfo" resultClass="domainClassRequestInfo">
+        SELECT  A.REQST_PROCESS_ID reqstProcessId
+             ,  A.REQST_PROCESS_SN reqstProcessSn
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1103' AND X.CODE = B.JOB_SE_CODE) jobSeCode
+             ,  B.APPLCNT_ID       applcntId
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) applcntNm
+             ,  B.REQST_DE         reqstDe
+             ,  B.REQST_PRVONSH    reqstPrvonsh
+             ,  B.PROCESS_STTUS_CODE processSttusCode
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1104' AND X.CODE = B.PROCESS_STTUS_CODE) processSttus
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.OPETR_ID = X.MBER_ID) opetrNm
+             ,  B.PROCESS_DE       processDe
+             ,  B.PROCESS_PRVONSH  processPrvonsh
+             ,  A.DOMN_CL_NM       domnClNm
+          FROM  OE1TNDOMAINCLASSREQUESTINFO A
+             ,  OE1TNMETADATAREQUESTINFO    B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+		   AND  A.REQST_PROCESS_ID = #reqstProcessId#    
+		   AND  A.REQST_PROCESS_SN = #reqstProcessSn#
+	</select>	
+		
+	<!-- 도메인분류신청등록 -->
+	<insert id="domainClRequestDAO.insertDomainClRequestInfo">
+	<![CDATA[
+		INSERT
+		  INTO  OE1TNDOMAINCLASSREQUESTINFO
+		     (  REQST_PROCESS_ID
+		     ,  REQST_PROCESS_SN
+		     ,  DOMN_CL_NM
+		     ,  FRST_REGIST_PNTTM
+		     ,  FRST_REGISTER_ID
+		     ,  LAST_UPDT_PNTTM
+		     ,  LAST_UPDUSR_ID
+		     )
+		VALUES
+		     (  #reqstProcessId#
+		     ,  #reqstProcessSn#
+		     ,  #domnClNm#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+		     )
+
+	]]>
+	</insert>
+	
+	<!-- 도메인분류신청수정 -->
+	<update id="domainClRequestDAO.updateDomainClRequestInfo">
+	<![CDATA[
+		UPDATE  OE1TNDOMAINCLASSREQUESTINFO
+		   SET  DOMN_CL_NM = #domnClNm#
+		     ,  LAST_UPDT_PNTTM = SYSDATE()
+		     ,  LAST_UPDUSR_ID = #lastUpdusrId#
+		 WHERE  REQST_PROCESS_ID = #reqstProcessId#    
+		   AND  REQST_PROCESS_SN = #reqstProcessSn#
+	]]>
+	</update>
+	
+	<!-- 도메인분류신청삭제 -->
+	<delete id="domainClRequestDAO.deleteDomainClRequestInfo">
+	<![CDATA[
+		DELETE  
+		  FROM  OE1TNDOMAINCLASSREQUESTINFO
+		 WHERE  REQST_PROCESS_ID = #reqstProcessId#    
+		   AND  REQST_PROCESS_SN = #reqstProcessSn#
+	]]>
+	
+
+	</delete>
+	
+</sqlMap>

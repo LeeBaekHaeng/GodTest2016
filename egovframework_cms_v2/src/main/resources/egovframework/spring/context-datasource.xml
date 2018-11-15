@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="propertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/egovframework/property/globals.properties</value>
+                <!-- value>file:/product/jeus/egovProps/globals.properties</value-->
+            </list>
+        </property>
+    </bean>
+
+	<!-- DataSource -->
+	<alias name="dataSource-${Globals.DbType}" alias="dataSource" />
+    	
+	<!-- mysql -->
+    <bean id="dataSource-mysql" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+<!--         <property name="url" value="jdbc:mysql://192.168.200.24:1621/oe1"/> -->
+<!--         <property name="url" value="jdbc:mysql://127.0.0.1:3306/oe1"/> -->
+        <property name="url" value="jdbc:mysql://localhost:3306/oe1"/>
+        <property name="username" value="oe1"/>
+        <property name="password" value="oe1dev"/>
+    </bean>
+    
+	<!-- Oracle -->
+    <bean id="dataSource-oracle" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@192.168.200.22:1521:egovfrm"/>
+        <property name="username" value="rte"/>
+        <property name="password" value="rte01"/>
+    </bean>
+
+	<!-- Altibase -->
+	<bean id="dataSource-altibase" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="Altibase.jdbc.driver.AltibaseDriver"/>
+		<property name="url" value="jdbc:Altibase://192.168.200.22:1721/egovfrm?encoding=UTF-8" />
+		<property name="username" value="rte"/>
+		<property name="password" value="rte01"/>
+		<property name="maxActive" value="10"/>
+	</bean>
+
+	<!-- Tibero -->
+	<bean id="dataSource-tibero" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.tmax.tibero.jdbc.TbDriver"/>
+		<property name="url" value="jdbc:tibero:thin:@192.168.200.22:1821:egovfrm" />
+		<property name="username" value="rte"/>
+		<property name="password" value="rte"/>
+	</bean>    
+</beans>

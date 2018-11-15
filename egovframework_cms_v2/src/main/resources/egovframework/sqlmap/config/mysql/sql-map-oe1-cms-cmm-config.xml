@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<!-- 용어사전 -->
+<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1DicTerm_mysql_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1DicGovTerm_mysql_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1DicWord_mysql_SQL.xml" />
+	  	
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/notify/EgovMail_mysql_SQL.xml" />
+	<!-- 프레임웍환경정보 -->	
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1FrmwrkInfoManage_mysql_SQL.xml" /> 
+	<!-- 행사일정관리 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1SchdulManage_mysql_SQL.xml" /> 
+	
+	<!-- 메타데이터 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1DomainClass_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1Domain_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1DomainClassRequest_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1DomainRequest_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1MetaDataRequest_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1WordDic_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1WordDicRequest_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1Synonym_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1SynonymRequest_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1DataDic_mysql_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/cmm/EgovOe1DataDicRequest_mysql_SQL.xml" /> 
+	
+</sqlMapConfig>

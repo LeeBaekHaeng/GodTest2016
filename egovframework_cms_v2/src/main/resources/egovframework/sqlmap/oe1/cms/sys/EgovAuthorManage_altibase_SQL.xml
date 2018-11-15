@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="AuthorManageVO" type="egovframework.oe1.cms.sys.service.EgovOe1AuthorManageVO"/>
+    <typeAlias  alias="AuthorManage" type="egovframework.oe1.cms.sys.service.AuthorManage"/>
+
+	<resultMap id="author" class="egovframework.oe1.cms.sys.service.EgovOe1AuthorManageVO">
+		<result property="authorCode" column="AUTHOR_CODE" columnIndex="1"/>
+		<result property="authorNm" column="AUTHOR_NM" columnIndex="2"/>
+		<result property="authorDc" column="AUTHOR_DC" columnIndex="3"/>
+		<result property="authorCreatDe" column="AUTHOR_CREAT_DE" columnIndex="4"/>
+	</resultMap>
+
+	<insert id="authorManageDAO.insertAuthor" parameterClass="AuthorManage">
+		<![CDATA[
+			INSERT INTO OE1TNAUTHORINFO 
+				  ( AUTHOR_CODE
+				  , AUTHOR_NM
+				  , AUTHOR_DC
+				  , AUTHOR_CREAT_DE )
+		   VALUES ( #authorCode#
+			      , #authorNm#
+				  , #authorDc#
+				  , TO_CHAR(sysdate, 'YYYYMMDD') 
+				  )
+		]]>
+	</insert>
+
+	<select id="authorManageDAO.selectAuthorCnt" parameterClass="AuthorManageVO" resultClass="int">
+		SELECT  COUNT(*) totcnt
+		  FROM  OE1TNAUTHORINFO
+	  	 WHERE  AUTHOR_CODE = #authorCode#
+	</select>
+		
+	<update id="authorManageDAO.updateAuthor" parameterClass="AuthorManage">
+		<![CDATA[
+			UPDATE OE1TNAUTHORINFO 
+			   SET AUTHOR_NM       = #authorNm#
+				 , AUTHOR_DC       = #authorDc#
+				 , AUTHOR_CREAT_DE = TO_CHAR(sysdate, 'YYYYMMDD') 
+		  	 WHERE AUTHOR_CODE     = #authorCode#
+		]]>
+	</update>
+	
+	<delete id="authorManageDAO.deleteAuthor">
+		<![CDATA[
+			DELETE 
+			  FROM OE1TNAUTHORINFO 
+			 WHERE AUTHOR_CODE = #authorCode#
+		]]>
+	</delete>
+	
+	<select id="authorManageDAO.selectAuthor" resultMap="author">
+		<![CDATA[
+			SELECT  AUTHOR_CODE
+			     ,  AUTHOR_NM
+			     ,  AUTHOR_DC
+			     ,  AUTHOR_CREAT_DE
+			  FROM  OE1TNAUTHORINFO
+			 WHERE  AUTHOR_CODE = #authorCode#
+		]]>
+	</select>
+	
+	<select id="authorManageDAO.selectAuthorList" parameterClass="AuthorManageVO" resultMap="author">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        
+        /* 구현 Sql */
+        <![CDATA[
+			SELECT  AUTHOR_CODE
+			     ,  AUTHOR_NM
+			     ,  AUTHOR_DC
+			     ,  AUTHOR_CREAT_DE
+			  FROM  OE1TNAUTHORINFO
+			 WHERE  1=1
+        ]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					AUTHOR_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			ORDER BY AUTHOR_CREAT_DE DESC
+        /* 구현 Sql */
+        
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+
+			
+	</select>
+	
+	<select id="authorManageDAO.selectAuthorListTotCnt" parameterClass="AuthorManageVO" resultClass="int">
+		SELECT  COUNT(*) totcnt
+		  FROM  OE1TNAUTHORINFO
+		 WHERE  1 = 1
+		<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				AUTHOR_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+		</isEqual>
+	</select>
+	
+	<select id="authorManageDAO.selectAuthorBeforeDeleteAuthor" parameterClass="AuthorManage" resultClass="int">
+			SELECT NVL(SUM(D.CNT), 0) cnt FROM
+			(
+			SELECT A.AUTHOR_CODE, COUNT(*) CNT FROM OE1TNAUTHORROLERELATE A
+			GROUP BY A.AUTHOR_CODE
+			UNION ALL
+			SELECT B.AUTHOR_CODE, COUNT(*) CNT FROM OE1TNMENUCREATE B
+			GROUP BY B.AUTHOR_CODE
+			UNION ALL
+			SELECT C.AUTHOR_CODE, COUNT(*) CNT FROM OE1TNEMPLYRSCRTYESTBS C
+			GROUP BY C.AUTHOR_CODE
+			) D
+			WHERE
+			D.AUTHOR_CODE = #authorCode#
+	</select>
+	
+    <select id="authorManageDAO.selectAuthorAllList" parameterClass="AuthorManageVO" resultMap="author">
+            SELECT AUTHOR_CODE
+                 , AUTHOR_NM
+                 , AUTHOR_DC
+                 , AUTHOR_CREAT_DE
+              FROM OE1TNAUTHORINFO
+    </select>
+</sqlMap>

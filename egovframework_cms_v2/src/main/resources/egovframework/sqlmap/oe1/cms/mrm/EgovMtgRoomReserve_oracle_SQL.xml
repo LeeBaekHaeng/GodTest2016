@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1ResveMtg">
+	
+	<typeAlias  alias="egovMap" 				type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1ResveMtgVO" 		type="egovframework.oe1.cms.mrm.service.EgovOe1ResveMtgVO"/>
+	<typeAlias  alias="egovOe1ResveSttusVO" 	type="egovframework.oe1.cms.mrm.service.EgovOe1ResveSttusVO"/>
+	
+
+	<!-- 회의실예약 처리를 위한 resultMap -->
+	<resultMap id="egovOe1ResveMtg" class="egovframework.oe1.cms.mrm.service.EgovOe1ResveMtgVO">
+		<result property="mtgRoomResId" 			column="MTG_ROOM_RES_ID" 		/>
+		<result property="schdulSeCode" 			column="SCHDUL_SE_CODE" 		/>
+		<result property="schdulSeCodeName" 		column="SCHDUL_SE_CODE_NAME" 	/>		
+		<result property="jobSeCode" 				column="JOB_SE_CODE" 			/>
+		<result property="jobSeCodeName"			column="JOB_SE_CODE_NAME" 		/>
+		<result property="mtgNm" 					column="MTG_NM" 				/>
+		<result property="reptitSeCode" 			column="REPTIT_SE_CODE" 		/>
+		<result property="reptitSeCodeName" 		column="REPTIT_SE_CODE_NAME" 	/>
+		<result property="mtgStartDate" 			column="MTG_START_DATE" 		/>
+		<result property="mtgEndDate" 				column="MTG_END_DATE" 			/>
+		<result property="mtgBeginTime" 			column="MTG_BEGIN_TIME" 		/>		
+		<result property="mtgEndTime" 				column="MTG_END_TIME" 			/>
+		<result property="chargerId" 				column="CHARGER_ID" 			/>
+		<result property="chargerName" 				column="CHARGER_NAME" 			/>
+		<result property="mtgPlaceId" 				column="MTG_PLACE_ID" 			/>
+		<result property="mtgPlaceIdName" 			column="MTG_PLACE_ID_NAME" 		/>		
+		<result property="mtgAttenInfo" 			column="MTG_ATTEN_INFO" 		/>
+		<result property="mtgCn" 					column="MTG_CN" 				/>
+		<result property="atchFileId" 				column="ATCH_FILE_ID" 			/>		
+		<result property="registerId" 				column="REGISTER_ID" 			/>
+		<result property="registerName" 			column="REGISTER_NAME" 			/>
+		<result property="regstYmd" 				column="REGST_YMD" 			/>
+		<result property="reptitDfk"				column="REPTIT_DFK" 			/>		<!-- 반복요일 -->		
+		<result property="reptitDfkName"			column="REPTIT_DFK_NAME"		/>		<!-- 반복요일 -->										
+	</resultMap>
+	
+	<!-- 회의실예약  수정화면 만을 위해만든 것. -->
+	<resultMap id="egovOe1ResveMtgUpdate" class="egovframework.oe1.cms.mrm.service.EgovOe1ResveMtgVO">
+		<result property="mtgRoomResId" 			column="MTG_ROOM_RES_ID" 		/>
+		<result property="schdulSeCode" 			column="SCHDUL_SE_CODE" 		/>
+		<result property="schdulSeCodeName" 		column="SCHDUL_SE_CODE_NAME" 	/>		
+		<result property="jobSeCode" 				column="JOB_SE_CODE" 			/>
+		<result property="jobSeCodeName"			column="JOB_SE_CODE_NAME" 		/>
+		<result property="mtgNm" 					column="MTG_NM" 				/>
+		<result property="reptitSeCode" 			column="REPTIT_SE_CODE" 		/>
+		<result property="reptitSeCodeName" 		column="REPTIT_SE_CODE_NAME" 	/>
+		<result property="mtgStartDate" 			column="MTG_START_DATE" 		/>
+		<result property="mtgEndDate" 				column="MTG_END_DATE" 			/>
+		<result property="startHh" 					column="START_HH" 				/>		
+		<result property="startMm" 					column="START_MM" 				/>
+		<result property="finishHh" 				column="FINISH_HH" 				/>		
+		<result property="finishMm" 				column="FINISH_MM" 				/>		
+		<result property="chargerId" 				column="CHARGER_ID" 			/>
+		<result property="chargerName" 				column="CHARGER_NAME" 			/>
+		<result property="mtgPlaceId" 				column="MTG_PLACE_ID" 			/>
+		<result property="mtgPlaceIdName" 			column="MTG_PLACE_ID_NAME" 		/>		
+		<result property="mtgAttenInfo" 			column="MTG_ATTEN_INFO" 		/>
+		<result property="mtgCn" 					column="MTG_CN" 				/>
+		<result property="atchFileId" 				column="ATCH_FILE_ID" 			/>		
+		<result property="registerId" 				column="REGISTER_ID" 			/>
+		<result property="registerName" 			column="REGISTER_NAME" 			/>
+		<result property="regstYmd" 				column="REGST_YMD" 			/>
+		<result property="reptitDfk"				column="REPTIT_DFK" 			/>		<!-- 반복요일 -->		
+		<result property="reptitDfkName"			column="REPTIT_DFK_NAME"		/>		<!-- 반복요일 -->										
+	</resultMap>	
+	
+	
+	<!-- 회의실예약 등록 -->
+	<insert id="egovOe1ResveMtgDAO.insertResveMtg">
+		<![CDATA[
+			INSERT INTO OE1TNRESVEMTG 
+				( MTG_ROOM_RES_ID
+				  , SCHDUL_SE_CODE
+				  , JOB_SE_CODE
+				  , MTG_NM
+				  , REPTIT_SE_CODE
+				  , MTG_START_DATE
+				  , MTG_END_DATE
+				  , MTG_BEGIN_TIME
+				  , MTG_END_TIME
+				  , CHARGER_ID	
+				  , MTG_PLACE_ID	
+				  , MTG_ATTEN_INFO	
+				  , MTG_CN	
+				  , ATCH_FILE_ID	
+				  , REGISTER_ID	
+				  , REGST_YMD
+				  , REPTIT_DFK					  				  				  				  				  				  				  				  
+				)
+			VALUES ( #mtgRoomResId#
+				  , #schdulSeCode#
+				  , #jobSeCode#
+				  , #mtgNm#
+				  , #reptitSeCode#
+				  , #mtgStartDate#
+				  , #mtgEndDate#
+				  , #mtgBeginTime#
+				  , #mtgEndTime#
+				  , #chargerId#
+				  , #mtgPlaceId#
+				  , #mtgAttenInfo#
+				  , #mtgCn#
+				  ,	#atchFileId#
+				  ,	#registerId#
+				  , TO_CHAR( SYSDATE, 'yyyymmdd')	
+				  ,	#reptitDfk#		  
+				  )			  
+		]]>
+	</insert>
+	
+	<!-- 회의참석자  등록 -->
+	<insert id="egovOe1ResveMtgDAO.insertMtGattenInfo">
+		<![CDATA[
+			INSERT INTO OE1TNMTGATTENINFO 
+				( MTG_ROOM_RES_ID
+				  , MTG_ATTEN_ID					  				  				  				  				  				  				  				  
+				)
+			VALUES ( #mtgRoomResId#
+				  , #mtgAttenId#		  
+				  )			  
+		]]>
+	</insert>	
+	
+	<!-- 회의실예약 수정 -->
+	<update id="egovOe1ResveMtgDAO.updateResveMtg">
+		<![CDATA[
+			UPDATE OE1TNRESVEMTG 
+			SET 	SCHDUL_SE_CODE				= #schdulSeCode#
+				  , JOB_SE_CODE					= #jobSeCode#
+				  , MTG_NM						= #mtgNm#
+				  , REPTIT_SE_CODE				= #insRepeat#
+				  , MTG_START_DATE				= #mtgStartDate#
+				  , MTG_END_DATE				= #mtgEndDate#
+				  , MTG_BEGIN_TIME				= #mtgBeginTime#
+				  , MTG_END_TIME				= #mtgEndTime#
+				  , CHARGER_ID					= #chargerId#
+				  , MTG_PLACE_ID				= #mtgPlaceId#
+				  , MTG_ATTEN_INFO				= #mtgAttenInfo#
+				  , MTG_CN						= #mtgCn#
+				  , ATCH_FILE_ID				= #atchFileId#
+				  , REGISTER_ID					= #registerId#
+				  , REGST_YMD					= TO_CHAR( SYSDATE, 'yyyymmdd')	
+				  , REPTIT_DFK					= #reptitDfk#		
+			WHERE MTG_ROOM_RES_ID				= #mtgRoomResId#
+		]]>
+	</update>
+	
+	<!-- 회의참석자  삭제 -->
+	<delete id="egovOe1ResveMtgDAO.deleteMtGattenInfo">
+		<![CDATA[
+			DELETE FROM OE1TNMTGATTENINFO 
+			WHERE MTG_ROOM_RES_ID				= #mtgRoomResId#
+		]]>
+	</delete>
+	
+		
+	<!-- 회의실예약 삭제 -->
+	<delete id="egovOe1ResveMtgDAO.deleteResveMtg">
+		<![CDATA[
+			DELETE FROM OE1TNRESVEMTG 
+			WHERE MTG_ROOM_RES_ID				= #mtgRoomResId#
+		]]>
+	</delete>
+	
+	<!-- 회의실예약 상세 -->
+	<select id="egovOe1ResveMtgDAO.selectResveMtg" resultMap="egovOe1ResveMtg">
+		<![CDATA[
+			SELECT
+				A.MTG_ROOM_RES_ID
+				, A.SCHDUL_SE_CODE
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1032' AND CODE = A.SCHDUL_SE_CODE ) AS SCHDUL_SE_CODE_NAME
+                , A.JOB_SE_CODE
+                , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1033' AND CODE = A.JOB_SE_CODE ) AS JOB_SE_CODE_NAME
+                , A.MTG_NM
+                , A.REPTIT_SE_CODE
+                , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1034' AND CODE = A.REPTIT_SE_CODE ) AS REPTIT_SE_CODE_NAME
+                , TO_DATE(A.MTG_START_DATE, 'yyyy-mm-dd') AS MTG_START_DATE 
+                , TO_DATE(A.MTG_END_DATE, 'yyyy-mm-dd') AS MTG_END_DATE 
+                , substr(TO_CHAR( to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME,'yyyy-mm-dd HH24:MI'), 'yyyy-mm-dd HH24:mi:ss'),1,16) AS MTG_BEGIN_TIME 
+                , substr(TO_CHAR( to_date(A.MTG_END_DATE||A.MTG_END_TIME,'yyyy-mm-dd HH24:MI'), 'yyyy-mm-dd HH24:mi:ss'),1,16) AS MTG_END_TIME 
+                , A.CHARGER_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.CHARGER_ID)AS CHARGER_NAME                
+                , A.MTG_PLACE_ID
+                , (SELECT MTG_PLACE_NM FROM OE1TNMTGRM WHERE MTG_PLACE_ID = A.MTG_PLACE_ID ) AS MTG_PLACE_ID_NAME
+                , A.MTG_ATTEN_INFO    
+                , A.MTG_CN
+                , (SELECT MAX(ATCH_FILE_ID) FROM OE1TNFILEDETAIL WHERE ATCH_FILE_ID = A.ATCH_FILE_ID) AS ATCH_FILE_ID
+                , A.REGISTER_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.REGISTER_ID)AS REGISTER_NAME                                
+                , TO_CHAR(TO_DATE( A.REGST_YMD, 'yyyy-mm-dd'),'yyyy-mm-dd') AS REGST_YMD
+                , A.REPTIT_DFK
+                , CASE A.REPTIT_DFK WHEN '0' THEN '매주일요일'
+                       WHEN '1' THEN '매주월요일'
+                       WHEN '2' THEN '매주화요일'
+                       WHEN '3' THEN '매주수요일'
+                       WHEN '4' THEN '매주목요일'
+                       WHEN '5' THEN '매주금요일'
+                       ELSE '매주토요일' END AS REPTIT_DFK_NAME    
+            FROM OE1TNRESVEMTG  A
+			WHERE  A.MTG_ROOM_RES_ID = #mtgRoomResId#
+		]]>
+	</select>
+
+	<!-- 회의실예약 조회 -->
+	<select id="egovOe1ResveMtgDAO.selectResveMtgList" parameterClass="egovOe1ResveMtgVO" resultClass="egovMap">
+        SELECT
+            REPTIT_DFK
+            ,MTG_ROOM_RES_ID
+            ,MTG_START_DATE
+            ,MTG_BEGIN_TIME 	
+            ,MTG_END_TIME 
+            ,MTG_PLACE_ID_NAME
+            ,MTG_NM
+            ,CHARGER_NAME
+            ,MTG_ATTEN_ID||'외 '||MTG_ATTEN_count||'명' AS MTG_ATTEN_ID
+        FROM
+        (	
+            SELECT
+				TO_CHAR(TO_DATE(A.MTG_START_DATE,'yyyy-mm-dd'),'D') AS REPTIT_DFK
+				,A.MTG_ROOM_RES_ID		
+				,TO_CHAR( to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME,'yyyy-mm-dd HH24:MI'), 'dd') AS MTG_START_DATE
+				,TO_CHAR( to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME,'yyyy-mm-dd HH24:MI'), 'HH24:mi') AS MTG_BEGIN_TIME 							
+				,TO_CHAR( to_date(A.MTG_END_DATE||A.MTG_END_TIME,'yyyy-mm-dd HH24:MI'), 'HH24:mi') AS MTG_END_TIME 								
+				,(SELECT MTG_PLACE_NM FROM OE1TNMTGRM WHERE MTG_PLACE_ID = A.MTG_PLACE_ID ) AS MTG_PLACE_ID_NAME				
+				,'['||(SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1032' AND CODE = A.SCHDUL_SE_CODE )||']'||A.MTG_NM AS MTG_NM				
+				,(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.CHARGER_ID)AS CHARGER_NAME	
+                ,(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID =(SELECT MTG_ATTEN_ID FROM OE1TNMTGATTENINFO WHERE MTG_ROOM_RES_ID = A.MTG_ROOM_RES_ID and rownum=1)) AS MTG_ATTEN_ID
+                ,(SELECT count(MTG_ATTEN_ID)-1 FROM OE1TNMTGATTENINFO WHERE MTG_ROOM_RES_ID = A.MTG_ROOM_RES_ID) AS MTG_ATTEN_count     									
+            FROM OE1TNRESVEMTG A
+			WHERE 1=1
+			<isNotEqual prepend="AND" property="searchSchdulSeCode" compareValue="">
+			    A.SCHDUL_SE_CODE = #searchSchdulSeCode#
+			</isNotEqual>
+			<isNotEqual prepend="AND" property="searchYear" compareValue="">
+			    TO_CHAR( TO_DATE(A.MTG_START_DATE, 'yyyy-mm-dd'), 'YYYY') = #searchYear#
+			</isNotEqual>	
+			<isNotEqual prepend="AND" property="searchMonth" compareValue="">
+			    TO_CHAR( TO_DATE(A.MTG_START_DATE, 'yyyy-mm-dd'), 'MM') = #searchMonth#
+			</isNotEqual>						
+			ORDER BY MTG_START_DATE ASC 
+		)C			
+	</select>
+	
+	
+	<!-- 회의실예약 수정화면 조회 -->
+	<select id="egovOe1ResveMtgDAO.selectResveMtgUpdate" resultMap="egovOe1ResveMtgUpdate">
+		<![CDATA[
+			SELECT
+				A.MTG_ROOM_RES_ID
+				, A.SCHDUL_SE_CODE
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1032' AND CODE = A.SCHDUL_SE_CODE ) AS SCHDUL_SE_CODE_NAME
+				, A.JOB_SE_CODE
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1033' AND CODE = A.JOB_SE_CODE ) AS JOB_SE_CODE_NAME
+				, A.MTG_NM
+				, A.REPTIT_SE_CODE
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1034' AND CODE = A.REPTIT_SE_CODE ) AS REPTIT_SE_CODE_NAME
+				, TO_CHAR(TO_DATE( A.MTG_START_DATE, 'yyyy-mm-dd'),'yyyy-mm-dd') AS MTG_START_DATE 
+				, TO_CHAR(TO_DATE( A.MTG_END_DATE, 'yyyy-mm-dd'),'yyyy-mm-dd') AS MTG_END_DATE 
+				, substr(A.MTG_BEGIN_TIME,1,2) AS START_HH 
+				, substr(A.MTG_BEGIN_TIME,3,2) AS START_MM 
+				, substr(A.MTG_END_TIME,1,2) AS FINISH_HH
+				, substr(A.MTG_END_TIME,3,2) AS FINISH_MM
+				, A.CHARGER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.CHARGER_ID)AS CHARGER_NAME                
+                , A.MTG_PLACE_ID
+                , (SELECT MTG_PLACE_NM FROM OE1TNMTGRM WHERE MTG_PLACE_ID = A.MTG_PLACE_ID ) AS MTG_PLACE_ID_NAME
+                , A.MTG_ATTEN_INFO    
+                , A.MTG_CN
+                , (SELECT MAX(ATCH_FILE_ID) FROM OE1TNFILEDETAIL WHERE ATCH_FILE_ID = A.ATCH_FILE_ID) AS ATCH_FILE_ID
+                , A.REGISTER_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.REGISTER_ID)AS REGISTER_NAME                                
+                , TO_DATE( A.REGST_YMD, 'yyyy-mm-dd') AS REGST_YMD
+                , A.REPTIT_DFK
+                , CASE A.REPTIT_DFK WHEN '0' THEN '매주일요일'
+                       WHEN '1' THEN '매주월요일'
+                       WHEN '2' THEN '매주화요일'
+                       WHEN '3' THEN '매주수요일'
+                       WHEN '4' THEN '매주목요일'
+                       WHEN '5' THEN '매주금요일'
+                       ELSE '매주토요일' END AS REPTIT_DFK_NAME    
+            FROM OE1TNRESVEMTG A
+			WHERE  A.MTG_ROOM_RES_ID = #mtgRoomResId#
+		]]>
+	</select>
+	
+		
+	<!-- 회의참석자 목록 -->
+ 	<select id="egovOe1ResveMtgDAO.selectMtGattenInfoList" resultClass="egovMap">
+		<![CDATA[
+			SELECT A.MTG_ATTEN_ID AS MTG_ATTEN_ID
+				 , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.MTG_ATTEN_ID)AS MTG_ATTEN_NAME	 
+			  FROM OE1TNMTGATTENINFO A
+			 WHERE A.MTG_ROOM_RES_ID = #mtgRoomResId#
+			 ORDER BY MTG_ATTEN_NAME
+		]]>
+	</select>	
+	
+	<!-- 회의실 목록 -->
+ 	<select id="egovOe1ResveMtgDAO.selectMtgPlaceIdList" resultClass="egovMap">
+		<![CDATA[
+			SELECT MTG_PLACE_ID
+				 , MTG_PLACE_NM AS  MTG_PLACE_ID_NAME	 
+			  FROM OE1TNMTGRM
+			  WHERE USE_AT = 'Y'
+			 ORDER BY MTG_PLACE_ID_NAME
+		]]>
+	</select>		
+	
+	<!-- 사용자 멀티선택  검색 -->
+ 	<select id="egovOe1MtgRmDAO.selectGeneralMemberMultiSelectList"  parameterClass="egovOe1ResveMtgVO" resultClass="egovMap">
+	        SELECT * FROM
+	        (
+	            SELECT 
+				    A.MBER_ID AS MNGR_ID
+					, A.MBER_NM AS MNGR_NM  
+				    , A.PSTINST_CODE
+				    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1038' AND X.CODE = TRIM(A.PSTINST_CODE))     PSTINST_NAME
+				    , A.GROUP_ID
+				    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1039' AND X.CODE = TRIM(A.GROUP_ID))     GROUP_NAME
+				FROM OE1TNUSERINFO A
+	        ) C
+	        WHERE 1=1
+	        <isEqual prepend="AND" property="searchCondition" compareValue="cop">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		PSTINST_NAME LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>	
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="tim">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		GROUP_NAME LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="name">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		MNGR_NM LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>
+	        </isEqual>
+			ORDER BY MNGR_NM ASC 			 
+	</select>		
+	
+	<!-- 회의실예약 총 건수 -->
+	<select id="egovOe1ResveMtgDAO.selectResveMtgListTot" parameterClass="egovOe1ResveMtgVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNRESVEMTG
+			WHERE 1=1
+			<isNotEqual prepend="AND" property="searchSchdulSeCode" compareValue="">
+			    SCHDUL_SE_CODE = #searchSchdulSeCode#
+			</isNotEqual>
+			<isNotEqual prepend="AND" property="searchYear" compareValue="">
+			    TO_CHAR( MTG_START_DATE, 'yyyy') = #searchYear#
+			</isNotEqual>	
+			<isNotEqual prepend="AND" property="searchMonth" compareValue="">
+			    TO_CHAR( MTG_START_DATE, 'mm') = #searchMonth#
+			</isNotEqual>	
+	</select>	
+	
+	<!-- 회의실예약 중복 체크  -->
+	<select id="egovOe1ResveMtgDAO.selectDupCheck" parameterClass="egovOe1ResveMtgVO" resultClass="egovMap">
+		SELECT A.SCHDUL_SE_CODE
+		    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1032' AND CODE = A.SCHDUL_SE_CODE ) AS SCHDUL_SE_CODE_NAME
+		    , A.JOB_SE_CODE
+		    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1033' AND CODE = A.JOB_SE_CODE ) AS JOB_SE_CODE_NAME              
+		    ,to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME, 'yyyy-mm-dd HH24:mi') AS MTG_START_DATE
+		    ,to_char(to_date(A.MTG_END_DATE||A.MTG_END_TIME, 'yyyy-mm-dd HH24:mi'),'HH24:mi') AS MTG_END_DATE
+		    ,A.MTG_NM             
+            , A.MTG_PLACE_ID
+            , (SELECT MTG_PLACE_NM FROM OE1TNMTGRM WHERE MTG_PLACE_ID = A.MTG_PLACE_ID ) AS MTG_PLACE_ID_NAME		    
+		    ,A.REPTIT_SE_CODE
+		    ,(SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1034' AND CODE = A.REPTIT_SE_CODE ) AS REPTIT_SE_CODE_NAME    
+		    , A.CHARGER_ID
+		    , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.CHARGER_ID)AS CHARGER_NAME      
+		FROM OE1TNRESVEMTG  A      
+		WHERE 1=1              
+		and  (TO_CHAR(to_date(#mtgStartDate#||#mtgBeginTime#,'yyyy-mm-dd HH24:mi:ss')+1/(24*60*60),'yyyy-mm-dd HH24:mi:ss')                between        TO_CHAR( to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME,'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') and TO_CHAR( to_date(A.MTG_END_DATE||A.MTG_END_TIME,'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss')                                  
+		    OR TO_CHAR(to_date(#mtgEndDate#||#mtgEndTime#,'yyyy-mm-dd HH24:mi:ss')-1/(24*60*60),'yyyy-mm-dd HH24:mi:ss')                   between        TO_CHAR( to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME,'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') and TO_CHAR( to_date(A.MTG_END_DATE||A.MTG_END_TIME,'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss')            )             
+		    and A.MTG_PLACE_ID   = #mtgPlaceId#  
+	</select>	
+	
+	<!-- 회의실예약 중복 체크(수정할 때)  -->
+	<select id="egovOe1ResveMtgDAO.selectDupCheckUpdate" parameterClass="egovOe1ResveMtgVO" resultClass="egovMap">
+		SELECT A.SCHDUL_SE_CODE
+		    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1032' AND CODE = A.SCHDUL_SE_CODE ) AS SCHDUL_SE_CODE_NAME
+		    , A.JOB_SE_CODE
+		    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1033' AND CODE = A.JOB_SE_CODE ) AS JOB_SE_CODE_NAME              
+		    ,to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME, 'yyyy-mm-dd HH24:mi') AS MTG_START_DATE
+		    ,to_char(to_date(A.MTG_END_DATE||A.MTG_END_TIME, 'yyyy-mm-dd HH24:mi'),'HH24:mi') AS MTG_END_DATE
+		    ,A.MTG_NM            
+            , A.MTG_PLACE_ID
+            , (SELECT MTG_PLACE_NM FROM OE1TNMTGRM WHERE MTG_PLACE_ID = A.MTG_PLACE_ID ) AS MTG_PLACE_ID_NAME		     
+		    ,A.REPTIT_SE_CODE
+		    ,(SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1034' AND CODE = A.REPTIT_SE_CODE ) AS REPTIT_SE_CODE_NAME    
+		    , A.CHARGER_ID
+		    , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.CHARGER_ID)AS CHARGER_NAME      
+		FROM OE1TNRESVEMTG  A      
+		WHERE 1=1              
+		and  (TO_CHAR(to_date(#mtgStartDate#||#mtgBeginTime#,'yyyy-mm-dd HH24:mi:ss')+1/(24*60*60),'yyyy-mm-dd HH24:mi:ss')                between        TO_CHAR( to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME,'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') and TO_CHAR( to_date(A.MTG_END_DATE||A.MTG_END_TIME,'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss')                                  
+		    OR TO_CHAR(to_date(#mtgEndDate#||#mtgEndTime#,'yyyy-mm-dd HH24:mi:ss')-1/(24*60*60),'yyyy-mm-dd HH24:mi:ss')                   between        TO_CHAR( to_date(A.MTG_START_DATE||A.MTG_BEGIN_TIME,'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss') and TO_CHAR( to_date(A.MTG_END_DATE||A.MTG_END_TIME,'yyyy-mm-dd HH24:mi:ss'), 'yyyy-mm-dd HH24:mi:ss')            )             
+		and A.MTG_PLACE_ID   	= #mtgPlaceId#  
+		and A.MTG_ROOM_RES_ID	!= #mtgRoomResId#
+	</select>			
+	
+	
+	<!-- 회의실예약현황 조회 -->
+	<select id="egovOe1ResveSttusDAO.selectResveSttusList" parameterClass="egovOe1ResveSttusVO" resultClass="egovMap">
+		SELECT  mtg.MTG_PLACE_NM as MTG_PLACE_NM, mtg.MTG_PLACE_ID as MTG_PLACE_ID, 
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."0800" ),'0') as RESVE_TEMP0800,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."0830" ),'0') as RESVE_TEMP0830,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."0900" ),'0') as RESVE_TEMP0900,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."0930" ),'0') as RESVE_TEMP0930,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1000" ),'0') as RESVE_TEMP1000,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1030" ),'0') as RESVE_TEMP1030,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1100" ),'0') as RESVE_TEMP1100,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1130" ),'0') as RESVE_TEMP1130,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1200" ),'0') as RESVE_TEMP1200,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1230" ),'0') as RESVE_TEMP1230,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1300" ),'0') as RESVE_TEMP1300,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1330" ),'0') as RESVE_TEMP1330,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1400" ),'0') as RESVE_TEMP1400,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1430" ),'0') as RESVE_TEMP1430,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1500" ),'0') as RESVE_TEMP1500,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1530" ),'0') as RESVE_TEMP1530,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1600" ),'0') as RESVE_TEMP1600,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1630" ),'0') as RESVE_TEMP1630,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1700" ),'0') as RESVE_TEMP1700,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1730" ),'0') as RESVE_TEMP1730,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1800" ),'0') as RESVE_TEMP1800,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1830" ),'0') as RESVE_TEMP1830,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1900" ),'0') as RESVE_TEMP1900, 
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."1930" ),'0') as RESVE_TEMP1930,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."2000" ),'0') as RESVE_TEMP2000,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."2030" ),'0') as RESVE_TEMP2030,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."2100" ),'0') as RESVE_TEMP2100,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."2130" ),'0') as RESVE_TEMP2130,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."2200" ),'0') as RESVE_TEMP2200, 
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."2230" ),'0') as RESVE_TEMP2230,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."2300" ),'0') as RESVE_TEMP2300,
+			NVL((SELECT MTG_ROOM_RES_ID||MTG_NM FROM OE1TNRESVEMTG WHERE MTG_ROOM_RES_ID = res."2330" ),'0') as RESVE_TEMP2330                    
+		from    OE1TNMTGRM mtg 
+			left join (	
+				select   NVL(MTG_PLACE_ID,'') AS MTG_PLACE_ID, 
+					case  when 0800 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "0800",
+					case  when 0830 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "0830",
+					case  when 0900 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "0900",
+					case  when 0930 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "0930",
+					case  when 1000 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1000",
+					case  when 1030 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1030",
+					case  when 1100 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1100",
+					case  when 1130 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1130",
+					case  when 1200 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1200",
+					case  when 1230 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1230",
+					case  when 1300 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1300",
+					case  when 1330 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1330",
+					case  when 1400 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1400",
+					case  when 1430 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1430",
+					case  when 1500 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1500",
+					case  when 1530 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1530",
+					case  when 1600 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1600",
+					case  when 1630 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1630",
+					case  when 1700 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1700",
+					case  when 1730 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1730",
+					case  when 1800 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1800",
+					case  when 1830 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1830",
+					case  when 1900 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1900",
+					case  when 1930 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "1930",
+					case  when 2000 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "2000",
+					case  when 2030 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "2030",
+					case  when 2100 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "2100",
+					case  when 2130 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "2130",
+					case  when 2200 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "2200",
+					case  when 2230 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "2230",
+					case  when 2300 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "2300",
+					case  when 2330 between MTG_BEGIN_TIME and (MTG_END_TIME-1)  then MTG_ROOM_RES_ID else '' end AS "2330"                                        
+				FROM   OE1TNRESVEMTG
+				WHERE  MTG_START_DATE = #mtgStartDate#) res 
+		on res.MTG_PLACE_ID = mtg.MTG_PLACE_ID
+		ORDER BY MTG_PLACE_NM
+	</select>	
+</sqlMap>

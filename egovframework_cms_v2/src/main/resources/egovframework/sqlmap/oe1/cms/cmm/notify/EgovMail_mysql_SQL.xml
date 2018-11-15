@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="mail">
+
+	<!-- 상신함 목록조회 -->
+	<select id="oe1SSLMailDAO.selectFileList" resultClass="egovMap">
+		<![CDATA[
+			select FILE_STRE_COURS
+				 , STRE_FILE_NM
+				 , ORIGNL_FILE_NM
+			  from OE1TNFILEDETAIL
+			 WHERE ATCH_FILE_ID
+		]]>
+		<iterate property="atchFileIds" prepend="IN" open="(" conjunction=", " close=")">
+		 	#atchFileIds[]#
+		</iterate>
+	</select>
+</sqlMap>

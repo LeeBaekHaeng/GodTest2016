@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1Domain">
+    
+    <typeAlias  alias="egovMap"             type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="domainInfo"          type="egovframework.oe1.cms.cmm.service.DomainInfo"/>
+    <typeAlias  alias="searchVO"            type="egovframework.oe1.cms.cmm.service.MetaDataSearchVO"/>
+    
+    <resultMap id="domainHistMap" class="egovframework.oe1.cms.cmm.service.DomainInfo">
+        <result property="domnId" column="domnId" columnIndex="1"/>
+        <result property="domnSn" column="domnSn" columnIndex="2"/>
+        <result property="sttusCode" column="sttusCode" columnIndex="3"/>
+        <result property="processPrvonsh" column="processPrvonsh" columnIndex="4"/>
+        <result property="domnNm" column="domnNm" columnIndex="5"/>
+         <result property="dataTy" column="dataTy" columnIndex="6"/>
+        <result property="dataLt" column="dataLt" columnIndex="7"/>
+        <result property="domnDc" column="domnDc" columnIndex="8"/>
+        <result property="domnClId" column="domnClId" columnIndex="9"/>        
+        <result property="useAt" column="useAt" columnIndex="10"/>
+        <result property="frstRegistPnttm" column="frstRegistPnttm" columnIndex="11"/>
+        <result property="frstRegisterId" column="frstRegisterId" columnIndex="12"/>
+        <result property="frstRegisterNm" column="frstRegisterNm" columnIndex="13"/>
+    </resultMap>
+    
+    <resultMap id="domainInfoMap" class="egovframework.oe1.cms.cmm.service.DomainInfo">
+        <result property="domnId" column="domnId" columnIndex="1"/>
+        <result property="domnNm" column="domnNm" columnIndex="2"/>
+        <result property="domnClId" column="domnClId" columnIndex="3"/>
+        <result property="domnClNm" column="domnClNm" columnIndex="4"/>
+        <result property="dataTy" column="dataTy" columnIndex="5"/>
+        <result property="dataLt" column="dataLt" columnIndex="6"/>
+        <result property="domnDc" column="domnDc" columnIndex="7"/>
+        <result property="useAt" column="useAt" columnIndex="8"/>
+        <result property="lastUpdtPnttm" column="lastUpdtPnttm" columnIndex="9"/>
+        <result property="lastUpdusrId" column="lastUpdusrId" columnIndex="10"/>
+        <result property="lastUpdusrNm" column="lastUpdusrNm" columnIndex="11"/>
+    </resultMap>
+    
+    <!-- 도메인목록총수조회 -->
+    <select id="domainDAO.selectDomainInfoListTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+          FROM  OE1TNDOMAININFO A
+         WHERE  DOMN_NM LIKE CONCAT(CONCAT('%', #srchDomnNm#), '%')
+        <isNotEmpty prepend="AND" property="srchUseAt" >
+                USE_AT = #srchUseAt#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchLastUpdusrNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchLastUpdusrNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchDomnClId" >
+                DOMN_CL_ID = #srchDomnClId#
+        </isNotEmpty>
+    </select>   
+    <!-- 도메인목록조회 -->
+    <select id="domainDAO.selectDomainInfoList" parameterClass="searchVO" resultMap="domainInfoMap">
+        SELECT  DOMN_ID                 domnId
+             ,  DOMN_NM                 domnNm
+             ,  DOMN_CL_ID              domnClId
+             ,  (SELECT DOMN_CL_NM FROM OE1TNDOMAINCLASSINFO X WHERE X.DOMN_CL_ID = A.DOMN_CL_ID) domnClNm
+             ,  DATA_TY                 dataTy
+             ,  DATA_LT                 dataLt
+             ,  DOMN_DC                 domnDc
+             ,  USE_AT                  useAt       
+             ,  DATE_FORMAT(LAST_UPDT_PNTTM,'%Y-%m-%d') lastUpdtPnttm
+             ,  LAST_UPDUSR_ID          lastUpdusrId
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNDOMAININFO A
+         WHERE  DOMN_NM LIKE CONCAT(CONCAT('%', #srchDomnNm#), '%')
+        <isNotEmpty prepend="AND" property="srchUseAt" >
+                USE_AT = #srchUseAt#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchLastUpdusrNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchLastUpdusrNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchDomnClId" >
+                DOMN_CL_ID = #srchDomnClId#
+        </isNotEmpty>
+        ORDER BY LAST_UPDT_PNTTM DESC
+         LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+    </select>
+    
+    <!-- 도메인상세조회 -->
+    <select id="domainDAO.selectDomainInfo" parameterClass="domainInfo" resultClass="domainInfo">
+        SELECT  DOMN_ID                 domnId
+             ,  DOMN_NM                 domnNm
+             ,  DOMN_CL_ID              domnClId
+             ,  (SELECT DOMN_CL_NM FROM OE1TNDOMAINCLASSINFO X WHERE X.DOMN_CL_ID = A.DOMN_CL_ID) domnClNm
+             ,  DATA_TY                 dataTy
+             ,  DATA_LT                 dataLt
+             ,  DOMN_DC                 domnDc
+             ,  USE_AT                  useAt       
+             ,  DATE_FORMAT(LAST_UPDT_PNTTM,'%Y-%m-%d') lastUpdtPnttm
+             ,  LAST_UPDUSR_ID          lastUpdusrId
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNDOMAININFO A
+         WHERE  DOMN_ID = #domnId#
+    </select>   
+        
+    <!-- 도메인등록 -->
+    <insert id="domainDAO.insertDomainInfo">
+    <![CDATA[
+        INSERT
+          INTO  OE1TNDOMAININFO
+             (  DOMN_ID
+             ,  DOMN_NM
+             ,  DOMN_CL_ID
+             ,  DATA_TY
+             ,  DATA_LT
+             ,  DOMN_DC
+             ,  USE_AT
+	         ,  FRST_REGIST_PNTTM
+	         ,  FRST_REGISTER_ID
+	         ,  LAST_UPDT_PNTTM
+	         ,  LAST_UPDUSR_ID
+             )
+        VALUES
+             (  #domnId#
+             ,  #domnNm#
+             ,  #domnClId#
+             ,  #dataTy#
+             ,  #dataLt#
+             ,  #domnDc#
+             ,  #useAt#
+             ,  SYSDATE()
+             ,  #frstRegisterId#
+             ,  SYSDATE()
+             ,  #frstRegisterId#
+             )             
+    ]]>
+    </insert>
+    
+    <!-- 도메인수정 -->
+    <update id="domainDAO.updateDomainInfo">
+    <![CDATA[
+        UPDATE  OE1TNDOMAININFO
+           SET  DOMN_ID = #domnId#                   
+             ,  DOMN_NM = #domnNm#                   
+             ,  DOMN_CL_ID = #domnClId#              
+             ,  DATA_TY = #dataTy#                   
+             ,  DATA_LT = #dataLt#                   
+             ,  DOMN_DC = #domnDc#                   
+             ,  USE_AT = #useAt#                     
+             ,  LAST_UPDT_PNTTM = SYSDATE()
+             ,  LAST_UPDUSR_ID = #lastUpdusrId#
+         WHERE  DOMN_ID = #domnId#  
+    ]]>
+    </update>
+    
+    <!-- 도메인삭제 -->
+    <update id="domainDAO.deleteDomainInfo">
+    <![CDATA[
+        UPDATE  OE1TNDOMAININFO
+           SET  USE_AT = #useAt#
+             ,  LAST_UPDT_PNTTM = SYSDATE()
+             ,  LAST_UPDUSR_ID = #lastUpdusrId#
+         WHERE  DOMN_ID = #domnId#  
+    ]]>
+    
+
+    </update>
+        
+    <!-- 도메인이력목록조회 -->
+    <select id="domainDAO.selectDomainHistList" parameterClass="domainInfo" resultMap="domainHistMap">
+        SELECT  DOMN_ID      domnId
+             ,  DOMN_SN      domnSn     
+             ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1102' AND X.CODE = A.STTUS_CODE) sttusCode     
+             ,  PROCESS_PRVONSH processPrvonsh
+             ,  DOMN_NM             domnNm           
+             ,  DATA_TY             dataTy           
+             ,  DATA_LT             dataLt           
+             ,  DOMN_DC             domnDc           
+             ,  DOMN_CL_ID          domnClId         
+             ,  USE_AT              useAt            
+             ,  DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') frstRegistPnttm
+             ,  FRST_REGISTER_ID    frstRegisterId 
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1THDOMAINHIST A
+         WHERE  DOMN_ID = #domnId#
+    </select>
+    
+    <!-- 도메인이력상세조회 -->
+    <select id="domainDAO.selectDomainHist" parameterClass="domainInfo" resultClass="domainInfo">
+        SELECT  DOMN_ID      domnId
+             ,  DOMN_SN      domnSn     
+             ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1102' AND X.CODE = A.STTUS_CODE) sttusCode     
+             ,  PROCESS_PRVONSH processPrvonsh
+             ,  DOMN_NM             domnNm           
+             ,  DATA_TY             dataTy           
+             ,  DATA_LT             dataLt           
+             ,  DOMN_DC             domnDc           
+             ,  DOMN_CL_ID          domnClId         
+             ,  (SELECT DOMN_CL_NM FROM OE1TNDOMAINCLASSINFO X WHERE X.DOMN_CL_ID = A.DOMN_CL_ID) domnClNm
+             ,  USE_AT              useAt            
+             ,  DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') frstRegistPnttm
+             ,  FRST_REGISTER_ID    frstRegisterId 
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1THDOMAINHIST A
+         WHERE  DOMN_ID = #domnId#
+           AND  DOMN_SN = #domnSn#     
+
+    </select>   
+        
+    <!-- 도메인이력등록 -->
+    <insert id="domainDAO.insertDomainHist">
+    <selectKey resultClass="java.lang.Long" keyProperty="domnSn">
+        SELECT  IFNULL(MAX(DOMN_SN),0)+1 domnSn  
+          FROM  OE1THDOMAINHIST
+         WHERE  DOMN_ID = #domnId#
+    </selectKey>    
+   
+    <![CDATA[
+        INSERT
+          INTO  OE1THDOMAINHIST
+             (  DOMN_ID
+             ,  DOMN_SN
+		     ,  STTUS_CODE
+		     ,  PROCESS_PRVONSH
+             ,  DOMN_NM
+             ,  DATA_TY
+             ,  DATA_LT
+             ,  DOMN_DC
+             ,  USE_AT
+             ,  DOMN_CL_ID
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             )
+        VALUES
+             (  #domnId#
+             ,  #domnSn#
+		     ,  #sttusCode#
+		     ,  #processPrvonsh#
+             ,  #domnNm#
+             ,  #dataTy#
+             ,  #dataLt#
+             ,  #domnDc#
+             ,  #useAt#
+             ,  #domnClId#
+             ,  SYSDATE()
+             ,  #frstRegisterId#
+             )
+    ]]>
+    </insert>
+
+	<!-- 도메인명 등록건수조회 -->
+	<select id="domainDAO.selectDomainNmCnt" parameterClass="domainInfo" resultClass="domainInfo">
+        SELECT  DOMN_ID                 domnId
+             ,  DOMN_NM                 domnNm
+             ,  DOMN_CL_ID              domnClId
+             ,  (SELECT DOMN_CL_NM FROM OE1TNDOMAINCLASSINFO X WHERE X.DOMN_CL_ID = A.DOMN_CL_ID) domnClNm
+             ,  DATA_TY                 dataTy
+             ,  DATA_LT                 dataLt
+             ,  DOMN_DC                 domnDc
+             ,  USE_AT                  useAt       
+             ,  DATE_FORMAT(LAST_UPDT_PNTTM,'%Y-%m-%d') lastUpdtPnttm
+             ,  LAST_UPDUSR_ID          lastUpdusrId
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNDOMAININFO A
+         WHERE  DOMN_NM  = #domnNm#
+        <isNotEmpty prepend="AND" property="domnId" >
+                DOMN_ID != #domnId#
+        </isNotEmpty>
+    </select>
+
+    
+</sqlMap>

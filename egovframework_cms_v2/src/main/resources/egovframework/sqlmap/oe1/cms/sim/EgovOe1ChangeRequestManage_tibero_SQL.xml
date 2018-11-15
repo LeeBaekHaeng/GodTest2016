@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ChangeRequestManage">
+
+    <typeAlias  alias="ChangeRequestVO" type="egovframework.oe1.cms.sim.service.EgovOe1ChangeRequestVO"/>
+    <resultMap id="request" class="egovframework.oe1.cms.sim.service.EgovOe1ChangeRequestVO">
+        <result property="changeRequstId" column="CHANGE_REQUST_ID" columnIndex="1"/>
+        <result property="changeRequstProcessId" column="CHANGE_REQUST_PROCESS_ID" columnIndex="2"/>
+        <result property="changeProcessSttusCodeNm" column="CHANGE_PROCESS_STTUS_CODE_NM" columnIndex="3"/>
+        <result property="changeProcessSttusCode" column="CHANGE_PROCESS_STTUS_CODE" columnIndex="4"/>
+        <result property="operJobSeCode" column="OPER_JOB_SE_CODE" columnIndex="5"/>
+        <result property="changeRequstNm" column="CHANGE_REQUST_NM" columnIndex="6"/>
+        <result property="changeRequstDe" column="CHANGE_REQUST_DE" columnIndex="7"/> 
+        <result property="emrgncyRequstAt" column="EMRGNCY_REQUST_AT" columnIndex="8"/>
+        <result property="changeRqesterId" column="CHANGE_RQESTER_ID" columnIndex="9"/>
+    </resultMap>
+ 	<!-- 변경요청서 목록 총건수조회 -->
+    <select id="changeRequestManageDAO.selectChangeRequestListTotCnt" parameterClass="ChangeRequestVO" resultClass="int">
+    <![CDATA[
+      SELECT  COUNT(T1.CHANGE_REQUST_ID) AS totcnt
+        FROM
+          (SELECT 
+                   A.CHANGE_REQUST_ID
+				 , A.CHANGE_RQESTER_ID									 
+                 , NVL(B.MBER_NM,'')   AS CHANGE_RQESTER_NM
+                 , A.CHANGE_REQUST_PROCESS_ID
+                 , A.OPER_JOB_SE_CODE
+                 , D.CODE_NM              AS OPER_JOB_SE_CODE_NM
+                 , A.CHANGE_REQUST_NM
+                 , A.CHANGE_REQUST_DE
+				 , A.EMRGNCY_REQUST_AT
+                 , C.CODE_NM              AS EMRGNCY_REQUST_AT_NM
+              FROM OE1TNCHANGEREQUSTINFO A
+              left outer join OE1TNUSERINFO       B on A.CHANGE_RQESTER_ID = B.MBER_ID
+			  left outer join OE1TNOECOMMDETAILCD C on C.CODE_ID = 'OE1005' AND A.EMRGNCY_REQUST_AT = C.CODE 
+			  left outer join OE1TNOECOMMDETAILCD D on D.CODE_ID = 'OE1020' AND A.OPER_JOB_SE_CODE = D.CODE         
+		   ) T1   left outer join 
+         (SELECT CHANGE_REQUST_PROCESS_ID
+		        ,CHANGE_PROCESS_STTUS_CODE
+		        ,b.code_nm                 AS  CHANGE_PROCESS_PROGRS_NM
+		      FROM OE1TNCHANGEPROCINFO a
+					left outer join OE1TNOECOMMDETAILCD b on b.code_id = 'OE1003' AND a.CHANGE_PROCESS_STTUS_CODE = b.CODE 
+          ) T2 on
+          (
+            T1.CHANGE_REQUST_PROCESS_ID= T2.CHANGE_REQUST_PROCESS_ID
+          )
+          WHERE 1=1
+	    ]]>          
+	        <isNotEmpty prepend="AND" property="searchOperJobSeCode" >
+                T1.OPER_JOB_SE_CODE = #searchOperJobSeCode#
+            </isNotEmpty> 
+            <isNotEmpty property="searchChangeProcessSttusCode" >
+				<isNotEqual prepend="AND" property="searchChangeProcessSttusCode" compareValue="01">
+				T2.CHANGE_PROCESS_STTUS_CODE = #searchChangeProcessSttusCode#
+				</isNotEqual>
+				<isEqual prepend="AND" property="searchChangeProcessSttusCode" compareValue="01">
+				T2.CHANGE_PROCESS_STTUS_CODE IS NULL
+				</isEqual>
+			</isNotEmpty>
+            <isNotEmpty prepend="AND" property="searchEmrgncyRequstAt" >
+                T1.EMRGNCY_REQUST_AT = #searchEmrgncyRequstAt#
+            </isNotEmpty>
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                T1.CHANGE_REQUST_NM LIKE '%' || #searchKeyword# ||'%'
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                T1.CHANGE_RQESTER_NM  LIKE '%'|| #searchKeyword# ||'%'
+            </isEqual>
+	</select>
+	 
+ 	<!-- 변경요청서 목록 조회 -->
+    <select id="changeRequestManageDAO.selectChangeRequestList" parameterClass="ChangeRequestVO" resultMap="request">
+	<![CDATA[
+	SELECT * FROM (SELECT ROWNUM rn, TB.* FROM (    
+      SELECT  T1.CHANGE_REQUST_ID
+             ,T1.CHANGE_REQUST_PROCESS_ID
+             ,NVL(T2.CHANGE_PROCESS_STTUS_NM,'요청')   AS  CHANGE_PROCESS_STTUS_CODE_NM
+             ,NVL(T2.CHANGE_PROCESS_STTUS_CODE,'01')   AS  CHANGE_PROCESS_STTUS_CODE
+             ,T1.OPER_JOB_SE_CODE_NM                   AS  OPER_JOB_SE_CODE
+		     ,T1.CHANGE_REQUST_NM
+			 ,TO_CHAR(T1.FRST_REGISTER_PNTTM,'yyyy-mm-dd : HH24:mi:ss') AS CHANGE_REQUST_DE		     
+		     ,T1.EMRGNCY_REQUST_AT_NM                  AS EMRGNCY_REQUST_AT
+			 ,T1.CHANGE_RQESTER_NM                     AS CHANGE_RQESTER_ID
+        FROM
+          (SELECT 
+                   A.CHANGE_REQUST_ID
+				 , A.CHANGE_RQESTER_ID
+                 , NVL(B.MBER_NM,'')       AS CHANGE_RQESTER_NM
+                 , A.CHANGE_REQUST_PROCESS_ID
+                 , A.OPER_JOB_SE_CODE
+                 , D.CODE_NM               AS OPER_JOB_SE_CODE_NM
+                 , A.CHANGE_REQUST_NM
+                 , A.CHANGE_REQUST_DE
+				 , A.EMRGNCY_REQUST_AT
+                 , C.CODE_NM              AS EMRGNCY_REQUST_AT_NM
+			     , A.FRST_REGISTER_PNTTM                
+              FROM OE1TNCHANGEREQUSTINFO A
+              left outer join OE1TNUSERINFO       B on A.CHANGE_RQESTER_ID = B.MBER_ID
+			  left outer join OE1TNOECOMMDETAILCD C on C.CODE_ID = 'OE1005' AND A.EMRGNCY_REQUST_AT = C.CODE 
+			  left outer join OE1TNOECOMMDETAILCD D on D.CODE_ID = 'OE1020' AND A.OPER_JOB_SE_CODE = D.CODE
+		   ) T1   left outer join
+         (SELECT CHANGE_REQUST_PROCESS_ID
+		        ,CHANGE_PROCESS_STTUS_CODE
+		        ,b.code_nm               AS  CHANGE_PROCESS_STTUS_NM
+		      FROM OE1TNCHANGEPROCINFO a
+					left outer join OE1TNOECOMMDETAILCD b on b.code_id = 'OE1003' AND a.CHANGE_PROCESS_STTUS_CODE = b.CODE 
+          ) T2 on
+          (
+            T1.CHANGE_REQUST_PROCESS_ID= T2.CHANGE_REQUST_PROCESS_ID
+          )
+
+          WHERE 1=1
+ 		]]>          
+        <isNotEmpty prepend="AND" property="searchOperJobSeCode" >                            
+               T1.OPER_JOB_SE_CODE = #searchOperJobSeCode#                                          
+           </isNotEmpty>                                                             
+           <isNotEmpty property="searchChangeProcessSttusCode" >                           
+			<isNotEqual prepend="AND" property="searchChangeProcessSttusCode" compareValue="01">
+			T2.CHANGE_PROCESS_STTUS_CODE = #searchChangeProcessSttusCode#                      
+			</isNotEqual>                                                                 
+			<isEqual prepend="AND" property="searchChangeProcessSttusCode" compareValue="01">   
+			T2.CHANGE_PROCESS_STTUS_CODE IS NULL                                         
+			</isEqual>                                                                    
+		</isNotEmpty>                                                                   
+           <isNotEmpty prepend="AND" property="searchEmrgncyRequstAt" >                    
+               T1.EMRGNCY_REQUST_AT = #searchEmrgncyRequstAt#                              
+           </isNotEmpty>                                                             
+           <isEqual prepend="AND" property="searchCondition" compareValue="1">       
+               T1.CHANGE_REQUST_NM LIKE '%'|| #searchKeyword#||'%'           
+           </isEqual>                                                                
+           <isEqual prepend="AND" property="searchCondition" compareValue="2">       
+               T1.CHANGE_RQESTER_NM  LIKE '%' || #searchKeyword# || '%'         
+           </isEqual>                               
+        <![CDATA[			
+            ORDER BY T1.FRST_REGISTER_PNTTM DESC
+		    ) TB ) WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+ 		]]>          
+    </select>
+
+	<!-- 변경요청서 등록 -->
+    <insert id="changeRequestManageDAO.insertChangeRequest" parameterClass="ChangeRequestVO">
+        <![CDATA[
+           INSERT INTO OE1TNCHANGEREQUSTINFO 
+                  ( CHANGE_REQUST_ID
+                  , CHANGE_RQESTER_ID
+                  , CHANGE_REQUST_DE
+                  , EMRGNCY_REQUST_AT
+                  , CHANGE_REQUST_NM
+                  , CHANGE_REQUST_CN
+                  , CHANGE_REQUST_RESN_CODE
+                  , ATCH_FILE_ID
+                  , CHANGE_REQUST_PROCESS_ID
+           		  , CHANGE_REQUST_SYS_CODE
+           		  , REQUST_SYS_BASIS_ID
+                  , OPER_JOB_SE_CODE 
+                  , COMPT_REQUST_DE
+                  , FRST_REGISTER_PNTTM
+                  , FRST_REGISTER_ID
+                  , LAST_UPDUSR_PNTTM
+                  , LAST_UPDUSR_ID )
+          VALUES (  #changeRequstId#
+           		  , #changeRqesterId#
+           		  , TO_CHAR(sysdate,'yyyymmdd')
+           		  , #emrgncyRequstAt#
+           		  , #changeRequstNm#
+           		  , #changeRequstCn#
+           		  , #changeRequstResnCode#
+           		  , #atchFileId#
+           		  , #changeRequstProcessId#
+           		  , #changeRequstSysCode#
+           		  , #requstSysBasisId#
+           		  , #operJobSeCode#
+           		  , REPLACE(#comptRequstDe#,'-','')
+           		  , sysdate
+           		  , #changeRqesterId#
+           		  , sysdate
+           		  , #changeRqesterId#
+           		  )
+        ]]> 
+    </insert>
+
+	<!-- 변경요청서 수정 -->
+    <update id="changeRequestManageDAO.updateChangeRequest" parameterClass="ChangeRequestVO">
+        <![CDATA[
+            UPDATE OE1TNCHANGEREQUSTINFO 
+               SET CHANGE_REQUST_NM = #changeRequstNm#
+                 , OPER_JOB_SE_CODE = #operJobSeCode#
+                 , CHANGE_REQUST_RESN_CODE =#changeRequstResnCode#
+                 , EMRGNCY_REQUST_AT = #emrgncyRequstAt#
+                 , CHANGE_REQUST_CN = #changeRequstCn#
+                 , ATCH_FILE_ID = #atchFileId#
+                 , COMPT_REQUST_DE = replace(#comptRequstDe#,'-','')                 
+                 , LAST_UPDUSR_PNTTM = sysdate
+                 , LAST_UPDUSR_ID    = #lastUpdusrId#
+            WHERE CHANGE_REQUST_ID = #changeRequstId#
+            ]]>
+    </update>  
+    
+    <!-- 변경요청서 삭제 -->  
+    <delete id="changeRequestManageDAO.deleteChangeRequest" parameterClass="ChangeRequestVO">
+        <![CDATA[
+            DELETE FROM OE1TNCHANGEREQUSTINFO 
+            WHERE CHANGE_REQUST_ID = #changeRequstId#
+        ]]>
+    </delete>
+    
+    <!-- 변경요청서 상세 조회(조회용)1 -->
+    <select id="changeRequestManageDAO.selectChangeRequestInfo1" parameterClass="ChangeRequestVO" resultClass="ChangeRequestVO">
+        <![CDATA[
+            SELECT  CHANGE_REQUST_ID         AS  changeRequstId            
+                  , CHANGE_RQESTER_ID        AS  changeRqesterId
+				  , B.MBER_NM                AS  changeRqesterNm 
+                  , TO_CHAR(TO_DATE(CHANGE_REQUST_DE,'yyyymmdd'),'yyyy-mm-dd') AS  changeRequstDe        
+                  , C.CODE_NM                AS  emrgncyRequstAt       
+                  , CHANGE_REQUST_NM         AS  changeRequstNm        
+                  , CHANGE_REQUST_CN         AS  changeRequstCn       
+                  , F.CODE_NM                AS  changeRequstResnCode    
+                  , ATCH_FILE_ID             AS  atchFileId  
+                  , CHANGE_REQUST_PROCESS_ID AS  changeRequstProcessId
+				  , E.CODE_NM                AS  changeRequstSysCode
+           		  , REQUST_SYS_BASIS_ID      AS  requstSysBasisId
+				  , D.CODE_NM                AS  operJobSeCode
+                  , TO_CHAR(TO_DATE(COMPT_REQUST_DE,'yyyymmdd'),'yyyy-mm-dd') AS  comptRequstDe
+  			FROM OE1TNCHANGEREQUSTINFO  A 
+	      		 LEFT OUTER JOIN OE1TNUSERINFO       B on A.CHANGE_RQESTER_ID = B.MBER_ID
+			  	 LEFT OUTER JOIN OE1TNOECOMMDETAILCD C on C.CODE_ID = 'OE1005' AND A.EMRGNCY_REQUST_AT  = C.CODE 
+			  	 LEFT OUTER JOIN OE1TNOECOMMDETAILCD D on D.CODE_ID = 'OE1020' AND A.OPER_JOB_SE_CODE   = D.CODE         
+			  	 LEFT OUTER JOIN OE1TNOECOMMDETAILCD E on E.CODE_ID = 'OE1021' AND A.CHANGE_REQUST_SYS_CODE = E.CODE         
+			  	 LEFT OUTER JOIN OE1TNOECOMMDETAILCD F on F.CODE_ID = 'OE1002' AND A.CHANGE_REQUST_RESN_CODE = F.CODE         
+             WHERE CHANGE_REQUST_ID = #changeRequstId#
+        ]]>
+    </select>  
+    <!-- 변경요청서 상세 조회(수정조회용)2 -->
+    <select id="changeRequestManageDAO.selectChangeRequestInfo2" parameterClass="ChangeRequestVO" resultClass="ChangeRequestVO">
+        <![CDATA[
+            SELECT  CHANGE_REQUST_ID         AS  changeRequstId            
+                  , CHANGE_RQESTER_ID        AS  changeRqesterId
+				  , B.MBER_NM                AS  changeRqesterNm 
+                  , TO_CHAR(TO_DATE(CHANGE_REQUST_DE,'yyyymmdd'),'yyyy-mm-dd') AS  changeRequstDe        
+                  , EMRGNCY_REQUST_AT        AS  emrgncyRequstAt       
+                  , CHANGE_REQUST_NM         AS  changeRequstNm        
+                  , CHANGE_REQUST_CN         AS  changeRequstCn       
+                  , CHANGE_REQUST_RESN_CODE  AS  changeRequstResnCode    
+                  , ATCH_FILE_ID             AS  atchFileId  
+                  , CHANGE_REQUST_PROCESS_ID AS  changeRequstProcessId
+				  , C.CODE_NM                AS  changeRequstSysCode
+           		  , CHANGE_REQUST_SYS_CODE   AS  changeRequstSysCode
+                  , OPER_JOB_SE_CODE         AS  operJobSeCode
+                  , TO_CHAR(TO_DATE(COMPT_REQUST_DE,'yyyymmdd'),'yyyy-mm-dd') AS  comptRequstDe
+                  , REQUST_SYS_BASIS_ID      AS  requstSysBasisId
+  			FROM OE1TNCHANGEREQUSTINFO A
+	      		 LEFT OUTER JOIN OE1TNUSERINFO       B on A.CHANGE_RQESTER_ID = B.MBER_ID
+			  	 LEFT OUTER JOIN OE1TNOECOMMDETAILCD C on C.CODE_ID = 'OE1021' AND A.CHANGE_REQUST_SYS_CODE = C.CODE         
+             WHERE CHANGE_REQUST_ID = #changeRequstId#
+        ]]>
+    </select>  
+      
+</sqlMap>

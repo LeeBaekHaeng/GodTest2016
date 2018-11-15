@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<bean name="propertiesService" class="egovframework.rte.fdl.property.impl.EgovPropertyServiceImpl" destroy-method="destroy">
+		<!-- 
+		<property name="extFileName">
+			<set>
+		        <map>
+		        	<entry key="encoding" value="UTF-8"/>
+		        	<entry key="filename" value="file:./src/**/refresh-resource.properties"/>
+		        </map>
+	        	<value>file:./src/**/resource.properties</value>
+		        <map>
+		        	<entry key="encoding" value="UTF-8"/>
+		        	<entry key="filename" value="classpath*:META-INF/korean-resource.properties"/>
+		        </map>
+			</set>
+		</property>
+		 -->
+		 
+		<property name="properties">
+	        <map>
+	        	<entry key="pageUnit" value="10"/>
+	        	<entry key="pageSize" value="10"/>
+	        	<entry key="Globals.fileStorePath" 			value="/user/oe/files/cms/"/>
+	        	<entry key="Globals.excelStorePath" 		value="/user/oe/files/cms/excelTemplet/"/>
+	        	<entry key="Globals.excelStoreDownPath" 	value="/user/oe/files/cms/excelTempletDown/"/>
+	        	 <!-- 
+	        	<entry key="Globals.excelStorePath" 		value="/product/jeus3/webhome/was3_oe1/cms_web/egovoe1_egovoe1-webapp_war___/files/excelTemplet/"/>
+	        	<entry key="Globals.excelStoreDownPath" 	value="/product/jeus3/webhome/was3_oe1/cms_web/egovoe1_egovoe1-webapp_war___/files/excelTempletDown/"/>
+	        	 -->
+	        </map>
+		</property>
+	</bean>
+</beans>	

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RestdeManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="RestdeVO" type="egovframework.oe1.cms.com.service.EgovOe1RestdeVO"/>
+	<typeAlias  alias="Restde"   type="egovframework.oe1.cms.com.service.EgovOe1Restde"/>
+
+	<select id="RestdeManageDAO.selectNormalRestdePopup" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+            SELECT  #year#               YEAR
+                 ,  #month#              MONTH
+                 ,  CASE ((DUMMY.ROWNUM + 1 - #startWeekMonth#)>0 AND (DUMMY.ROWNUM + 1 - #startWeekMonth#)<=#lastDayMonth#)
+                    WHEN 1 THEN CAST((DUMMY.ROWNUM + 1 - #startWeekMonth#) AS CHAR)
+                    ELSE '' 
+                    END                  DAY 
+                 ,  DUMMY.ROWNUM         CELL_NUM
+                 ,  DUMMY.WEEKS + 1      WEEKS
+                 ,  DUMMY.WEEK           WEEK
+                 ,  (
+                    SELECT  CASE (COUNT(*)) WHEN 0 THEN CASE DUMMY.WEEK WHEN 1 THEN 'Y' WHEN 7 THEN 'Y' ELSE 'N' END ELSE 'Y' END
+                      FROM  OE1TNCALENDAR 
+                     WHERE  RESTDE_DE = CONCAT(#year#
+                                              ,LPAD(#month#,2,'0')
+                                              ,LPAD(CASE((DUMMY.ROWNUM + 1 - #startWeekMonth#)>0 AND (DUMMY.ROWNUM + 1 - #startWeekMonth#)<=#lastDayMonth#)
+                                                    WHEN 1 THEN CAST((DUMMY.ROWNUM + 1 - #startWeekMonth#) AS CHAR)
+                                                    ELSE '' 
+                                                    END,2,'0'
+                                               )
+                                        )
+                       AND  RESTDE_SE_CODE IN ('01','02')                                   
+                    ) REST_AT
+              FROM  (
+                    SELECT  (W.W*7) + D.D ROWNUM
+                         ,  W.W WEEKS
+                         ,  D.D WEEK
+                      FROM  (
+                            SELECT 0 W
+                            UNION ALL
+                            SELECT 1
+                            UNION ALL
+                            SELECT 2
+                            UNION ALL
+                            SELECT 3
+                            UNION ALL
+                            SELECT 4
+                            UNION ALL
+                            SELECT 5
+                            ) W,
+                            (
+                            SELECT 1 D
+                            UNION ALL
+                            SELECT 2
+                            UNION ALL
+                            SELECT 3
+                            UNION ALL
+                            SELECT 4
+                            UNION ALL
+                            SELECT 5
+                            UNION ALL
+                            SELECT 6
+                            UNION ALL
+                            SELECT 7
+                            ) D
+                    ORDER BY (W.W*7) + D.D
+            ) DUMMY
+		]]>
+	</select>
+
+
+
+
+	
+</sqlMap>            

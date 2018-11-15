@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Compn">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1CompnVO" type="egovframework.oe1.cms.arc.service.EgovOe1CompnVO"/>
+
+	<resultMap id="Compn" class="egovframework.oe1.cms.arc.service.EgovOe1CompnVO">
+		<result property="compnId" column="COMPN_ID"/>
+		<result property="compnPckage" column="COMPN_PCKAGE"/>
+		<result property="compnNm" column="COMPN_NM"/>
+		<result property="compnDc" column="COMPN_DC" jdbcType="CLOB" typeHandler="egovframework.oe1.cms.com.AltibaseClobStringTypeHandler"/>
+		<result property="etcDc" column="ETC_DC"/>
+		<result property="compnPckageNm" column="CODE_NM"/>
+	</resultMap>
+	<resultMap id="CompnMp" class="egovframework.oe1.cms.arc.service.EgovOe1CompnVO">
+		<result property="classId" column="CLASS_ID"/>
+		<result property="classPckage" column="CLASS_PCKAGE"/>
+		<result property="classNm" column="CLASS_NM"/>
+		<result property="useAt" column="USE_AT"/>
+	</resultMap>
+	
+	<insert id="egovOe1CompnDAO.insertCompnMP">
+		<![CDATA[
+			INSERT INTO OE1TNCOMPNMP
+				( COMPN_ID
+				  ,CLASS_ID
+				  ,CLASS_PCKAGE
+				  ,CLASS_NM
+				  ,USE_AT
+				  ,FRST_REGISTER_PNTTM  
+				  ,FRST_REGISTER_ID
+				  ,LAST_UPDUSR_PNTTM    
+				  ,LAST_UPDUSR_ID        )
+			VALUES (  #compnId#
+				  , #classId#
+				  , #classPckage#
+				  , #classNm#
+				  , #useAt#
+				  , sysdate
+				  , #frstRegisterId#
+				  , sysdate
+				  , #lastUpdusrId#)				  
+		]]>
+	</insert>
+	
+	<delete id="egovOe1CompnDAO.deleteCompnMP">
+		<![CDATA[
+			DELETE FROM OE1TNCOMPNMP
+			WHERE COMPN_ID=#compnId#
+		]]>
+	</delete>
+	
+	<select id="egovOe1CompnDAO.selectCompnMP" resultMap="CompnMp">
+		<![CDATA[
+      SELECT CLASS_ID
+			  ,CLASS_PCKAGE
+			  ,CLASS_NM
+			  ,USE_AT
+      FROM OE1TNCOMPNMP
+      WHERE COMPN_ID=#compnId#
+      AND USE_AT = 'Y'
+		]]>
+	</select>
+      <!-- AND   USE_AT="Y" -->
+	
+	<select id="egovOe1CompnDAO.selectCompn" resultMap="Compn">
+		<![CDATA[
+      SELECT COMPN_ID
+			 ,CASE WHEN (COMPN_PCKAGE IS NULL OR COMPN_PCKAGE = '') THEN '00000' ELSE COMPN_PCKAGE END AS COMPN_PCKAGE
+         	 ,COMPN_NM
+         	 ,COMPN_DC
+         	 ,ETC_DC
+         	 ,'' AS CODE_NM
+      FROM OE1TNCOMPN
+      WHERE COMPN_ID=#compnId#
+		]]>
+	</select>
+	
+	<select id="egovOe1CompnDAO.selectCompnList" parameterClass="egovOe1CompnVO" resultMap="Compn">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>	
+		   SELECT A.COMPN_ID
+				 ,A.COMPN_PCKAGE
+		     	 ,A.COMPN_NM
+		     	 ,A.COMPN_DC
+		     	 ,A.ETC_DC
+		       	 ,B.CODE_NM
+		   FROM OE1TNCOMPN A LEFT JOIN OE1TNOECOMMDETAILCD B ON B.CODE_ID='OE1030' AND A.COMPN_PCKAGE = B.CODE
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				B.CODE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.COMPN_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			ORDER BY A.LAST_UPDUSR_PNTTM DESC
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+	
+	<select id="egovOe1CompnDAO.selectCompnListTot" parameterClass="egovOe1CompnVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+	      	FROM OE1TNCOMPN A LEFT JOIN OE1TNOECOMMDETAILCD B ON B.CODE_ID='OE1030' AND A.COMPN_PCKAGE = B.CODE
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				B.CODE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.COMPN_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+	</select>
+
+	<insert id="egovOe1CompnDAO.insertCompn">
+		<![CDATA[
+			INSERT INTO OE1TNCOMPN
+				( COMPN_ID
+				 ,COMPN_PCKAGE
+	         	 ,COMPN_NM
+	         	 ,COMPN_DC
+	         	 ,ETC_DC
+				 ,FRST_REGISTER_PNTTM  
+				 ,FRST_REGISTER_ID
+				 ,LAST_UPDUSR_PNTTM    
+				 ,LAST_UPDUSR_ID        )
+			VALUES (  #compnId#
+				  , #compnPckage#
+				  , #compnNm#
+				  , #compnDc#
+				  , #etcDc#
+				  , sysdate
+				  , #frstRegisterId#
+				  , sysdate
+				  , #lastUpdusrId#)
+		]]>
+	</insert>
+	
+	<update id="egovOe1CompnDAO.updateCompn">
+		<![CDATA[
+			UPDATE OE1TNCOMPN 
+			SET COMPN_PCKAGE=#compnPckage#
+				,COMPN_NM = #compnNm#
+				,COMPN_DC = #compnDc#
+				,ETC_DC = #etcDc#
+				,LAST_UPDUSR_PNTTM = sysdate
+				,LAST_UPDUSR_ID = #lastUpdusrId#
+			WHERE COMPN_ID=#compnId#
+		]]>
+	</update>
+	
+	<delete id="egovOe1CompnDAO.deleteCompn">
+		<![CDATA[
+			DELETE FROM OE1TNCOMPN
+			WHERE COMPN_ID=#compnId#
+		]]>
+	</delete>
+	
+	<select id="egovOe1CompnDAO.selectCompnMPYeoBu" resultClass="int">
+		<![CDATA[
+      SELECT count(*) cnt
+		FROM OE1TNCOMPNMP 
+			WHERE COMPN_ID=#compnId#
+			AND CLASS_ID=#classId#
+		]]>
+	</select>
+
+	<update id="egovOe1CompnDAO.updateCompnMPAt">
+		<![CDATA[
+			UPDATE OE1TNCOMPNMP
+			SET USE_AT=#useAt#
+				,LAST_UPDUSR_PNTTM = sysdate
+				,LAST_UPDUSR_ID = #lastUpdusrId#		
+			WHERE COMPN_ID=#compnId#
+		]]>
+	</update>
+	
+	<update id="egovOe1CompnDAO.updateCompnMP">
+		<![CDATA[
+			UPDATE OE1TNCOMPNMP
+			SET USE_AT=#useAt#
+				,LAST_UPDUSR_PNTTM = sysdate
+				,LAST_UPDUSR_ID = #lastUpdusrId#			
+			WHERE COMPN_ID=#compnId#
+			AND   CLASS_ID=#classId#
+		]]>
+	</update>
+	
+</sqlMap>

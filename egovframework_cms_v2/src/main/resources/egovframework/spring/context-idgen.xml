@@ -1,0 +1,643 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean name="egovIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="mixPrefixSample" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="IDS"/>
+		<property name="tableName"	value="SAMPLE"/>
+	</bean>
+
+	<bean name="mixPrefixSample"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="SAMPLE-" />
+		<property name="cipers" value="5" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<!-- 관계자 정보 ID Generation -->
+	<bean name="egovPartcpntIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="partcpntIdStrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNPARTCPNT"/>
+	</bean>
+		
+	<!-- 관계자 정보 ID Generation Strategy-->
+	<bean name="partcpntIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="PARTC-" />
+		<property name="cipers" value="14" />
+		<property name="fillChar" value="0" />
+	</bean>	
+
+	<!-- ID Generation -->
+	<bean name="egovPrjctIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="tmp_partcpntIdStrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="TMP_OE1TNPARTCPNT"/>
+	</bean>
+	<!-- ID Generation Strategy-->
+	<bean name="tmp_partcpntIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="PARTC-" />
+		<property name="cipers" value="14" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+
+
+	
+	<!-- 유관기관정보  ID Generation -->
+	<bean name="egovCrdnIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="crdnIdStrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNCRDN"/>
+	</bean>
+
+	<!-- 유관기관정보 ID Generation Strategy-->
+	<bean name="crdnIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="CRDN-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+			
+	 <bean name="egovMailMsgIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="mailMsgtrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="MAILMSG_ID"/>
+	</bean>
+	<bean name="mailMsgtrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="MAILMSG_" />
+		<property name="cipers" value="12" />
+		<property name="fillChar" value="0" />
+	</bean>
+	<bean name="egovFileIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="fileStrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="FILE_ID"/>
+	</bean>
+	<bean name="fileStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="FILE_" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>
+	
+	<!-- 그룹ID -->
+	<bean name="egovGroupIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="groupIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="GROUP_ID"/>
+	</bean>
+	<bean name="groupIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="GRP_" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>
+	
+	<!-- 롤ID -->
+	<bean name="egovRoleIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="roleIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="ROLE_ID"/>
+	</bean>
+	<bean name="roleIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="ROLE_" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>
+		
+	<!-- 메뉴관리 -->
+	<bean name="egovMenuMngIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="menuMngIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNMENUINFO"/>
+	</bean>
+	<!-- 메뉴관리 ID Generation Strategy-->
+	<bean name="menuMngIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="MENU-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+		<!-- 프로그램관리 -->
+	<bean name="egovProgrmMngIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="progrmMngIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNPROGRMINFO"/>
+	</bean>
+	<!-- 프로그램관리 ID Generation Strategy-->
+	<bean name="progrmMngIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="PRGR-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<!-- 사용자관리 ID 정보 확인 -->
+	<bean name="egovUsrCnfrmIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="usrCnfrmStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNUSERINFO"/>
+	</bean>
+	<bean name="usrCnfrmStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="USRCNFRM_" />
+		<property name="cipers" value="11" />
+		<property name="fillChar" value="0" />
+	</bean>		
+	
+		<!-- 연계정보 ID Generation -->
+	<bean name="egovCntcIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="cntcIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNCNTCINFO"/>
+	</bean>
+	
+	<!-- 연계정보 ID Generation Strategy-->
+	<bean name="cntcIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="CNTC-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+		<!-- 서비스정보 ID Generation -->
+	<bean name="egovServiceIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="serviceIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNSERVICEINFO"/>
+	</bean>
+	
+	<!-- 서비스정보 ID Generation Strategy-->
+	<bean name="serviceIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="SRVC-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	
+	<!-- UI Adaptor 정보 -->
+	
+	<bean name="egovUIAdaptIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="uiAdaptIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNUIADAPTINFO"/>
+	</bean>
+	
+	<!-- 서비스정보 ID Generation Strategy-->
+	<bean name="uiAdaptIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="UIAD-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	
+		<!-- 운영개선요청 ID Generation -->
+	<bean name="egovOperImprovReqIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="egovOperImprovReqIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNOIREQ"/>
+	</bean>
+	
+	<!-- 운영개선요청 ID Generation Strategy-->
+	<bean name="egovOperImprovReqIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="OIREQ-" />
+		<property name="cipers" value="14" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<!--  용어사전 -->
+	<bean name="egovDicTermIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="dicTermStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNWORDDIC"/>
+	</bean>
+	<bean name="dicTermStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="WORDDIC_" />
+		<property name="cipers" value="12" />
+		<property name="fillChar" value="0" />
+	</bean>			
+	
+	<!--  행정용어사전 -->
+	<bean name="egovDicGovTermIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" 	ref="dicGovTermStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNADMINISTDIC"/>
+	</bean>
+	<bean name="dicGovTermStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" 	value="GOVDIC_" />
+		<property name="cipers" 	value="13" />
+		<property name="fillChar" 	value="0" />
+	</bean>		
+	
+	<!-- 게시판 관리 -->
+	<bean name="egovBBSMstrIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="bbsMstrStrategy" />
+		<property name="blockSize" 	value="10"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="BBS_ID"/>
+	</bean>
+	<!-- 게시판 관리  ID Generation Strategy -->
+	<bean name="bbsMstrStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="BBSMSTR_" />
+		<property name="cipers" value="12" />
+		<property name="fillChar" value="0" />
+	</bean>
+	
+	<!--  단어사전 -->
+	<bean name="egovDicWordIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" 	ref="dicWordStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNWRDDIC"/>
+	</bean>
+	<bean name="dicWordStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" 	value="WRDDIC_" />
+		<property name="cipers" 	value="13" />
+		<property name="fillChar" 	value="0" />
+	</bean>	
+
+	<!-- 변경요청등록-->
+    <bean name="egovChangeRequestIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="changeRequestStrategy"/>
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNCHANGEREQ"/>
+	</bean>
+	<bean name="changeRequestStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="CHGREQ_" />
+		<property name="cipers" value="13" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+	<!-- 변경요청처리등록-->
+    <bean name="egovChangeRequestProcessIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="changeRequestProcessStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNCHANGEPROC"/>
+	</bean>
+	<bean name="changeRequestProcessStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="CHGREQPRO_" />
+		<property name="cipers" value="10" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+	<!-- 프레임웍정보등록-->
+    <bean name="egovFrmwrkInfoIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="frmwrkInfoStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNFRMWRKINFO"/>
+	</bean>
+	<bean name="frmwrkInfoStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="FRMWRK_" />
+		<property name="cipers" value="13" />
+		<property name="fillChar" value="0" />
+	</bean>	
+
+
+	<!-- 문서이력관리-->
+    <bean name="egovDocMngIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" 	ref="docMngStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNDOC"/>
+	</bean>
+	<bean name="docMngStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="DOCMNG_" />
+		<property name="cipers" value="13" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<!--회의실관리-->
+    <bean name="egovMtgRmIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" 	ref="mtgRmStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNMTGRM"/>
+	</bean>
+	<bean name="mtgRmStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="MTGRM_" />
+		<property name="cipers" value="14" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+				
+	<!--회의실예약-->
+    <bean name="egovResveMtgIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" 	ref="resveMtgStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNRESVEMTG"/>
+	</bean>
+	<bean name="resveMtgStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="RESVEMTG_" />
+		<property name="cipers" value="11" />
+		<property name="fillChar" value="0" />
+	</bean>		
+	
+	<!-- 행사일정관리 -->
+   <bean name="schdulManageIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" 	ref="schdulMngStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNSCHDULINFO"/>
+	</bean>
+	<bean name="schdulMngStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="SCH_" />
+		<property name="cipers" value="16" />
+		<property name="fillChar" value="0" />
+	</bean>			
+	
+	<!-- 컴포넌트 관리 -->
+	<bean name="egovCompnMngIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="compnMngIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNCOMPNMP"/>
+	</bean>
+	<!-- 컴포넌트 관리 ID Generation Strategy-->
+	<bean name="compnMngIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="COMM-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<!-- 화면 관리 -->
+	<bean name="egovScrinMngIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="scrinMngIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNSCRIN"/>
+	</bean>
+	<!-- 화면 관리 ID Generation Strategy-->
+	<bean name="scrinMngIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="SCRI-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	<!-- 메시지 관리 -->
+	<bean name="egovMsgMngIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="msgMngIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TMSGINFO"/>
+	</bean>		
+	<!-- 메시지 관리 ID Generation Strategy-->
+	<bean name="msgMngIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="MSGM-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>	
+		
+	<!-- 아키텍쳐메뉴  관리 -->
+	<bean name="egovArcMenuIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="arcMenuIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNARCMENU"/>
+	</bean>
+	<!-- 아키텍쳐메뉴  관리 ID Generation Strategy-->
+	<bean name="arcMenuIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="ARCM-" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>
+	
+	<!-- 그룹ID -->
+	<bean name="egovRiskIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy"   ref="riskIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="RISK_ID"/>
+	</bean>
+	<bean name="riskIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="RISK_" />
+		<property name="cipers" value="15" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+	<!-- 승인결재 -->
+	<bean name="egovConsentIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="consentStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="OE1TNDRFTMANAGE"/>
+	</bean>
+	<bean name="consentStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="DRFT-" />
+		<property name="cipers" value="10" />
+		<property name="fillChar" value="0" />
+	</bean>
+
+
+	<!-- METADATA-메타데이터요청ID -->
+	<bean name="egovMetaDataReqIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="metaDataReqIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="REQST_PROCESS_ID"/>
+	</bean>
+	<bean name="metaDataReqIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="REQMD-" />
+		<property name="cipers" value="8" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	<!-- METADATA-도메인분류ID -->
+	<bean name="egovDomnClIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="domnClIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="DOMN_CL_ID"/>
+	</bean>
+	<bean name="domnClIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="DOMNCL-" />
+		<property name="cipers" value="8" />
+		<property name="fillChar" value="0" />
+	</bean>
+	<!-- METADATA-도메인ID -->
+	<bean name="egovDomnIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy" ref="domnIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="DOMN_ID"/>
+	</bean>
+	<bean name="domnIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="DOMN-" />
+		<property name="cipers" value="8" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	<!-- METADATA-자료사전ID -->
+	<bean name="egovDtaDicaryIdGnrService"
+		class="egovframework.rte.fdl.idgnr.impl.EgovTableIdGnrService"
+		destroy-method="destroy">
+		<property name="dataSource" ref="dataSource" />
+		<property name="strategy"   ref="dtaDicaryIdStrategy" />
+		<property name="blockSize" 	value="1"/>
+		<property name="table"	   	value="OE1TNIDS"/>
+		<property name="tableName"	value="DTA_DICARY_ID"/>
+	</bean>
+	<bean name="dtaDicaryIdStrategy"
+		class="egovframework.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl">
+		<property name="prefix" value="DTADIC-" />
+		<property name="cipers" value="8" />
+		<property name="fillChar" value="0" />
+	</bean>	
+	
+	
+</beans>

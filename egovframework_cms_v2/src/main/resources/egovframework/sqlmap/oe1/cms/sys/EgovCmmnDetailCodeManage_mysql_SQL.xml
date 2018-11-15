@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CmmnDetailCodeManage">
+
+	<typeAlias  alias="egovMap"          type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="CmmnDetailCode"   type="egovframework.oe1.cms.sys.service.EgovOe1OECmmCodeMngVO"/>
+	<typeAlias  alias="CmmnDetailCodeVO" type="egovframework.oe1.cms.sys.service.EgovOe1OECmmCodeMngVO"/>
+
+	<select id="CmmnDetailCodeManageDAO.selectCmmnDetailCodeList" parameterClass="CmmnDetailCodeVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT  A.CODE_ID
+			     ,  A.CODE
+			     ,  A.CODE_NM 
+			     ,  A.SORT_ORDR
+			     ,  A.USE_AT
+			  FROM  OE1TNOECOMMDETAILCD A
+			     ,  OE1TNOECOMMCD       B
+			 WHERE 	B.USE_AT  = 'Y'
+			   AND  A.CODE_ID = B.CODE_ID
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[A.CODE_ID = #searchKeyword#]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[A.CODE    = #searchKeyword#]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="3">
+				<![CDATA[A.CODE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')]]>
+			</isEqual>
+			 ORDER BY A.CODE_ID, A.SORT_ORDR
+			 LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+
+	<select id="CmmnDetailCodeManageDAO.selectCmmnDetailCodeListTotCnt" parameterClass="CmmnDetailCodeVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt 
+			  FROM  OE1TNOECOMMDETAILCD A
+			     ,  OE1TNOECOMMCD       B
+			 WHERE 	B.USE_AT  = 'Y'
+			   AND  A.CODE_ID = B.CODE_ID
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[A.CODE_ID = #searchKeyword#]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[A.CODE    = #searchKeyword#]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="3">
+				<![CDATA[A.CODE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')]]>
+			</isEqual>
+	</select>
+
+	<select id="CmmnDetailCodeManageDAO.selectCmmnDetailCodeCnt" parameterClass="CmmnDetailCodeVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt 
+			  FROM  OE1TNOECOMMDETAILCD A
+			 WHERE 	A.CODE_ID = #codeId#
+			   AND  A.CODE    = #code#
+		]]>
+	</select>
+
+	<select id="CmmnDetailCodeManageDAO.selectCmmnDetailCodeDetail" parameterClass="CmmnDetailCode" resultClass="CmmnDetailCode">
+		<![CDATA[
+            SELECT  A.CODE_ID    codeId
+                 ,  B.CODE_ID_NM codeIdNm
+                 ,  A.CODE       code
+                 ,  A.CODE_NM    codeNm
+                 ,  A.CODE_DC    codeDc
+			     ,  A.SORT_ORDR  sortOrdr
+                 ,  A.USE_AT     useAt
+              FROM  OE1TNOECOMMDETAILCD A
+                 ,  OE1TNOECOMMCD       B
+             WHERE  B.USE_AT  = 'Y'
+               AND  A.CODE_ID = B.CODE_ID
+			   AND  A.CODE_ID = #codeId#
+			   AND  A.CODE    = #code#
+		]]>
+	</select>
+
+	<select id="CmmnDetailCodeManageDAO.getInsertCmmnDetailCodeSortOrdr" parameterClass="CmmnCodeVO" resultClass="int">
+		SELECT IFNULL(MAX(SORT_ORDR),0) + 1 sortOrdr FROM OE1TNOECOMMDETAILCD
+		 WHERE CODE_ID = #codeId#
+	</select>	
+
+	<select id="CmmnDetailCodeManageDAO.getUpdateCmmnDetailCodeSortOrdr" parameterClass="CmmnCodeVO" resultClass="egovMap">
+        SELECT  M.SORT_ORDR sortOrdr 
+          FROM  ( 
+				SELECT SORT_ORDR FROM OE1TNOECOMMDETAILCD
+				 WHERE CODE_ID = #codeId#
+				UNION ALL
+				SELECT IFNULL(MAX(SORT_ORDR),0) + 1 FROM OE1TNOECOMMDETAILCD
+				 WHERE CODE_ID = #codeId#
+				ORDER BY SORT_ORDR
+		        ) M
+		        
+		
+	</select>	
+
+	<update id="CmmnDetailCodeManageDAO.updateCmmnDetailCodeSortOrdr">
+		<![CDATA[
+		UPDATE OE1TNOECOMMDETAILCD
+		   SET SORT_ORDR  = SORT_ORDR + 1
+		 WHERE CODE_ID    = #codeId#
+		   AND SORT_ORDR >= #sortOrdr#
+		]]>
+	</update>	
+
+	<insert id="CmmnDetailCodeManageDAO.insertCmmnDetailCode">
+		<![CDATA[
+		    INSERT 
+		      INTO  OE1TNOECOMMDETAILCD
+		         (  CODE_ID
+		         ,  CODE
+		         ,  CODE_NM
+		         ,  CODE_DC
+                 ,  SORT_ORDR
+		         ,  USE_AT
+		         ,  FRST_REGISTER_PNTTM
+		         ,  FRST_REGISTER_ID
+		         ,  LAST_UPDUSR_PNTTM
+		         ,  LAST_UPDUSR_ID
+		         ) 
+		    VALUES  
+		         (  #codeId#
+		         ,  #code#
+		         ,  #codeNm#
+		         ,  #codeDc#
+                 ,  #sortOrdr#
+		         ,  #useAt#
+		         ,  sysdate()
+		         ,  #frstRegisterId#
+		         ,  sysdate()
+		         ,  #frstRegisterId#
+		         ) 
+		]]>
+	</insert>
+
+	<update id="CmmnDetailCodeManageDAO.updateCmmnDetailCode">
+		<![CDATA[
+            UPDATE  OE1TNOECOMMDETAILCD 
+               SET  CODE_NM           = #codeNm#
+                 ,  CODE_DC           = #codeDc#
+                 ,  SORT_ORDR         = #sortOrdr#
+                 ,  USE_AT            = #useAt#
+                 ,  LAST_UPDUSR_PNTTM = sysdate()
+                 ,  LAST_UPDUSR_ID    = #lastUpdusrId#
+             WHERE  CODE_ID = #codeId# 
+               AND  CODE    = #code#
+		]]>
+	</update>
+
+	<delete id="CmmnDetailCodeManageDAO.deleteCmmnDetailCode">
+		<![CDATA[
+            UPDATE  OE1TNOECOMMDETAILCD 
+               SET  USE_AT    = 'N'
+             WHERE  CODE_ID   = #codeId# 
+               AND  CODE      = #code#
+		]]>
+	</delete>
+
+</sqlMap>            

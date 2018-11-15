@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorGroup">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="AuthorGroupVO" type="egovframework.oe1.cms.sys.service.EgovOe1AuthorGroupVO"/>
+    <typeAlias  alias="AuthorGroup" type="egovframework.oe1.cms.sys.service.AuthorGroup"/>
+
+    <resultMap id="authorGroup" class="egovframework.oe1.cms.sys.service.EgovOe1AuthorGroupVO">
+        <result property="userId" column="USER_ID" columnIndex="1"/>
+        <result property="userNm" column="USER_NM" columnIndex="2"/>
+        <result property="groupId" column="GROUP_ID" columnIndex="3"/>
+        <result property="authorCode" column="AUTHOR_CODE" columnIndex="4"/>
+        <result property="regYn" column="REG_YN" columnIndex="5"/>
+        <result property="uniqId" column="UNIQ_ID" columnIndex="6"/>
+    </resultMap>
+    
+        <resultMap id="authorGroup2" class="egovframework.oe1.cms.com.service.EgovOe1LoginVO">
+        <result property="mberId" column="MBER_ID" columnIndex="1"/>
+        <result property="mberNm" column="MBER_NM" columnIndex="2"/>
+        <result property="moblphonNo" column="MOBLPHON_NO" columnIndex="3"/>
+        <result property="mberEmailAdres" column="MBER_EMAIL_ADRES" columnIndex="4"/>
+        <result property="authorNm" column="AUTHOR_NM" columnIndex="5"/>
+        <result property="uniqId" column="UNIQ_ID" columnIndex="6"/>
+    </resultMap>
+    
+     
+    <select id="authorGroupDAO.selectAuthorGroupList" parameterClass="AuthorGroupVO" resultMap="authorGroup">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        
+        /* 구현 Sql */
+		<![CDATA[
+			SELECT  A.USER_ID
+			     ,  A.USER_NM
+			     ,  A.GROUP_ID
+			     ,  B.AUTHOR_CODE
+			     ,  (CASE WHEN B.SCRTY_ESTBS_ID IS NULL
+			              THEN 'N'
+			              ELSE 'Y' END) AS REG_YN
+			     ,  UNIQ_ID
+			  FROM  (   SELECT  MBER_ID USER_ID
+			                 ,  MBER_NM USER_NM
+			                 ,  GROUP_ID
+			                 ,  UNIQ_ID
+			              FROM  OE1TNUSERINFO ) A LEFT OUTER JOIN
+			        OE1TNEMPLYRSCRTYESTBS B
+			    ON  A.UNIQ_ID = B.SCRTY_ESTBS_ID
+			 WHERE  1 = 1
+        ]]>
+	       	<isNotEmpty property="searchKeyword">
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					A.USER_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					A.USER_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="3">
+					A.GROUP_ID = #searchKeyword#
+				</isEqual>
+			</isNotEmpty>
+        /* 구현 Sql */
+        
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+    
+
+    </select>
+
+	<insert id="authorGroupDAO.insertAuthorGroup" parameterClass="AuthorGroup">
+		<![CDATA[
+			INSERT INTO OE1TNEMPLYRSCRTYESTBS 
+				 ( SCRTY_ESTBS_ID
+				 , AUTHOR_CODE
+				 )
+		    VALUES 
+		         ( #uniqId#
+                 , #authorCode#
+                 )
+		]]>
+	</insert>
+
+	<update id="authorGroupDAO.updateAuthorGroup" parameterClass="AuthorGroup">
+		<![CDATA[
+			UPDATE OE1TNEMPLYRSCRTYESTBS 
+			   SET AUTHOR_CODE    = #authorCode#
+		  	 WHERE SCRTY_ESTBS_ID = #uniqId#
+		]]>
+	</update>
+
+	<delete id="authorGroupDAO.deleteAuthorGroup">
+		<![CDATA[
+			DELETE 
+			  FROM OE1TNEMPLYRSCRTYESTBS 
+			 WHERE SCRTY_ESTBS_ID = #uniqId#
+		]]>
+	</delete>
+
+	<select id="authorGroupDAO.selectAuthorGroupListTotCnt" parameterClass="AuthorGroupVO" resultClass="int">
+
+        SELECT COUNT(*) AS totcnt
+		  FROM  (   SELECT  MBER_ID USER_ID
+		                 ,  MBER_NM USER_NM
+		                 ,  GROUP_ID
+		                 ,  UNIQ_ID
+		              FROM  OE1TNUSERINFO ) A LEFT OUTER JOIN
+		        OE1TNEMPLYRSCRTYESTBS B
+		    ON  A.UNIQ_ID = B.SCRTY_ESTBS_ID
+         WHERE  1 = 1   
+		<isNotEmpty property="searchKeyword">
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.USER_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				A.USER_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="3">
+				A.GROUP_ID = #searchKeyword#
+			</isEqual>
+		</isNotEmpty>
+	</select>
+
+    <select id="authorGroupDAO.selectAuthorUserList" parameterClass="AuthorGroup" resultMap="authorGroup2">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        
+        /* 구현 Sql */
+        <![CDATA[
+			SELECT  C.MBER_ID           
+			     ,  C.UNIQ_ID           
+			     ,  C.MBER_NM           
+			     ,  C.MOBLPHON_NO       
+			     ,  C.MBER_EMAIL_ADRES  
+			     ,  B.AUTHOR_NM         
+			  FROM  OE1TNEMPLYRSCRTYESTBS A
+			     ,  OE1TNAUTHORINFO       B
+			     ,  OE1TNUSERINFO         C
+			 WHERE  A.AUTHOR_CODE         = B.AUTHOR_CODE
+			   AND  A.SCRTY_ESTBS_ID      = C.UNIQ_ID
+			   AND  A.AUTHOR_CODE         = #authorCode#
+			 ORDER BY C.MBER_NM ASC 
+        ]]>
+        /* 구현 Sql */
+        
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+    </select>
+
+	<select id="authorGroupDAO.selectAuthorUserListTotCnt" parameterClass="AuthorGroup" resultClass="int">
+
+        SELECT  COUNT(*) AS totcnt
+		  FROM  OE1TNEMPLYRSCRTYESTBS A
+		     ,  OE1TNAUTHORINFO       B
+		     ,  OE1TNUSERINFO         C
+		 WHERE  A.AUTHOR_CODE         = B.AUTHOR_CODE
+		   AND  A.SCRTY_ESTBS_ID      = C.UNIQ_ID
+		   AND  A.AUTHOR_CODE         = #authorCode#
+	</select>
+	
+	<select id ="authorGroupDAO.selectAuthorCodeForLogin" parameterClass="String" resultClass="String">
+		SELECT AUTHOR_CODE as authorCode
+		FROM OE1TNEMPLYRSCRTYESTBS
+		WHERE SCRTY_ESTBS_ID = #scrtyEstbsId#
+	</select>
+
+
+</sqlMap>

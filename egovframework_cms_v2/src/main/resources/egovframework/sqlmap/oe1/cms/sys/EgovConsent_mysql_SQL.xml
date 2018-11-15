@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="consent">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="submitVO" type="egovframework.oe1.cms.sys.service.EgovOe1SanctionSubmitVO"/>
+	<typeAlias  alias="consentVO" type="egovframework.oe1.cms.sys.service.EgovOe1SanctionConsentVO"/>
+
+	<resultMap id="sanctionSubmitDetail" class="egovframework.oe1.cms.sys.service.EgovOe1SanctionSubmitVO">
+		<result property="drftSn" column="DRFT_SN"/>
+		<result property="drafter" column="DRAFTER"/>
+		<result property="drftSj" column="DRFT_SJ"/>
+		<result property="drftCn" column="DRFT_CN"/>
+		<result property="drftDt" column="DRFT_DT"/>
+		<result property="confmDt" column="CONFM_DT"/>
+		<result property="drftSttusCode" column="DRFT_STTUS_CODE"/>
+		<result property="drftSttus" column="DRFT_STTUS"/>
+		<result property="drftOpinion" column="DRFT_OPINION"/>
+		<result property="afterOpinion" column="AFTER_OPINION"/>
+		<result property="afterConfmDt" column="AFTER_CONFM_DT"/>
+		<result property="atchFileId" column="ATCH_FILE_ID"/>
+		<result property="deleteYn" column="DELETE_YN"/>
+		<result property="mberNm" column="MBER_NM"/>
+		<result property="cnt1" column="CNT1"/>
+		<result property="cnt2" column="CNT2"/>
+		<result property="cnt3" column="CNT3"/>
+		<result property="confmOrdr" column="CONFM_ORDR"/>
+	</resultMap>
+
+	<!-- 상신 - 등록 2-->
+	<insert id="oe1consentManageDAO.insertSanctionDraftWriting">
+		<![CDATA[
+			insert into OE1TNDRFTMANAGE (
+				DRFT_SN
+				, DRAFTER
+				, DRFT_SJ
+				, DRFT_CN
+				, DRFT_DT
+				, DRFT_STTUS_CODE
+				, DRFT_OPINION
+				, ATCH_FILE_ID
+				, DELETE_YN
+				, SYS_ID
+			) values (
+				#drftSn#
+				, #drafter#
+				, #drftSj#
+				, #drftCn#
+				, #drftDt#
+				, '1'
+				, #drftOpinion#
+				, #atchFileId#
+				, 'N'
+				, #sysId#
+			)
+		]]>
+	</insert>
+	
+	<!-- 상신 - 등록 1 -->
+	<insert id="oe1consentManageDAO.insertSanctionConsent">
+		<![CDATA[
+			insert into OE1TNCONFMMANAGE (
+				DRFT_SN
+				, CONFMER
+				, SANCTN_TRGT_YN
+				, CONFM_ORDR
+				, CONFM_SE_CODE
+				, CONFM_RESULT_CODE
+				, CONFM_COMPT_YN
+				, DRFT_DT
+				, CONFM_DT
+				, CONFM_OPINION
+				, ATCH_FILE_ID
+				, DELETE_YN
+			) values (
+				#drftSn#
+				, #confmer#
+				, #sanctnTrgtYn#
+				, #confmOrdr#
+				, #confmSeCode#
+				, #confmResultCode#
+				, #confmComptYn#
+				, #drftDt#
+				, #confmDt#
+				, #confmOpinion#
+				, #atchFileId#
+				, #deleteYn#
+			)
+		]]>
+	</insert>
+	
+	<!-- 상신 - 등록 및 수정 결재자 검색 -->
+ 	<select id="oe1consentManageDAO.selectGeneralMemberList" resultClass="egovMap">
+		<![CDATA[
+			SELECT MBER_ID DRAFTER
+				 , MBER_NM DRAFTER_NM
+			  FROM OE1TNUSERINFO
+			 WHERE MBER_NM LIKE CONCAT('%',#mberNm#,'%')
+			 ORDER BY MBER_ID
+		]]>
+	</select>
+
+	<!-- 상신 - 수정 1 -->
+	<update id="oe1consentManageDAO.updateSanctionDraftWriting">
+		<![CDATA[
+			UPDATE OE1TNDRFTMANAGE SET
+				DRFT_SJ = #drftSj#
+			  , DRFT_CN = #drftCn#
+			  , DRFT_DT = #drftDt#
+			  , DRFT_STTUS_CODE = #drftSttusCode#
+			  , DRFT_OPINION = #drftOpinion#
+			  , ATCH_FILE_ID = #atchFileId#
+			  , DELETE_YN = #deleteYn#
+			 WHERE DRFT_SN = #drftSn#
+			   AND DRAFTER = #drafter#
+		]]>
+	</update>	
+	
+	<!--상신 - 수정 2 -->
+	<select id="oe1consentManageDAO.selectSanctionRouteList" resultClass="egovMap">
+		<![CDATA[
+			SELECT A.CONFMER
+			      , CONCAT((A.CONFM_ORDR - 1)
+			      		, ' | '
+			      		, (CASE A.CONFM_SE_CODE WHEN 1 THEN '기안'
+												WHEN 2 THEN '결재'
+												WHEN 3 THEN '합의'
+												WHEN 4 THEN '통보'
+												ELSE '' END)
+                        , ' | '
+                  		, B.MBER_NM) COURS_DETAIL
+			  FROM OE1TNCONFMMANAGE A
+			      ,OE1TNUSERINFO B
+			 WHERE A.CONFMER  = B.MBER_ID
+			   AND A.DRFT_SN = #drftSn#
+			 ORDER BY A.CONFM_ORDR
+ 		]]>
+	</select>
+
+	<!-- 상신 - 목록 -->
+	<select id="oe1consentManageDAO.selectSubmitList" resultClass="egovMap">
+		<![CDATA[
+			SELECT A.DRFT_SN
+			     , A.DRAFTER
+			     , C.MBER_NM
+			     , A.DRFT_SJ
+			     , A.DRFT_CN
+			     , A.DRFT_STTUS_CODE
+				 , (CASE A.DRFT_STTUS_CODE WHEN 1 THEN '결재중' 
+                                 		   WHEN 2 THEN '완결' 
+                                 		   WHEN 3 THEN '반려'
+                                 		   WHEN 4 THEN '상신취소'
+                                 		   ELSE '' END) DRFT_STTUS
+			     , A.DRFT_OPINION
+			     , A.DELETE_YN
+			     , if(ifnull(B.CONFM_DT, '') = '', '-', concat(SUBSTRING(B.CONFM_DT, 1, 4), '-', SUBSTRING(B.CONFM_DT, 5, 2), '-', SUBSTRING(B.CONFM_DT, 7, 2), ' ', SUBSTRING(B.CONFM_DT, 9, 2), ':', SUBSTRING(B.CONFM_DT, 11, 2), ':', SUBSTRING(B.CONFM_DT, 13, 2))) CONFM_DT
+			  FROM OE1TNDRFTMANAGE     A
+			      ,OE1TNCONFMMANAGE   B
+			      ,OE1TNUSERINFO       C
+			 WHERE A.DRAFTER          = #drafter#
+			   AND A.DRAFTER          = B.CONFMER
+			   AND A.DRFT_SN          = B.DRFT_SN
+			   AND A.DRAFTER          = C.MBER_ID
+			   AND B.CONFM_SE_CODE    = '1'
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0"> <!-- 제목 -->
+				A.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1"> <!-- 내용 -->
+				A.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2"> <!-- 제목 + 내용 -->
+				(A.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%') OR A.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%'))
+			</isEqual>
+	</select>
+
+	<!-- 상신 - 목록 페이지 -->
+	<select id="oe1consentManageDAO.selectSubmitListTotCnt" resultClass="int">
+		<![CDATA[
+		SELECT count(*) totcnt
+		  FROM OE1TNDRFTMANAGE     A
+		      ,OE1TNCONFMMANAGE   B
+		      ,OE1TNUSERINFO       C
+		 WHERE A.DRAFTER          = #drafter#
+		   AND A.DRAFTER          = B.CONFMER
+		   AND A.DRFT_SN          = B.DRFT_SN
+		   AND A.DRAFTER          = C.MBER_ID
+		   AND B.CONFM_SE_CODE    = '1'
+		   AND A.DELETE_YN        = 'N'			/* 삭제여부 */
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0"> <!-- 제목 -->
+				A.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1"> <!-- 내용 -->
+				A.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2"> <!-- 제목 + 내용 -->
+				(A.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%') OR A.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%'))
+			</isEqual>
+	</select>
+	
+	<!--  상신 - 상세  -->
+	<select id="oe1consentManageDAO.selectSanctionSubmit" resultMap="sanctionSubmitDetail">
+		<![CDATA[
+			SELECT A.DRFT_SN
+			      ,A.DRAFTER
+			      ,B.CONFM_ORDR
+			      ,C.MBER_NM
+			      ,A.DRFT_SJ
+			      ,A.DRFT_CN
+			      ,A.DRFT_STTUS_CODE
+				 , (CASE A.DRFT_STTUS_CODE WHEN 1 THEN '결재중' 
+                                 		   WHEN 2 THEN '완결' 
+                                 		   WHEN 3 THEN '반려'
+                                 		   WHEN 4 THEN '상신취소'
+                                 		   ELSE '' END) DRFT_STTUS
+			      ,A.DRFT_OPINION
+            ,(SELECT B2.CONFM_OPINION
+              FROM OE1TNCONFMMANAGE B2 
+              WHERE B2.DRFT_SN = #drftSn#
+              AND B2.CONFM_RESULT_CODE <> '') AS AFTER_OPINION
+			,if(ifnull((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), '') = '', '-', CONCAT(SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 1, 4), '-', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 5, 2), '-', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 7, 2), ' ', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 9, 2), ':', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 11, 2), ':', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 13, 2))) AS AFTER_CONFM_DT 
+			      ,A.ATCH_FILE_ID
+			      ,A.DELETE_YN
+			      ,D.CNT1
+			      ,D.CNT2
+			      ,D.CNT3
+			      ,if(ifnull(A.DRFT_DT, '') = '', '-', CONCAT(SUBSTRING(A.DRFT_DT, 1, 4), '-', SUBSTRING(A.DRFT_DT, 5, 2), '-', SUBSTRING(A.DRFT_DT, 7, 2), ' ', SUBSTRING(A.DRFT_DT, 9, 2), ':', SUBSTRING(A.DRFT_DT, 11, 2), ':', SUBSTRING(A.DRFT_DT, 13, 2))) DRFT_DT
+			      ,if(ifnull(B.CONFM_DT, '') = '', '-', CONCAT(SUBSTRING(B.CONFM_DT, 1, 4), '-', SUBSTRING(B.CONFM_DT, 5, 2), '-', SUBSTRING(B.CONFM_DT, 7, 2), ' ', SUBSTRING(B.CONFM_DT, 9, 2), ':', SUBSTRING(B.CONFM_DT, 11, 2), ':', SUBSTRING(B.CONFM_DT, 13, 2))) CONFM_DT
+			  FROM OE1TNDRFTMANAGE     A
+			      ,OE1TNCONFMMANAGE   B
+     
+			      ,OE1TNUSERINFO       C
+			      ,(SELECT SUM(CASE WHEN CONFM_SE_CODE = '2' THEN 1 ELSE 0 END) CNT1
+			              ,SUM(CASE WHEN CONFM_RESULT_CODE = '1' THEN 1 ELSE 0 END) CNT2
+			              ,SUM(CASE WHEN CONFM_RESULT_CODE = '2' THEN 1 ELSE 0 END) CNT3
+			          FROM OE1TNCONFMMANAGE
+			         WHERE DRFT_SN    = #drftSn# ) D
+			         
+			 WHERE A.DRFT_SN  = #drftSn#
+			   AND A.DRAFTER  = B.CONFMER
+			   AND A.DRFT_SN  = B.DRFT_SN
+			   AND A.DRAFTER  = C.MBER_ID
+			   AND B.CONFM_SE_CODE  = '1'		
+		]]>
+	</select>
+	
+	<!-- 상신, 결재, 통보 - 결재경로조회 -->
+	<select id="oe1consentManageDAO.selectSanctionCourseList" resultClass="egovMap">
+		<![CDATA[
+			SELECT A.CONFMER
+			      ,B.MBER_NM
+			      ,A.CONFM_ORDR
+			      ,A.CONFM_SE_CODE
+				 , (CASE A.CONFM_SE_CODE WHEN 1 THEN (CASE C.DRFT_STTUS_CODE WHEN 4 THEN '상신취소' ELSE '기안' END) 
+                                 		 WHEN 2 THEN (CASE A.CONFM_RESULT_CODE WHEN 1 THEN '승인' WHEN 2 THEN '반려' ELSE '결재' END)
+                                 		 WHEN 3 THEN '합의'
+                                 		 WHEN 4 THEN '통보'
+                                 		 ELSE '' END) CONFM_SE
+				 , if(ifnull(A.DRFT_DT, '') = '', '-', concat(SUBSTRING(A.DRFT_DT, 1, 4), '-', SUBSTRING(A.DRFT_DT, 5, 2), '-', SUBSTRING(A.DRFT_DT, 7, 2), ' ', SUBSTRING(A.DRFT_DT, 9, 2), ':', SUBSTRING(A.DRFT_DT, 11, 2), ':', SUBSTRING(A.DRFT_DT, 13, 2))) DRFT_DT
+				 , if(ifnull(A.CONFM_DT, '') = '', '-', concat(SUBSTRING(A.CONFM_DT, 1, 4), '-', SUBSTRING(A.CONFM_DT, 5, 2), '-', SUBSTRING(A.CONFM_DT, 7, 2), ' ', SUBSTRING(A.CONFM_DT, 9, 2), ':', SUBSTRING(A.CONFM_DT, 11, 2), ':', SUBSTRING(A.CONFM_DT, 13, 2))) CONFM_DT
+			      ,A.CONFM_OPINION
+			  FROM OE1TNCONFMMANAGE A
+			      ,OE1TNUSERINFO B
+			      ,OE1TNDRFTMANAGE C
+			 WHERE A.CONFMER  = B.MBER_ID
+			   AND A.DRFT_SN  = C.DRFT_SN
+			   AND A.DRFT_SN        = #drftSn#
+			 ORDER BY A.CONFM_ORDR
+ 		]]>
+	</select>
+	
+	<!-- 상신 - 삭제-->
+	<select id="oe1consentManageDAO.removeSanctionSubmit" resultClass="int">
+		<![CDATA[
+			UPDATE OE1TNDRFTMANAGE SET
+				DELETE_YN = 'Y'
+			  FROM OE1TNDRFTMANAGE 
+			 WHERE DRFT_SN=#drftSn#
+			   AND DRFT_STTUS_CODE = '1'
+		]]>
+	</select>
+	
+	<!-- [상신작성 수정]을 위해 상신승인정보를 모두 삭제한다. -->
+	<delete id="oe1consentManageDAO.deleteSanctionConsent">
+		<![CDATA[
+			DELETE FROM OE1TNCONFMMANAGE
+			 WHERE DRFT_SN = #drftSn#
+		]]>
+	</delete>
+	
+
+
+
+	
+	<!-- 결재 - 목록 -->
+	<select id="oe1consentManageDAO.selectSanctionConfirmList" resultClass="egovMap">
+		<![CDATA[
+			SELECT A.DRFT_SN
+			     , A.CONFM_ORDR
+			     , B.DRAFTER
+			     , C.MBER_NM
+			     , B.DRFT_SJ
+			     , B.DRFT_STTUS_CODE
+				 , (CASE B.DRFT_STTUS_CODE WHEN 1 THEN '결재중' 
+                                 		   WHEN 2 THEN '완결' 
+                                 		   WHEN 3 THEN '반려'
+                                 		   WHEN 4 THEN '상신취소'
+                                 		   ELSE '' END) DRFT_STTUS
+			     , if(ifnull(D.DRFT_DT, '') = '', '-', concat(SUBSTRING(D.DRFT_DT, 1, 4), '-', SUBSTRING(D.DRFT_DT, 5, 2), '-', SUBSTRING(D.DRFT_DT, 7, 2), ' ', SUBSTRING(D.DRFT_DT, 9, 2), ':', SUBSTRING(D.DRFT_DT, 11, 2), ':', SUBSTRING(D.DRFT_DT, 13, 2))) CONFM_DT
+			     , B.DELETE_YN
+			  FROM OE1TNCONFMMANAGE   A
+			     , OE1TNDRFTMANAGE     B
+			     , OE1TNUSERINFO       C
+			     , (SELECT DRFT_SN
+			             , MIN(DRFT_DT) DRFT_DT
+			          FROM OE1TNCONFMMANAGE
+			         GROUP BY DRFT_SN ) D
+			 WHERE A.CONFMER         = #confmer#
+			   AND B.DRAFTER         = C.MBER_ID
+			   AND A.DRFT_SN         = B.DRFT_SN
+			   AND A.DRFT_SN         = D.DRFT_SN
+			   AND A.SANCTN_TRGT_YN = 'Y'
+			   AND B.DRFT_STTUS_CODE <> '4'
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0"> <!-- 제목 -->
+				B.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1"> <!-- 내용 -->
+				B.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2"> <!-- 제목 + 내용 -->
+				(B.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%') OR B.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%'))
+			</isEqual>
+	</select>
+	
+	<!-- 결재 - 목록 페이지 -->
+	<select id="oe1consentManageDAO.selectSanctionConfirmListTotCnt" resultClass="int">
+		<![CDATA[
+			SELECT count(*) totcnt
+			  FROM OE1TNCONFMMANAGE   A
+			     , OE1TNDRFTMANAGE     B
+			     , OE1TNUSERINFO       C
+			     , (SELECT DRFT_SN
+			             , MIN(DRFT_DT) DRFT_DT
+			          FROM OE1TNCONFMMANAGE
+			         GROUP BY DRFT_SN ) D
+			 WHERE A.CONFMER         = #confmer#
+			   AND B.DRAFTER         = C.MBER_ID
+			   AND A.DRFT_SN         = B.DRFT_SN
+			   AND A.DRFT_SN         = D.DRFT_SN
+			   AND A.SANCTN_TRGT_YN = 'Y'
+			   AND A.DELETE_YN      = 'N'
+			   AND B.DRFT_STTUS_CODE <> '4'
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0"> <!-- 제목 -->
+				B.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1"> <!-- 내용 -->
+				B.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2"> <!-- 제목 + 내용 -->
+				(B.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%') OR B.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%'))
+			</isEqual>
+	</select>
+	
+	<!-- 결재 - 상세 -->
+	<select id="oe1consentManageDAO.selectSanctionConfirm" resultMap="sanctionSubmitDetail">
+		<![CDATA[
+			SELECT A.DRFT_SN
+			      ,A.DRAFTER
+			      ,C.MBER_NM
+			      ,A.DRFT_SJ
+			      ,A.DRFT_CN
+			      ,B.CONFM_ORDR			
+			      ,A.DRFT_STTUS_CODE
+				 , (CASE A.DRFT_STTUS_CODE WHEN 1 THEN '결재중' 
+                                 		   WHEN 2 THEN '완결' 
+                                 		   WHEN 3 THEN '반려'
+                                 		   WHEN 4 THEN '상신취소'
+                                 		   ELSE '' END) DRFT_STTUS
+			      ,A.DRFT_OPINION
+              ,(SELECT B2.CONFM_OPINION
+              FROM OE1TNCONFMMANAGE B2 
+              WHERE B2.DRFT_SN = #drftSn#
+              AND B2.CONFM_RESULT_CODE <> '') AS AFTER_OPINION
+			,if(ifnull((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), '') = '', '-', CONCAT(SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 1, 4), '-', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 5, 2), '-', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 7, 2), ' ', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 9, 2), ':', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 11, 2), ':', SUBSTRING((SELECT B2.CONFM_DT FROM OE1TNCONFMMANAGE B2 WHERE B2.DRFT_SN = #drftSn# AND B2.CONFM_RESULT_CODE <> ''), 13, 2))) AS AFTER_CONFM_DT                      
+			      ,A.ATCH_FILE_ID
+			      ,A.DELETE_YN
+			      ,D.CNT1
+			      ,D.CNT2
+			      ,D.CNT3
+			      ,if(ifnull(A.DRFT_DT, '') = '', '-', CONCAT(SUBSTRING(A.DRFT_DT, 1, 4), '-', SUBSTRING(A.DRFT_DT, 5, 2), '-', SUBSTRING(A.DRFT_DT, 7, 2), ' ', SUBSTRING(A.DRFT_DT, 9, 2), ':', SUBSTRING(A.DRFT_DT, 11, 2), ':', SUBSTRING(A.DRFT_DT, 13, 2))) DRFT_DT
+			      ,if(ifnull(B.CONFM_DT, '') = '', '-', CONCAT(SUBSTRING(B.CONFM_DT, 1, 4), '-', SUBSTRING(B.CONFM_DT, 5, 2), '-', SUBSTRING(B.CONFM_DT, 7, 2), ' ', SUBSTRING(B.CONFM_DT, 9, 2), ':', SUBSTRING(B.CONFM_DT, 11, 2), ':', SUBSTRING(B.CONFM_DT, 13, 2))) CONFM_DT
+			  FROM OE1TNDRFTMANAGE     A
+			      ,OE1TNCONFMMANAGE   B
+			      ,OE1TNUSERINFO       C
+			      ,(SELECT SUM(CASE WHEN CONFM_SE_CODE = '2' THEN 1 ELSE 0 END) CNT1
+			              ,SUM(CASE WHEN CONFM_RESULT_CODE = '1' THEN 1 ELSE 0 END) CNT2
+			              ,SUM(CASE WHEN CONFM_RESULT_CODE = '2' THEN 1 ELSE 0 END) CNT3
+			          FROM OE1TNCONFMMANAGE
+			         WHERE DRFT_SN    = #drftSn# ) D
+			 WHERE A.DRFT_SN  = #drftSn#
+			   AND B.CONFM_ORDR = #confmOrdr#
+			   AND A.DRFT_SN  = B.DRFT_SN
+			   AND A.DRAFTER  = C.MBER_ID
+			   AND B.CONFM_SE_CODE  = '2'		
+		]]>
+	</select>
+	
+	
+	
+	
+	
+	<!-- 통보 - 목록 -->
+	<select id="oe1consentManageDAO.selectSanctionDispatchList" resultClass="egovMap">
+		<![CDATA[
+			SELECT A.DRFT_SN
+				 , A.CONFM_ORDR
+				 , B.DRAFTER
+				 , C.MBER_NM
+				 , B.DRFT_SJ
+				 , B.DRFT_STTUS_CODE
+				 , (CASE B.DRFT_STTUS_CODE WHEN 1 THEN '결재중' 
+                                 		   WHEN 2 THEN '완결' 
+                                 		   WHEN 3 THEN '반려'
+                                 		   WHEN 4 THEN '상신취소'
+                                 		   ELSE '' END) DRFT_STTUS
+				 , if(ifnull(D.DRFT_DT, '') = '', '-', concat(SUBSTRING(D.DRFT_DT, 1, 4), '-', SUBSTRING(D.DRFT_DT, 5, 2), '-', SUBSTRING(D.DRFT_DT, 7, 2), ' ', SUBSTRING(D.DRFT_DT, 9, 2), ':', SUBSTRING(D.DRFT_DT, 11, 2), ':', SUBSTRING(D.DRFT_DT, 13, 2))) CONFM_DT
+				 ,B.DELETE_YN
+			  FROM OE1TNCONFMMANAGE A
+				 , OE1TNDRFTMANAGE  B
+				 , OE1TNUSERINFO    C
+				 , (SELECT DRFT_SN
+				         , MIN(DRFT_DT) DRFT_DT
+				      FROM OE1TNCONFMMANAGE
+				     GROUP BY DRFT_SN ) D
+			 WHERE A.CONFMER          = #confmer#
+			   AND B.DRAFTER          = C.MBER_ID
+			   AND A.DRFT_SN         = B.DRFT_SN
+			   AND A.DRFT_SN         = D.DRFT_SN
+			   AND A.CONFM_COMPT_YN = 'Y'
+			   AND A.CONFM_SE_CODE  = '4'
+			   AND B.DRFT_STTUS_CODE = '2'
+ 		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0"> <!-- 제목 -->
+				B.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1"> <!-- 내용 -->
+				B.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2"> <!-- 제목 + 내용 -->
+				(B.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%') OR B.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%'))
+			</isEqual>
+	</select>
+	
+	<!-- 통보 - 목록 페이지 -->
+	<select id="oe1consentManageDAO.selectSanctionDispatchListTotCnt" resultClass="int">
+		<![CDATA[
+			SELECT count(*) totcnt
+			  FROM OE1TNCONFMMANAGE A
+				 , OE1TNDRFTMANAGE  B
+				 , OE1TNUSERINFO    C
+				 , (SELECT DRFT_SN
+				         , MIN(DRFT_DT) DRFT_DT
+				      FROM OE1TNCONFMMANAGE
+				     GROUP BY DRFT_SN ) D
+			 WHERE A.CONFMER          = #confmer#
+			   AND B.DRAFTER          = C.MBER_ID
+			   AND A.DRFT_SN         = B.DRFT_SN
+			   AND A.DRFT_SN         = D.DRFT_SN
+			   AND A.DELETE_YN          = 'N'
+			   AND A.CONFM_COMPT_YN = 'Y'
+			   AND A.CONFM_SE_CODE  = '4'
+			   AND B.DRFT_STTUS_CODE = '2'
+ 		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0"> <!-- 제목 -->
+				B.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1"> <!-- 내용 -->
+				B.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2"> <!-- 제목 + 내용 -->
+				(B.DRFT_SJ LIKE CONCAT('%',#searchKeyword#,'%') OR B.DRFT_CN LIKE CONCAT('%',#searchKeyword#,'%'))
+			</isEqual>
+	</select>
+	
+	<!-- 통보 - 상세 -->
+	<select id="oe1consentManageDAO.selectSanctionDispatch" resultMap="sanctionSubmitDetail">
+		<![CDATA[
+			SELECT A.DRFT_SN
+			      ,A.DRAFTER
+			      ,B.CONFM_ORDR
+			      ,C.MBER_NM
+			      ,A.DRFT_SJ
+			      ,A.DRFT_CN
+			      ,A.DRFT_STTUS_CODE
+				 , (CASE A.DRFT_STTUS_CODE WHEN 1 THEN '결재중' 
+                                 		   WHEN 2 THEN '완결' 
+                                 		   WHEN 3 THEN '반려'
+                                 		   WHEN 4 THEN '상신취소'
+                                 		   ELSE '' END) DRFT_STTUS
+			      ,A.DRFT_OPINION
+              ,(SELECT B2.CONFM_OPINION
+              FROM OE1TNCONFMMANAGE B2 
+              WHERE B2.DRFT_SN = #drftSn#
+              AND B2.CONFM_RESULT_CODE <> '') AS AFTER_OPINION
+				  ,(SELECT DATE_FORMAT(STR_TO_DATE(B2.CONFM_DT,'%Y%m%d %H%i%s'),'%Y-%m-%d %H:%i:%s')
+	                  FROM OE1TNCONFMMANAGE B2 
+	                 WHERE B2.DRFT_SN = #drftSn# 
+	                   AND B2.CONFM_RESULT_CODE <> ''
+	                LIMIT 1) AS AFTER_CONFM_DT                          
+			      ,A.ATCH_FILE_ID
+			      ,A.DELETE_YN
+			      ,D.CNT1
+			      ,D.CNT2
+			      ,D.CNT3
+			      ,if(ifnull(A.DRFT_DT, '') = '', '-', CONCAT(SUBSTRING(A.DRFT_DT, 1, 4), '-', SUBSTRING(A.DRFT_DT, 5, 2), '-', SUBSTRING(A.DRFT_DT, 7, 2), ' ', SUBSTRING(A.DRFT_DT, 9, 2), ':', SUBSTRING(A.DRFT_DT, 11, 2), ':', SUBSTRING(A.DRFT_DT, 13, 2))) DRFT_DT
+			      ,if(ifnull(B.CONFM_DT, '') = '', '-', CONCAT(SUBSTRING(B.CONFM_DT, 1, 4), '-', SUBSTRING(B.CONFM_DT, 5, 2), '-', SUBSTRING(B.CONFM_DT, 7, 2), ' ', SUBSTRING(B.CONFM_DT, 9, 2), ':', SUBSTRING(B.CONFM_DT, 11, 2), ':', SUBSTRING(B.CONFM_DT, 13, 2))) CONFM_DT
+			  FROM OE1TNDRFTMANAGE     A
+			      ,OE1TNCONFMMANAGE   B
+			      ,OE1TNUSERINFO       C
+			      ,(SELECT SUM(CASE WHEN CONFM_SE_CODE = '2' THEN 1 ELSE 0 END) CNT1
+			              ,SUM(CASE WHEN CONFM_RESULT_CODE = '1' THEN 1 ELSE 0 END) CNT2
+			              ,SUM(CASE WHEN CONFM_RESULT_CODE = '2' THEN 1 ELSE 0 END) CNT3
+			          FROM OE1TNCONFMMANAGE
+			         WHERE DRFT_SN    = #drftSn# ) D
+			 WHERE A.DRFT_SN  = #drftSn#
+			   AND A.DRFT_SN  = B.DRFT_SN
+			   AND A.DRAFTER  = C.MBER_ID
+	           AND B.CONFMER = #confmer#	
+			   AND B.CONFM_SE_CODE  = '4'
+		]]>
+	</select>
+	
+	<!-- 상신함 삭제 -->
+	<update id="oe1consentManageDAO.updateSanctionDraftingDelete">
+		<![CDATA[
+			UPDATE OE1TNDRFTMANAGE
+			   SET DELETE_YN = 'Y'
+			 WHERE DRFT_SN = #drftSn#
+		]]>
+	</update>
+	
+	<!-- 결재함,통보함 삭제 -->
+	<update id="oe1consentManageDAO.updateSanctionConfirmDelete">
+		<![CDATA[
+			UPDATE OE1TNCONFMMANAGE
+			   SET DELETE_YN = 'Y'
+			   WHERE DRFT_SN = #drftSn#
+			   AND CONFM_ORDR = #confmOrdr#
+		]]>
+	</update>
+
+	<!-- 승인(1)/반려(2) -->
+	<update id="oe1consentManageDAO.updateSanctionConfirmReturn">
+		<![CDATA[
+			UPDATE OE1TNCONFMMANAGE
+			   SET CONFM_RESULT_CODE = #confmResultCode#
+			     , CONFM_DT = #confmDt#
+			     , CONFM_OPINION = #confmOpinion#
+			 WHERE DRFT_SN = #drftSn#
+			   AND CONFM_ORDR = #confmOrdr#
+		]]>
+	</update>
+	
+	<!-- 결재완료 -->
+	<update id="oe1consentManageDAO.updateSanctionConfirmComplete">
+		<![CDATA[
+			UPDATE OE1TNCONFMMANAGE
+			   SET CONFM_COMPT_YN = 'Y'
+			 WHERE DRFT_SN = #drftSn#
+		]]>
+	</update>
+
+	<!-- 통보일시설정 -->
+	<update id="oe1consentManageDAO.updateSanctionDispatchTime">
+		<![CDATA[
+			UPDATE OE1TNCONFMMANAGE
+			   SET DRFT_DT = #drftDt#
+			 WHERE DRFT_SN = #drftSn#
+			   AND CONFM_SE_CODE = '4'	/* 통보 */
+		]]>
+	</update>
+	
+	<!-- 승인 - 수정 승인취소 --><!-- 상신상태코드설정 -->
+	<update id="oe1consentManageDAO.updateDraftingStatusCode">
+		<![CDATA[
+			UPDATE OE1TNDRFTMANAGE
+			   SET DRFT_STTUS_CODE = #drftSttusCode#
+			 WHERE DRFT_SN = #drftSn#
+		]]>
+	</update>
+	
+	<!-- 승인 - 수정 승인취소 --><!-- 결재승인일시설정 -->
+	<update id="oe1consentManageDAO.updateSanctionConfirmDate">
+		<![CDATA[
+			UPDATE OE1TNCONFMMANAGE
+			   SET CONFM_DT = #confmDt#
+			 WHERE DRFT_SN = #drftSn#
+			   AND CONFM_ORDR = #confmOrdr#
+		]]>
+	</update>
+	
+	<!-- 다음결재자 지정 -->
+	<update id="oe1consentManageDAO.updateNextTargetSet">
+		<![CDATA[
+			UPDATE OE1TNCONFMMANAGE
+			   SET DRFT_DT = #drftDt#
+			     , SANCTN_TRGT_YN = 'Y'
+			 WHERE DRFT_SN = #drftSn#
+			   AND CONFM_ORDR = #confmOrdr#
+		]]>
+	</update>
+	
+	<!-- 댜음 결재번호 조회 -->
+	<select id="oe1consentManageDAO.selectNextConfirmMemberSeq" resultClass="String">
+		<![CDATA[
+			SELECT MIN(CONFM_ORDR) TARGET_SEQ
+			  FROM OE1TNCONFMMANAGE
+			 WHERE DRFT_SN  = #drftSn#
+			   AND CONFM_SE_CODE  = '2'
+			   AND IFNULL(CONFM_RESULT_CODE, 0) NOT IN ('1', '2')
+		]]>
+	</select>
+
+	<!-- 댜음 결재자 조회 -->
+	<select id="oe1consentManageDAO.selectNextConfirmMember" resultClass="String">
+		<![CDATA[
+			SELECT CONFMER
+			  FROM OE1TNCONFMMANAGE
+			 WHERE DRFT_SN  = #drftSn#
+			   AND CONFM_SE_CODE  = '2'								/* 결재 */
+			   AND IFNULL(CONFM_RESULT_CODE, 0) NOT IN ('1', '2')
+			   AND CONFM_ORDR = (SELECT MIN(CONFM_ORDR)
+			   					   FROM OE1TNCONFMMANAGE
+			   					  WHERE DRFT_SN = #drftSn#
+			   					    AND CONFM_SE_CODE  = '2'		/* 결재 */
+			   						AND IFNULL(CONFM_RESULT_CODE, 0) NOT IN ('1', '2')
+			   					)
+		]]>
+	</select>
+	
+	<!-- 결재함 상세보기 : 본인이 결재한 건은 승인/반려 버튼이 보이지 않음  -->
+	<select id="oe1consentManageDAO.selectSanctionStatus" resultClass="String">
+		<![CDATA[
+			SELECT (CASE IFNULL(CONFM_RESULT_CODE, 0) WHEN 0 THEN 'Y' 
+                                 		   ELSE 'N' END) AP_STTUS
+			  FROM OE1TNCONFMMANAGE
+			 WHERE DRFT_SN  = #drftSn#
+			   AND DRFT_SN = #drftSn#
+			   AND CONFM_ORDR = #confmOrdr#
+		]]>
+	</select>
+
+</sqlMap>

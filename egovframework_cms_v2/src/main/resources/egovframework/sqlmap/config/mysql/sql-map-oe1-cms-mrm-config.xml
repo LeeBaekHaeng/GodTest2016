@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<!-- 회의실관리 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/mrm/EgovMtgRm_mysql_SQL.xml" />
+	<!-- 회의실예약 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/mrm/EgovMtgRoomReserve_mysql_SQL.xml" />	
+</sqlMapConfig>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<b:beans  xmlns="http://www.springframework.org/schema/security"
+    xmlns:b="http://www.springframework.org/schema/beans"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd
+                        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+    <b:bean id="securedObjectService"
+        class="egovframework.rte.fdl.security.securedobject.impl.SecuredObjectServiceImpl">
+        <b:property name="securedObjectDAO" ref="securedObjectDAO"/>
+    </b:bean>
+
+    <b:bean id="securedObjectDAO" 
+    	class="egovframework.rte.fdl.security.securedobject.impl.SecuredObjectDAO" >
+        <b:property name="dataSource" ref="dataSource"/>
+        <b:property name="sqlHierarchicalRoles">
+			<b:value>
+		        SELECT  A.LWPRT_ROLE  child
+		             ,  A.UPPER_ROLE  parent
+		          FROM  OE1TNROLESHIERARCHY A LEFT JOIN OE1TNROLESHIERARCHY B
+		            ON  (A.LWPRT_ROLE = B.UPPER_ROLE)
+			</b:value>
+		</b:property>
+		<b:property name="sqlRolesAndUrl">
+			<b:value>
+				SELECT  A.ROLE_PTTRN  url
+				     ,  B.AUTHOR_CODE authority
+				  FROM  OE1TNROLEINFO A
+				     ,  OE1TNAUTHORROLERELATE B
+				 WHERE  A.ROLE_CODE = B.ROLE_CODE
+				   AND  A.ROLE_TY   = 'url'  
+				ORDER BY A.ROLE_SORT
+			</b:value>
+		</b:property>
+		<b:property name="sqlRolesAndMethod">
+			<b:value>
+				SELECT  A.ROLE_PTTRN    url
+				     ,  B.AUTHOR_CODE   authority
+				  FROM  OE1TNROLEINFO A
+				     ,  OE1TNAUTHORROLERELATE B
+				 WHERE  A.ROLE_CODE = B.ROLE_CODE
+				   AND  A.ROLE_TY   = 'method'  
+				ORDER BY A.ROLE_SORT
+			</b:value>
+		</b:property>
+		<b:property name="sqlRolesAndPointcut">
+			<b:value>
+				SELECT  A.ROLE_PTTRN    url
+				     ,  B.AUTHOR_CODE   authority
+				  FROM  OE1TNROLEINFO A
+				     ,  OE1TNAUTHORROLERELATE B
+				 WHERE  A.ROLE_CODE = B.ROLE_CODE
+				   AND  A.ROLE_TY   = 'pointcut'  
+				ORDER BY A.ROLE_SORT
+			</b:value>
+		</b:property>
+    </b:bean>
+
+    <b:bean id="userDetailsServiceWrapper" 
+        class="org.springframework.security.userdetails.hierarchicalroles.UserDetailsServiceWrapper" >
+        <b:property name="roleHierarchy" ref="roleHierarchy"/>
+        <b:property name="userDetailsService" ref="jdbcUserService"/>
+    </b:bean>
+    
+    <b:bean id="roleHierarchy" 
+        class="org.springframework.security.userdetails.hierarchicalroles.RoleHierarchyImpl" >
+        <b:property name="hierarchy" ref="hierarchyStrings"/>
+    </b:bean>
+
+    <b:bean id="hierarchyStrings"
+        class="egovframework.rte.fdl.security.userdetails.hierarchicalroles.HierarchyStringsFactoryBean"
+        init-method="init">
+        <b:property name="securedObjectService" ref="securedObjectService"/>
+    </b:bean>
+
+    <b:bean id="accessDecisionManager"
+        class="org.springframework.security.vote.AffirmativeBased">
+        <b:property name="allowIfAllAbstainDecisions" value="false" />
+        <b:property name="decisionVoters">
+            <b:list>
+                <b:bean
+                    class="org.springframework.security.vote.RoleVoter">
+                    <b:property name="rolePrefix" value="" />
+                </b:bean>
+                <b:bean
+                    class="org.springframework.security.vote.AuthenticatedVoter" />
+            </b:list>
+        </b:property>
+    </b:bean>
+
+    <b:bean id="filterSecurityInterceptor"
+        class="org.springframework.security.intercept.web.FilterSecurityInterceptor">
+        <custom-filter before="FILTER_SECURITY_INTERCEPTOR" />
+        <b:property name="authenticationManager" ref="authenticationManager" />
+        <b:property name="accessDecisionManager" ref="accessDecisionManager" />
+        <b:property name="objectDefinitionSource" ref="databaseObjectDefinitionSource" />
+    </b:bean>
+
+    <b:bean id="regexUrlPathMatcher"
+        class="org.springframework.security.util.RegexUrlPathMatcher" />   
+ 
+ 
+    <b:bean id="databaseObjectDefinitionSource"
+        class="org.springframework.security.intercept.web.EgovReloadableDefaultFilterInvocationDefinitionSource">
+        <b:constructor-arg ref="regexUrlPathMatcher" />
+        <b:constructor-arg ref="requestMap" />      
+        <b:property name="securedObjectService" ref="securedObjectService"/>
+    </b:bean>
+
+    <!--  url  -->
+    <b:bean id="requestMap"
+        class="egovframework.rte.fdl.security.intercept.ResourcesMapFactoryBean" init-method="init">
+        <b:property name="securedObjectService" ref="securedObjectService"/>
+        <b:property name="resourceType" value="url"/>
+        
+    </b:bean>
+
+    <http access-denied-page="/cms/sys/accessDenied.do" path-type="regex" lowercase-comparisons="false">
+        <form-login login-processing-url="/j_spring_security_check"
+                    authentication-failure-url="/cms/com/EgovOe1LoginUsr.do?login_error=1"
+                    always-use-default-target="true"
+                    default-target-url="/cms/com/actionMain.do"
+                    login-page="/cms/com/EgovOe1LoginUsr.do?login_error=0" />
+        <anonymous/>
+        <logout logout-url="/j_spring_security_logout" logout-success-url="/cms/com/viewMainPage.do" />
+        <concurrent-session-control max-sessions="20" exception-if-maximum-exceeded="false" expired-url="/index.jsp" />
+    </http>
+ 
+    <authentication-manager alias="authenticationManager"/>
+    <authentication-provider user-service-ref="jdbcUserService"/>
+
+<!-- 
+    <authentication-provider user-service-ref="jdbcUserService">
+        <password-encoder hash="sha-256" base64="true"/>
+    </authentication-provider>    
+ 
+    <authentication-provider user-service-ref="jdbcUserService"/>
+
+    <authentication-provider user-service-ref="jdbcUserService">
+        <password-encoder hash="sha-256" base64="true"/>
+    </authentication-provider>
+
+    <b:bean id="daoAuthenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+        <custom-authentication-provider/>
+        <b:property name="userDetailsService" ref="jdbcUserService"/>
+        <b:property name="hideUserNotFoundExceptions" value="false"/>
+        <b:property name="passwordEncoder">
+            <b:ref local="md5PasswordEncoder"/>
+        </b:property>
+    </b:bean>
+    <b:bean id="md5PasswordEncoder" class="org.springframework.security.providers.encoding.Md5PasswordEncoder" />
+-->
+   
+
+    <authentication-provider user-service-ref="jdbcUserService"/>
+
+
+    <!--  
+    <authentication-provider user-service-ref="jdbcUserService">
+        <password-encoder hash="md5" base64="true"/>
+    </authentication-provider>
+
+    
+	<bean id="passwordEncoder" class="org.springframework.security.providers.encoding.MessageDigestPasswordEncoder">
+	    <constructor-arg value="MD5"/>
+	</bean>
+    -->
+    
+    <!-- customizing user table, authorities table -->
+    <!--<jdbc-user-service id="jdbcUserService" data-source-ref="dataSource"
+        users-by-username-query="SELECT USER_ID,PASSWORD,ENABLED,BIRTH_DAY FROM USERS WHERE USER_ID = ?"
+        authorities-by-username-query="SELECT USER_ID,AUTHORITY FROM AUTHORITIES WHERE USER_ID = ?"/>-->
+
+    <b:bean id="jdbcUserService" class="egovframework.rte.fdl.security.userdetails.jdbc.EgovJdbcUserDetailsManager" > 
+        <b:property name="usersByUsernameQuery" value="
+            SELECT  A.MBER_ID           USER_ID
+                 ,  A.UNIQ_ID           PASSWORD
+                 ,  1                   ENABLED
+                 ,  A.MBER_NM           USER_NM
+                 ,  A.ZIP               USER_ZIP
+                 ,  A.ADRES             USER_ADRES
+                 ,  A.MBER_EMAIL_ADRES  USER_EMAIL
+                 ,  A.UNIQ_ID           UNIQ_ID
+                 ,  REPLACE (A.MOBLPHON_NO,'-','')                  MOBLPHON_NO
+                 ,  CONCAT(CONCAT(A.AREA_NO, A.MIDDLE_TELNO), A.END_TELNO)  TEL_NO
+                 ,  A.PSTINST_CODE
+                 ,  A.PSTINST_NM PSTINST_NAME
+                 ,  (SELECT AUTHOR_CODE FROM OE1TNEMPLYRSCRTYESTBS WHERE SCRTY_ESTBS_ID = A.UNIQ_ID   ) XAUTHOR_CODE
+                 ,  (SELECT Y.AUTHOR_NM   FROM OE1TNAUTHORINFO Y,OE1TNEMPLYRSCRTYESTBS X WHERE Y.AUTHOR_CODE = X.AUTHOR_CODE AND X.SCRTY_ESTBS_ID = A.UNIQ_ID) XAUTHOR_NM
+              FROM  OE1TNUSERINFO A
+             WHERE  A.MBER_ID = ?
+            " />
+        <b:property name="authoritiesByUsernameQuery" value="
+            SELECT  A.SCRTY_ESTBS_ID      USER_ID
+                 ,  A.AUTHOR_CODE         AUTHORITY
+              FROM  OE1TNEMPLYRSCRTYESTBS A
+                 ,  OE1TNUSERINFO         B
+             WHERE  A.SCRTY_ESTBS_ID      = B.UNIQ_ID
+               AND  B.MBER_ID             = ?
+			" />
+        <b:property name="roleHierarchy" ref="roleHierarchy"/>
+        <b:property name="dataSource" ref="dataSource"/>
+        <b:property name="mapClass" value="egovframework.oe1.cms.com.security.common.EgovSessionMapping"/> 
+    </b:bean>
+
+    <b:bean id="methodDefinitionSources"
+        class="org.springframework.security.intercept.method.MapBasedMethodDefinitionSource">
+        <b:constructor-arg ref="methodMap" />
+    </b:bean>
+    
+    <b:bean id="methodMap"
+        class="egovframework.rte.fdl.security.intercept.ResourcesMapFactoryBean"
+        init-method="init">
+        <b:property name="securedObjectService" ref="securedObjectService"/>
+        <b:property name="resourceType" value="method"/>
+    </b:bean>
+
+    <!--  method  -->
+
+    <b:bean id="_methodDefinitionSourceAdvisor" class="org.springframework.security.intercept.method.aopalliance.MethodDefinitionSourceAdvisor">
+        <b:constructor-arg value="_methodSecurityInterceptor" />
+        <b:constructor-arg ref="_delegatingMethodDefinitionSource" />
+    </b:bean>
+    
+    <b:bean id="_methodSecurityInterceptor" class="org.springframework.security.intercept.method.aopalliance.MethodSecurityInterceptor">
+        <b:property name="validateConfigAttributes" value="false" />
+        <b:property name="authenticationManager" ref="authenticationManager"/>
+        <b:property name="accessDecisionManager" ref="accessDecisionManager"/>
+        <b:property name="objectDefinitionSource" ref="_delegatingMethodDefinitionSource" />
+    </b:bean>
+
+    <b:bean id="_delegatingMethodDefinitionSource" class="org.springframework.security.intercept.method.DelegatingMethodDefinitionSource">
+        <b:property name="methodDefinitionSources">
+            <b:list>
+                <b:ref bean="methodDefinitionSources"/>
+                <b:bean class="org.springframework.security.annotation.SecuredMethodDefinitionSource" />
+                <b:bean class="org.springframework.security.annotation.Jsr250MethodDefinitionSource" />
+            </b:list>
+        </b:property>
+    </b:bean>
+
+    <!--  pointcut
+    <b:bean id="_protectPointcutPostProcessor" class="org.springframework.security.intercept.method.ProtectPointcutPostProcessor">
+        <b:constructor-arg ref="methodDefinitionSources" />
+        <b:property name="pointcutMap" ref="pointcutMap"/>
+    </b:bean>
+
+    <b:bean id="pointcutMap"
+        class="egovframework.rte.fdl.security.intercept.ResourcesMapFactoryBean"
+        init-method="init">
+        <b:property name="securedObjectService" ref="securedObjectService"/>
+        <b:property name="resourceType" value="pointcut"/>
+    </b:bean>
+    -->
+    <!-- customizing method security end -->
+</b:beans>

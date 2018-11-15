@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MenuMng">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="comDefaultVO" type="egovframework.oe1.cms.com.service.EgovOe1ComDefaultVO"/>
+	<typeAlias  alias="menuMngVO" type="egovframework.oe1.cms.sys.service.EgovOe1MenuMngVO"/> 
+	<typeAlias  alias="progrmMngVO" type="egovframework.oe1.cms.sys.service.EgovOe1ProgrmMngVO"/> 
+	
+	<resultMap id="menuManage" class="egovframework.oe1.cms.sys.service.EgovOe1MenuMngVO">
+		<result property="menuId" column="MENU_ID"/>
+		<result property="menuNm" column="MENU_NM"/>
+		<result property="menuDc" column="MENU_DC"/>
+		<result property="menuOrdr" column="MENU_ORDR"/>
+		<result property="upperMenuId" column="UPPER_MENU_ID"/>
+		<result property="upperMenuNm" column="UPPER_MENU_NM"/>
+		<result property="progrmId" column="PROGRM_ID"/>
+		<result property="progrmNm" column="PROGRM_NM"/>
+		<result property="useAt" column="USE_AT"/>
+	</resultMap>
+	
+	<!-- 메뉴 정보 상세 조회 -->
+	<select id="menuMngDAO.selectMenuMng" parameterClass="menuMngVO" resultMap="menuManage">
+		<![CDATA[
+		SELECT
+			    A.MENU_ID AS MENU_ID, 
+				A.MENU_NM AS MENU_NM, 
+				A.MENU_DC AS MENU_DC, 
+				A.MENU_ORDR AS MENU_ORDR, 
+				A.UPPER_MENU_ID AS UPPER_MENU_ID,
+        		(SELECT 
+          				CASE C.UPPER_MENU_ID WHEN '0' THEN '최상위메뉴' ELSE D.MENU_NM END 
+          			FROM OE1TNMENUINFO C, 
+               		OE1TNMENUINFO D
+          			WHERE C.UPPER_MENU_ID = D.MENU_ID
+          			AND C.MENU_ID = A.MENU_ID) AS UPPER_MENU_NM,
+        		A.PROGRM_ID AS PROGRM_ID, 
+        		B.PROGRM_NM AS PROGRM_NM, 
+				A.USE_AT AS USE_AT  
+		FROM 
+			OE1TNMENUINFO A, 
+			OE1TNPROGRMINFO B
+     	WHERE 
+      		A.PROGRM_ID = B.PROGRM_ID
+      	AND
+      		A.MENU_ID = #menuId#
+		]]>
+	</select>
+	
+	<!-- 메뉴 정보 목록 조회 -->
+	<select id="menuMngDAO.selectMenuMngList" parameterClass="comDefaultVO" resultClass="egovMap">		
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        
+        /* 구현 Sql */
+		<![CDATA[	
+			SELECT 
+				MENU_ID, 
+				MENU_NM, 
+				MENU_DC, 
+				MENU_ORDR, 
+				UPPER_MENU_ID,
+				PROGRM_ID, 
+				USE_AT  
+			FROM OE1TNMENUINFO
+			WHERE 1=1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MENU_ID  LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				MENU_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[	
+				MENU_ORDR <> 3
+				]]>
+			</isEqual>
+			ORDER BY MENU_ID DESC
+        /* 구현 Sql */
+        
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+    
+	</select>
+	
+	<!-- 메뉴 목록 갯수 조회 -->
+	<select id="menuMngDAO.selectMenuMngListTotCnt" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+			SELECT COUNT(*)  AS totcnt
+			FROM OE1TNMENUINFO 
+			WHERE 1=1
+		]]>	
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MENU_ID  LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				MENU_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+	</select>
+	
+	<!-- 메뉴 정보 수정 -->
+	<update id="menuMngDAO.updateMenuMng">
+	 <![CDATA[
+	 	UPDATE OE1TNMENUINFO 
+	 	SET MENU_NM = #menuNm#
+	 		, MENU_DC = #menuDc#
+	 		, MENU_ORDR = #menuOrdr#
+	 		, UPPER_MENU_ID = #upperMenuId# 
+	 		, PROGRM_ID = #progrmId#
+	 		, USE_AT = #useAt#
+	 	WHERE MENU_ID = #menuId#
+		]]>
+	</update>
+	
+	<!-- 메뉴 정보 삭제 -->
+	<delete id="menuMngDAO.deleteMenuMng">
+		<![CDATA[
+			DELETE FROM OE1TNMENUINFO 
+			WHERE MENU_ID = #menuId#
+		]]>
+	</delete>
+	
+	<!-- 메뉴 정보 삭제 -->
+	<delete id="menuMngDAO.deleteMenuMngWhenDeleteProgrm">
+		<![CDATA[
+			DELETE FROM OE1TNMENUINFO 
+			WHERE PROGRM_ID = #progrmId#
+		]]>
+	</delete>
+	
+	<!-- 메뉴 정보 등록 -->
+	<insert id="menuMngDAO.insertMenuMng">
+		<![CDATA[
+			INSERT INTO OE1TNMENUINFO ( MENU_ID, MENU_NM, MENU_DC, MENU_ORDR, UPPER_MENU_ID, PROGRM_ID, USE_AT )
+			VALUES ( #menuId#, #menuNm#, #menuDc#, #menuOrdr#, #upperMenuId#, #progrmId#, #useAt# )
+		]]>
+	</insert>
+	
+	<!-- 프로그램이 메뉴와 엮여있는지 확인 -->
+	<select id="menuMngDAO.selectMenuWithProgrm" parameterClass="progrmMngVO" resultClass="int">
+		<![CDATA[
+			SELECT COUNT(*)  AS totcnt
+			FROM OE1TNMENUINFO 
+			WHERE PROGRM_ID = #progrmId#
+		]]>	
+	</select>
+</sqlMap>

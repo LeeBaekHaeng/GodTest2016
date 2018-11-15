@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1MtgRm">
+	
+	<typeAlias  alias="egovMap" 			type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1MtgRmVO" 		type="egovframework.oe1.cms.mrm.service.EgovOe1MtgRmVO"/>
+
+	<!-- 회의실관리 처리를 위한 resultMap -->
+	<resultMap id="egovOe1MtgRm" class="egovframework.oe1.cms.mrm.service.EgovOe1MtgRmVO">
+		<result property="mtgPlaceId" 			column="MTG_PLACE_ID" 			/>
+		<result property="mtgPlaceNm" 			column="MTG_PLACE_NM" 			/>
+		<result property="mtgRmCn" 				column="MTG_RM_CN" 				/>
+		<result property="mtgAtndncNmpr" 		column="MTG_ATNDNC_NMPR" 		/>
+		<result property="useAt" 				column="USE_AT" 				/>
+		<result property="mngrId" 				column="MNGR_ID" 				/>
+		<result property="mngrNm" 				column="MNGR_NM" 				/>
+		<result property="registerId" 			column="REGISTER_ID" 			/>		
+		<result property="registerName" 		column="REGISTER_NAME" 			/>
+		<result property="regstYmd" 			column="REGST_YMD" 				/>	
+		<result property="frstRegisterPnttm" 	column="FRST_REGISTER_PNTTM" 	/>
+		<result property="frstRegisterId" 		column="FRST_REGISTER_ID" 		/>
+		<result property="frstRegisterName" 	column="FRST_REGISTER_NAME" 	/>
+		<result property="lastUpdusrPnttm" 		column="LAST_UPDUSR_PNTTM"		/>
+		<result property="lastUpdusrId" 		column="LAST_UPDUSR_ID" 		/>
+		<result property="lastUpdusrName" 		column="LAST_UPDUSR_NAME" 		/>
+	</resultMap>
+	
+	<!-- 회의실관리 등록 -->
+	<insert id="egovOe1MtgRmDAO.insertMtgRm">
+		<![CDATA[
+			INSERT INTO OE1TNMTGRM 
+				( MTG_PLACE_ID
+				  , MTG_PLACE_NM
+				  , MTG_RM_CN
+				  , MTG_ATNDNC_NMPR
+				  , USE_AT
+				  , MNGR_ID
+				  , REGISTER_ID
+				  , REGST_YMD		
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID				  		  
+				)
+			VALUES ( #mtgPlaceId#
+				  , #mtgPlaceNm#
+				  , #mtgRmCn#
+				  , #mtgAtndncNmpr#
+				  , #useAt#
+				  , #mngrId#
+				  , #registerId#
+				  , TO_CHAR( SYSDATE, 'yyyymmdd')
+				  , SYSDATE
+				  , #frstRegisterId#				  			  
+				  )			  
+		]]>
+	</insert>
+	
+	<!-- 회의실관리 수정 -->
+	<update id="egovOe1MtgRmDAO.updateMtgRm">
+		<![CDATA[
+			UPDATE OE1TNMTGRM 
+			SET 	MTG_PLACE_NM				= #mtgPlaceNm#
+				  , MTG_RM_CN					= #mtgRmCn#
+				  , MTG_ATNDNC_NMPR				= #mtgAtndncNmpr#
+				  , USE_AT						= #useAt#
+				  , MNGR_ID						= #mngrId#
+				  , REGISTER_ID					= #registerId#
+				  , REGST_YMD					= TO_CHAR( SYSDATE, 'yyyymmdd')	
+				  , LAST_UPDUSR_PNTTM			= SYSDATE
+				  , LAST_UPDUSR_ID				= #lastUpdusrId#
+			WHERE MTG_PLACE_ID					= #mtgPlaceId#
+		]]>
+	</update>
+	
+	<!-- 회의실관리 삭제 -->
+	<delete id="egovOe1MtgRmDAO.deleteMtgRm">
+		<![CDATA[
+			DELETE FROM OE1TNMTGRM 
+			WHERE MTG_PLACE_ID					= #mtgPlaceId#
+		]]>
+	</delete>
+	
+	<!-- 회의실관리 상세 -->
+	<select id="egovOe1MtgRmDAO.selectMtgRm" resultMap="egovOe1MtgRm">
+		<![CDATA[
+            SELECT
+                A.MTG_PLACE_ID
+                , A.MTG_PLACE_NM
+                , A.MTG_RM_CN
+                , A.MTG_ATNDNC_NMPR
+                , A.USE_AT
+                , A.MNGR_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.MNGR_ID)AS MNGR_NM    
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.REGISTER_ID)AS REGISTER_NAME     
+                , A.REGISTER_ID  
+                , TO_CHAR(TO_DATE(A.REGST_YMD, 'yyyy-mm-dd'), 'yyyy-mm-dd') AS REGST_YMD    
+                , TO_CHAR(A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+                , A.FRST_REGISTER_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME 
+                , TO_CHAR(A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+                , A.LAST_UPDUSR_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME 
+            FROM OE1TNMTGRM A
+			WHERE MTG_PLACE_ID					= #mtgPlaceId#
+		]]>
+	</select>
+	
+	<!-- 회의실관리 조회 -->
+	<select id="egovOe1MtgRmDAO.selectMtgRmList" parameterClass="egovOe1MtgRmVO" resultClass="egovMap">
+            SELECT
+                A.MTG_PLACE_ID
+                , A.MTG_PLACE_NM
+                , A.MTG_RM_CN
+                , A.MTG_ATNDNC_NMPR
+                , CASE WHEN TRIM(A.USE_AT) = 'Y' THEN 'Yes' ELSE 'No' END  USE_AT
+                , A.MNGR_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.MNGR_ID)AS MNGR_NM  
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.REGISTER_ID)AS REGISTER_NAME     
+                , A.REGISTER_ID  
+                , TO_DATE(A.REGST_YMD, 'yyyy-mm-dd') AS REGST_YMD
+                , TO_DATE(A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+                , A.FRST_REGISTER_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME 
+                , TO_DATE(A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+                , A.LAST_UPDUSR_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME 
+            FROM OE1TNMTGRM A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="mtrNm">
+				A.MTG_PLACE_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="mtrDc">
+				A.MTG_RM_CN LIKE '%'||#searchKeyword#||'%'
+			</isEqual>			
+			ORDER BY A.MTG_PLACE_NM 
+	</select>
+	
+	<!-- 사용자 검색 -->
+ 	<select id="egovOe1MtgRmDAO.selectGeneralMemberList" parameterClass="egovOe1MtgRmVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]> 	
+	        SELECT * FROM
+	        (
+	            SELECT 
+				    A.MBER_ID AS MBER_ID
+					, A.MBER_NM AS MBER_NM  
+				    , A.PSTINST_CODE
+				    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1038' AND X.CODE = TRIM(A.PSTINST_CODE))     PSTINST_NAME
+				    , A.GROUP_ID
+				    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1039' AND X.CODE = TRIM(A.GROUP_ID))     GROUP_NAME
+				FROM OE1TNUSERINFO A
+	        ) C
+	        WHERE 1=1
+	        <isEqual prepend="AND" property="searchCondition" compareValue="cop">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		PSTINST_NAME LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="tim">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		GROUP_NAME LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="name">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		MBER_NM LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>
+	        </isEqual>
+			ORDER BY MBER_NM ASC 	
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>				
+	</select>	
+	
+    <!-- 사용자 정보 총 갯수를 조회 -->
+    <select id="egovOe1MtgRmDAO.selectUserListTotCnt" parameterClass="egovOe1MtgRmVO" resultClass="int">
+	        SELECT COUNT(*) AS totcnt FROM
+	        (
+	            SELECT 
+				    A.MBER_ID AS MBER_ID
+					, A.MBER_NM AS MBER_NM  
+				    , A.PSTINST_CODE
+				    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1038' AND X.CODE = TRIM(A.PSTINST_CODE))     PSTINST_NAME
+				    , A.GROUP_ID
+				    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1039' AND X.CODE = TRIM(A.GROUP_ID))     GROUP_NAME
+				FROM OE1TNUSERINFO A
+	        ) C
+	        WHERE 1=1
+	        <isEqual prepend="AND" property="searchCondition" compareValue="cop">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		PSTINST_NAME LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="tim">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		GROUP_NAME LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="name">
+	        	<isNotEqual property="searchKeyword" compareValue="">
+	        		MBER_NM LIKE '%'||#searchKeyword#||'%'
+	        	</isNotEqual>
+	        </isEqual>
+    </select>	
+	
+	<!-- 회의실삭제시 회의실예약이 돼어있는지 체크  -->
+	<select id="egovOe1MtgRmDAO.selectResveCount" parameterClass="egovOe1MtgRmVO" resultClass="int">
+		SELECT COUNT(*) resevCount    
+		FROM OE1TNRESVEMTG    
+		WHERE  MTG_PLACE_ID   = #mtgPlaceId# 				
+	</select>		
+</sqlMap>

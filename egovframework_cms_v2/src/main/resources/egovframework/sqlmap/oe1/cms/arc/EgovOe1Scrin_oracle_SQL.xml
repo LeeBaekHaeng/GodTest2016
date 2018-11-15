@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Scrin">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1ScrinVO" type="egovframework.oe1.cms.arc.service.EgovOe1ScrinVO"/>
+	
+	<resultMap id="Scrin" class="egovframework.oe1.cms.arc.service.EgovOe1ScrinVO">
+		<result property="sysNm" column="SYS_NM"/>
+		<result property="compnPckage" column="COMPN_PCKAGE"/>
+		<result property="scrinId" column="SCRIN_ID"/>
+		<result property="scrinEnglNm" column="SCRIN_ENGL_NM"/>
+		<result property="scrinNm" column="SCRIN_NM"/>
+		<result property="scrinDc" column="SCRIN_DC"/>
+		<result property="atchFileId" column="ATCH_FILE_ID"/>	
+		<result property="etcDc" column="ETC_DC"/>
+	</resultMap>
+	<resultMap id="Function" class="egovframework.oe1.cms.arc.service.EgovOe1ScrinVO">
+		<result property="sysNm" column="SYS_NM"/>
+		<result property="compnPckage" column="COMPN_PCKAGE"/>
+		<result property="scrinId" column="SCRIN_ID"/>
+		<result property="scrinEnglNm" column="SCRIN_ENGL_NM"/>
+		<result property="scrinNm" column="SCRIN_NM"/>
+		<result property="funcNm" column="FUNC_NM"/>
+		<result property="funcDc" column="FUNC_DC"/>
+		<result property="methdId" column="METHD_ID"/>
+		<result property="methdAnt" column="METHD_ANNOT"/>
+		<result property="methdNm" column="METHOD_NM"/>
+		<result property="classNm" column="CLASS_NM"/>
+		<result property="classId" column="CLASS_ID"/>
+	</resultMap>
+					
+	<select id="egovOe1ScrinDAO.selectScrinList" parameterClass="egovOe1ScrinVO" resultMap="Scrin">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>	
+			SELECT
+				B.CODE_NM SYS_NM
+				, C.CODE_NM COMPN_PCKAGE 
+				, A.SCRIN_ID
+				, A.SCRIN_ENGL_NM
+				, A.SCRIN_NM
+				, A.SCRIN_DC
+		        , A.ATCH_FILE_ID					
+				, A.ETC_DC
+			  FROM OE1TNSCRIN A
+		      LEFT JOIN OE1TNOECOMMDETAILCD B ON A.SYS_NM = B.CODE AND B.CODE_ID = 'OE1031'
+		      LEFT JOIN OE1TNOECOMMDETAILCD C ON A.COMPN_PCKAGE = C.CODE AND C.CODE_ID = 'OE1030'
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				B.CODE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				C.CODE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				A.SCRIN_ENGL_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="3">
+				A.SCRIN_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			ORDER BY A.LAST_UPDUSR_PNTTM DESC
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+
+	
+	<select id="egovOe1ScrinDAO.selectScrinListTot" parameterClass="egovOe1ScrinVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNSCRIN
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				SYS_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				COMPN_PCKAGE LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				SCRIN_ENGL_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="3">
+				SCRIN_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>	
+	</select>
+		
+	<select id="egovOe1ScrinDAO.selectScrin" resultMap="Scrin">
+	      SELECT 
+				SYS_NM
+				, COMPN_PCKAGE 
+				, SCRIN_ID
+				, SCRIN_ENGL_NM
+				, SCRIN_NM
+				, SCRIN_DC
+                , ATCH_FILE_ID					
+				, ETC_DC
+	      FROM OE1TNSCRIN
+			WHERE   SCRIN_ID = #scrinId#
+	</select>
+	
+	<insert id="egovOe1ScrinDAO.insertScrin">
+		<![CDATA[
+			INSERT INTO OE1TNSCRIN 
+				( SCRIN_ID
+				  ,SYS_NM
+				  ,COMPN_PCKAGE
+				  ,SCRIN_ENGL_NM             
+				  ,SCRIN_NM
+				  ,SCRIN_DC     
+                  ,ATCH_FILE_ID				           
+				  ,ETC_DC
+				  ,FRST_REGISTER_PNTTM  
+				  ,FRST_REGISTER_ID
+				  ,LAST_UPDUSR_PNTTM    
+				  ,LAST_UPDUSR_ID        )
+			VALUES ( #scrinId# 
+			      , #sysNm#
+				  , #compnPckage#
+				  , #scrinEnglNm#
+				  , #scrinNm#
+				  , #scrinDc#
+           		  , #atchFileId#				  
+				  , #etcDc#
+				  , sysdate
+				  , #frstRegisterId#
+				  , sysdate
+				  , #lastUpdusrId#)
+		]]>
+	</insert>
+	
+		<insert id="egovOe1ScrinDAO.inserExceltScrin" parameterClass="egovOe1ScrinVO">
+		<![CDATA[
+			INSERT INTO OE1TNSCRIN 
+				( SCRIN_ID 
+				  ,SYS_NM
+				  ,COMPN_PCKAGE
+				  ,SCRIN_ENGL_NM             
+				  ,SCRIN_NM
+				  ,SCRIN_DC     
+                  ,ATCH_FILE_ID				           
+				  ,ETC_DC
+				  ,FRST_REGISTER_PNTTM  
+				  ,FRST_REGISTER_ID
+				  ,LAST_UPDUSR_PNTTM    
+				  ,LAST_UPDUSR_ID        )
+			VALUES ( #scrinId# 
+			      , #sysNm#
+				  , #compnPckage#
+				  , #scrinEnglNm#
+				  , #scrinNm#
+				  , #scrinDc#
+           		  , #atchFileId#				  
+				  , #etcDc#
+				  , sysdate
+				  , #frstRegisterId#
+				  , sysdate
+				  , #lastUpdusrId#)
+		]]>
+	</insert>
+	
+	<update id="egovOe1ScrinDAO.updateScrin">
+		<![CDATA[
+			UPDATE OE1TNSCRIN 
+			SET SYS_NM = #sysNm#
+				,COMPN_PCKAGE = #compnPckage#
+				,SCRIN_ENGL_NM=#scrinEnglNm#
+			    ,SCRIN_NM=#scrinNm#
+				,SCRIN_DC = #scrinDc#
+				,ATCH_FILE_ID = #atchFileId#
+				,ETC_DC=#etcDc#
+				,LAST_UPDUSR_PNTTM = sysdate
+				,LAST_UPDUSR_ID = #lastUpdusrId#
+			WHERE SCRIN_ID=#scrinId#
+		]]>
+	</update>
+
+	<delete id="egovOe1ScrinDAO.deleteScrin">
+		<![CDATA[
+			DELETE FROM OE1TNSCRIN 
+			WHERE SCRIN_ID=#scrinId#
+		]]>
+	</delete>
+
+	<delete id="egovOe1ScrinDAO.deleteExcelScrin">
+		<![CDATA[
+			DELETE FROM OE1TNSCRIN 
+		]]>
+	</delete>
+			
+	<!-- 기능 매핑 내역  -->
+	<insert id="egovOe1ScrinDAO.insertFunction">
+		<![CDATA[
+			INSERT INTO OE1TNSCRINFUNC 
+				( SCRIN_ID
+				  ,FUNC_NM              
+				  ,METHD_ID
+				  ,FUNC_DC
+				  ,FRST_REGISTER_PNTTM  
+				  ,FRST_REGISTER_ID
+				  ,LAST_UPDUSR_PNTTM    
+				  ,LAST_UPDUSR_ID        )
+			VALUES ( #scrinId#
+				  , #funcNm#
+				  , #methdId#
+				  , #funcDc#
+				  , sysdate
+				  , #frstRegisterId#
+				  , sysdate
+				  , #lastUpdusrId#)
+		]]>
+	</insert>
+	
+	<select id="egovOe1ScrinDAO.selectFunctionList" parameterClass="egovOe1ScrinVO" resultMap="Function">
+		<![CDATA[	
+			SELECT
+						A.SYS_NM
+						, A.COMPN_PCKAGE 
+						, A.SCRIN_ID
+						, A.SCRIN_ENGL_NM
+		       			, A.SCRIN_NM
+						, B.FUNC_NM
+						, B.FUNC_DC
+						, C.METHD_ANNOT
+						, C.METHD_ID
+		        , C.METHOD_NM
+		        , D.CLASS_NM
+		        , C.METHD_ID
+		        , D.CLASS_ID
+					FROM OE1TNSCRIN A, OE1TNSCRINFUNC B, OE1TNMETHD C, OE1TNCLASS D
+					WHERE A.SCRIN_ID = B.SCRIN_ID
+		      AND   B.METHD_ID = C.METHD_ID
+		      AND   C.CLASS_ID = D.CLASS_ID
+			AND   A.SCRIN_ID = #scrinId#
+			ORDER BY B.LAST_UPDUSR_PNTTM DESC
+		]]>			
+	</select>
+
+
+	<select id="egovOe1ScrinDAO.selectFunctionMPAt"  resultClass="int">
+		<![CDATA[	
+			SELECT
+					count(*) cnt
+			
+			FROM OE1TNSCRINFUNC
+			WHERE SCRIN_ID = #scrinId#
+			AND   FUNC_NM = #funcNm#
+		    AND   METHD_ID = #methdId#
+		]]>			
+	</select>
+	
+	<delete id="egovOe1ScrinDAO.deleteFunction">
+		<![CDATA[
+			DELETE FROM OE1TNSCRINFUNC 
+			WHERE SCRIN_ID=#scrinId#
+		]]>
+	</delete>
+	
+</sqlMap>

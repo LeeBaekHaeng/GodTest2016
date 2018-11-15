@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RestdeManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="RestdeVO" type="egovframework.oe1.cms.com.service.EgovOe1RestdeVO"/>
+	<typeAlias  alias="Restde"   type="egovframework.oe1.cms.com.service.EgovOe1Restde"/>
+
+	<select id="RestdeManageDAO.selectNormalRestdePopup" parameterClass="Restde" resultClass="egovMap">
+		<![CDATA[
+            SELECT  #year#               YEAR
+                 ,  #month#              MONTH
+                 ,  DECODE(GREATEST(T_DUMMY.RNUM + 1 - #startWeekMonth#,0),0,'',DECODE(GREATEST(T_DUMMY.RNUM + 1 - #startWeekMonth#,#lastDayMonth#),#lastDayMonth#,TO_CHAR(T_DUMMY.RNUM + 1 - #startWeekMonth#),''))
+                                         DAY 
+                 ,  T_DUMMY.RNUM           CELL_NUM
+                 ,  T_DUMMY.WEEKS + 1      WEEKS
+                 ,  T_DUMMY.WEEK           WEEK
+                 ,  (
+                    SELECT  CASE (COUNT(*)) WHEN 0 THEN CASE T_DUMMY.WEEK WHEN 1 THEN 'Y' WHEN 7 THEN 'Y' ELSE 'N' END ELSE 'Y' END
+                      FROM  COMTNRESTDE 
+                     WHERE  RESTDE_DE = LPAD(#year#,4,'0')
+                                      ||LPAD(#month#,2,'0')
+                                      ||LPAD(DECODE(GREATEST(T_DUMMY.RNUM + 1 - #startWeekMonth#,0),0,'',DECODE(GREATEST(T_DUMMY.RNUM + 1 - #startWeekMonth#,#lastDayMonth#),#lastDayMonth#,TO_CHAR(T_DUMMY.RNUM + 1 - #startWeekMonth#),''))
+                    			             ,2,'0'
+                    			            )
+                       AND  RESTDE_SE_CODE IN ('01','02')                                   
+                    ) REST_AT
+              FROM  (
+                    SELECT  (W.W*7) + D.D RNUM
+                         ,  W.W WEEKS
+                         ,  D.D WEEK
+                      FROM  (
+						    SELECT 0 W  FROM DUAL
+						    UNION ALL
+						    SELECT 1 FROM DUAL
+						    UNION ALL
+						    SELECT 2 FROM DUAL
+						    UNION ALL
+						    SELECT 3 FROM DUAL
+						    UNION ALL
+						    SELECT 4 FROM DUAL
+						    UNION ALL
+						    SELECT 5 FROM DUAL
+						    ) W,
+						    (
+						    SELECT 1 D FROM DUAL
+						    UNION ALL
+						    SELECT 2 FROM DUAL
+						    UNION ALL
+						    SELECT 3 FROM DUAL
+						    UNION ALL
+						    SELECT 4 FROM DUAL
+						    UNION ALL
+						    SELECT 5 FROM DUAL
+						    UNION ALL
+						    SELECT 6 FROM DUAL
+						    UNION ALL
+						    SELECT 7 FROM DUAL
+                            ) D
+                    ORDER BY (W.W*7) + D.D
+            ) T_DUMMY
+			ORDER BY T_DUMMY.RNUM            
+		]]>
+	</select>
+
+
+
+
+	
+</sqlMap>            

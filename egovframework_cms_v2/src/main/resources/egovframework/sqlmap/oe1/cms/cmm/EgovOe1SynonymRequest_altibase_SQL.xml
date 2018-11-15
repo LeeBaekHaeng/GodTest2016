@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1SynonymRequest">
+	
+	<typeAlias  alias="egovMap" 			    type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="synonymRequestInfo" 	type="egovframework.oe1.cms.cmm.service.SynonymRequestInfo"/>
+	<typeAlias  alias="searchVO" 	            type="egovframework.oe1.cms.cmm.service.MetaDataSearchVO"/>
+
+	<resultMap id="synonymRequestInfoMap" class="egovframework.oe1.cms.cmm.service.SynonymRequestInfo">
+        <result property="reqstProcessId" column="reqstProcessId" columnIndex="1"/>
+        <result property="reqstProcessSn" column="reqstProcessSn" columnIndex="2"/>
+        <result property="jobSeCode" column="jobSeCode" columnIndex="3"/>
+        <result property="applcntId" column="applcntId" columnIndex="4"/>
+        <result property="applcntNm" column="applcntNm" columnIndex="5"/>
+        <result property="reqstDe" column="reqstDe" columnIndex="6"/>
+        <result property="reqstPrvonsh" column="reqstPrvonsh" columnIndex="7"/>
+        <result property="processSttusCode" column="processSttusCode" columnIndex="8"/>
+        <result property="processSttus" column="processSttus" columnIndex="9"/>
+        <result property="opetrNm" column="opetrNm" columnIndex="10"/>
+        <result property="processDe" column="processDe" columnIndex="11"/>
+        <result property="processPrvonsh" column="processPrvonsh" columnIndex="12"/>
+        <result property="wordEngAbrvNm" column="wordEngAbrvNm" columnIndex="13"/>
+        <result property="wordNm" column="wordNm" columnIndex="14"/>
+        <result property="synonmNm" column="synonmNm" columnIndex="15"/>
+    </resultMap>
+	
+	<!-- 동의어신청목록총수조회 -->
+	<select id="synonymRequestDAO.selectSynonymRequestInfoListTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+          FROM  OE1TNSYNONYMREQUESTINFO   A
+             ,  OE1TNMETADATAREQUESTINFO  B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+           AND  A.REQST_PROCESS_SN = (SELECT MAX(REQST_PROCESS_SN) FROM OE1TNSYNONYMREQUESTINFO X WHERE X.REQST_PROCESS_ID = A.REQST_PROCESS_ID)
+           AND  A.SYNONM_NM LIKE CONCAT(CONCAT('%', #srchSynonmNm#), '%')
+        <isNotEmpty prepend="AND" property="srchApplcntNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchApplcntNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchProcessSttusCode" >
+                PROCESS_STTUS_CODE = #srchProcessSttusCode#
+        </isNotEmpty>
+    </select>	
+    
+	<!-- 동의어신청목록조회 -->
+	<select id="synonymRequestDAO.selectSynonymRequestInfoList" parameterClass="searchVO" resultMap="synonymRequestInfoMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        /* 구현 Sql */
+        
+		<![CDATA[
+		
+        SELECT  A.REQST_PROCESS_ID reqstProcessId
+             ,  A.REQST_PROCESS_SN reqstProcessSn
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1103' AND X.CODE = B.JOB_SE_CODE) jobSeCode
+             ,  B.APPLCNT_ID       applcntId
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) applcntNm
+             ,  B.REQST_DE         reqstDe
+             ,  B.REQST_PRVONSH    reqstPrvonsh
+             ,  B.PROCESS_STTUS_CODE processSttusCode
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1104' AND X.CODE = B.PROCESS_STTUS_CODE) processSttus
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.OPETR_ID = X.MBER_ID) opetrNm
+             ,  B.PROCESS_DE       processDe
+             ,  B.PROCESS_PRVONSH  processPrvonsh
+             ,  A.WORD_ENG_ABRV_NM       wordEngAbrvNm
+             ,  (SELECT WORD_NM FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM) wordNm
+             ,  A.SYNONM_NM              synonmNm
+          FROM  OE1TNSYNONYMREQUESTINFO   A
+             ,  OE1TNMETADATAREQUESTINFO  B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+           AND  A.REQST_PROCESS_SN = (SELECT MAX(REQST_PROCESS_SN) FROM OE1TNSYNONYMREQUESTINFO X WHERE X.REQST_PROCESS_ID = A.REQST_PROCESS_ID)
+           AND  A.SYNONM_NM LIKE CONCAT(CONCAT('%', #srchSynonmNm#), '%')
+         
+		]]>
+		
+        <isNotEmpty prepend="AND" property="srchApplcntNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchApplcntNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchProcessSttusCode" >
+                PROCESS_STTUS_CODE = #srchProcessSttusCode#
+        </isNotEmpty>
+        ORDER BY A.REQST_PROCESS_ID DESC
+			
+        /* 구현 Sql */
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+	
+	<!-- 동의어신청상세조회 -->
+	<select id="synonymRequestDAO.selectSynonymRequestInfo" parameterClass="synonymRequestInfo" resultClass="synonymRequestInfo">
+        SELECT  A.REQST_PROCESS_ID reqstProcessId
+             ,  A.REQST_PROCESS_SN reqstProcessSn
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1103' AND X.CODE = B.JOB_SE_CODE) jobSeCode
+             ,  B.APPLCNT_ID       applcntId
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) applcntNm
+             ,  B.REQST_DE         reqstDe
+             ,  B.REQST_PRVONSH    reqstPrvonsh
+             ,  B.PROCESS_STTUS_CODE processSttusCode
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1104' AND X.CODE = B.PROCESS_STTUS_CODE) processSttus
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.OPETR_ID = X.MBER_ID) opetrNm
+             ,  B.PROCESS_DE       processDe
+             ,  B.PROCESS_PRVONSH  processPrvonsh
+             ,  A.WORD_ENG_ABRV_NM       wordEngAbrvNm
+             ,  (SELECT WORD_NM FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM) wordNm
+             ,  A.SYNONM_NM              synonmNm
+          FROM  OE1TNSYNONYMREQUESTINFO   A
+             ,  OE1TNMETADATAREQUESTINFO  B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+		   AND  A.REQST_PROCESS_ID = #reqstProcessId#    
+		   AND  A.REQST_PROCESS_SN = #reqstProcessSn#
+	</select>	
+		
+	<!-- 동의어신청등록 -->
+	<insert id="synonymRequestDAO.insertSynonymRequestInfo">
+	<![CDATA[
+        INSERT
+          INTO  OE1TNSYNONYMREQUESTINFO
+             (  REQST_PROCESS_ID
+             ,  REQST_PROCESS_SN
+             ,  WORD_ENG_ABRV_NM
+             ,  SYNONM_NM
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             ,  LAST_UPDT_PNTTM
+             ,  LAST_UPDUSR_ID)
+        VALUES
+             (  #reqstProcessId#
+             ,  #reqstProcessSn#
+             ,  #wordEngAbrvNm#
+             ,  #synonmNm#
+		     ,  SYSDATE
+		     ,  #frstRegisterId#
+		     ,  SYSDATE
+		     ,  #frstRegisterId#
+             )
+
+	]]>
+	</insert>
+	
+	<!-- 동의어신청수정 -->
+	<update id="synonymRequestDAO.updateSynonymRequestInfo">
+	<![CDATA[
+        UPDATE  OE1TNSYNONYMREQUESTINFO
+           SET  WORD_ENG_ABRV_NM    = #wordEngAbrvNm#
+             ,  SYNONM_NM           = #synonmNm#
+		     ,  LAST_UPDT_PNTTM     = SYSDATE
+		     ,  LAST_UPDUSR_ID      = #lastUpdusrId#
+         WHERE  REQST_PROCESS_ID    = #reqstProcessId#
+           AND  REQST_PROCESS_SN    = #reqstProcessSn#	
+	]]>
+	</update>
+	
+	<!-- 동의어신청삭제 -->
+	<delete id="synonymRequestDAO.deleteSynonymRequestInfo">
+	<![CDATA[
+        DELETE
+          FROM  OE1TNSYNONYMREQUESTINFO
+         WHERE  REQST_PROCESS_ID    = #reqstProcessId#
+           AND  REQST_PROCESS_SN    = #reqstProcessSn#
+	]]>
+	
+
+	</delete>
+		
+
+</sqlMap>

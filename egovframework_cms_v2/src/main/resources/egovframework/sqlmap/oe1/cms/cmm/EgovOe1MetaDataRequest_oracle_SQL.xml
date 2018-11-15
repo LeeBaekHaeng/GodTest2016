@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1MetaDataRequest">
+	
+	<typeAlias  alias="egovMap" 			    type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="metaDataRequestInfo" 	type="egovframework.oe1.cms.cmm.service.MetaDataRequestInfo"/>
+	<typeAlias  alias="searchVO" 	            type="egovframework.oe1.cms.cmm.service.MetaDataSearchVO"/>
+
+	<resultMap id="metaDataRequestInfoMap" class="egovframework.oe1.cms.cmm.service.MetaDataRequestInfo">
+        <result property="reqstProcessId" column="reqstProcessId" columnIndex="1"/>         
+        <result property="reqstProcessSn" column="reqstProcessSn" columnIndex="2"/>         
+        <result property="jobSe" column="jobSe" columnIndex="3"/>                   
+        <result property="reqstDe" column="reqstDe" columnIndex="4"/>                       
+        <result property="applcntNm" column="applcntNm" columnIndex="5"/>                   
+        <result property="reqstPrvonsh" column="reqstPrvonsh" columnIndex="6"/>             
+        <result property="processSttus" column="processSttus" columnIndex="7"/>     
+        <result property="processDe" column="processDe" columnIndex="8"/>                   
+        <result property="opetrNm" column="opetrNm" columnIndex="9"/>                       
+        <result property="processPrvonsh" column="processPrvonsh" columnIndex="10"/>
+
+    </resultMap>
+	
+	<!-- 신청승인목록총수조회 -->
+	<select id="approvalDAO.selectApprovalListTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+		  FROM  OE1TNMETADATAREQUESTINFO A
+		 WHERE  PROCESS_STTUS_CODE != '01'
+        <isNotEmpty prepend="AND" property="srchJobSeCode" >
+                JOB_SE_CODE = #srchJobSeCode#
+        </isNotEmpty>		   
+        <isNotEmpty prepend="AND" property="srchApplcntNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.APPLCNT_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchApplcntNm#),'%')
+        </isNotEmpty>		   
+        <isNotEmpty prepend="AND" property="srchProcessSttusCode" >
+                PROCESS_STTUS_CODE = #srchProcessSttusCode#
+        </isNotEmpty>
+        <dynamic prepend="AND">
+	        <isNotEmpty property="srchReqstDeStart" >
+	        <isNotEmpty property="srchReqstDeEnd" >
+	            REQST_DE BETWEEN #srchReqstDeStart# AND #srchReqstDeEnd#
+	        </isNotEmpty>		   
+	        </isNotEmpty>
+        </dynamic>	
+    </select>	
+    
+	<!-- 신청승인목록조회 -->
+	<select id="approvalDAO.selectApprovalList" parameterClass="searchVO" resultMap="metaDataRequestInfoMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        /* 구현 Sql */
+        
+		<![CDATA[
+		
+		SELECT  REQST_PROCESS_ID    reqstProcessId  
+		     ,  REQST_PROCESS_SN    reqstProcessSn  
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1103' AND X.CODE = A.JOB_SE_CODE) jobSe
+		     ,  REQST_DE            reqstDe          
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE A.APPLCNT_ID = X.MBER_ID) applcntNm
+		     ,  REQST_PRVONSH       reqstPrvonsh     
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1104' AND X.CODE = A.PROCESS_STTUS_CODE) processSttus       
+		     ,  PROCESS_DE          processDe        
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE A.OPETR_ID = X.MBER_ID) opetrNm
+		     ,  PROCESS_PRVONSH     processPrvonsh   
+		  FROM  OE1TNMETADATAREQUESTINFO A
+		 WHERE  PROCESS_STTUS_CODE != '01'
+         
+		]]>
+		
+        <isNotEmpty prepend="AND" property="srchJobSeCode" >
+                JOB_SE_CODE = #srchJobSeCode#
+        </isNotEmpty>		   
+        <isNotEmpty prepend="AND" property="srchApplcntNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.APPLCNT_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchApplcntNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchProcessSttusCode" >
+                PROCESS_STTUS_CODE = #srchProcessSttusCode#
+        </isNotEmpty>
+        <dynamic prepend="AND">
+	        <isNotEmpty property="srchReqstDeStart" >
+	        <isNotEmpty property="srchReqstDeEnd" >
+	            REQST_DE BETWEEN #srchReqstDeStart# AND #srchReqstDeEnd#
+	        </isNotEmpty>		   
+	        </isNotEmpty>
+        </dynamic>		   
+        ORDER BY A.REQST_PROCESS_ID DESC
+			
+        /* 구현 Sql */
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+	
+	<!-- 신청승인상세조회 -->
+	<select id="approvalDAO.selectApproval" parameterClass="metaDataRequestInfo" resultClass="metaDataRequestInfo">
+		SELECT  REQST_PROCESS_ID    reqstProcessId  
+		     ,  REQST_PROCESS_SN    reqstProcessSn  
+		     ,  JOB_SE_CODE         jobSeCode
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1103' AND X.CODE = A.JOB_SE_CODE) jobSe
+		     ,  REQST_DE            reqstDe          
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE A.APPLCNT_ID = X.MBER_ID) applcntNm
+		     ,  REQST_PRVONSH       reqstPrvonsh     
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1104' AND X.CODE = A.PROCESS_STTUS_CODE) processSttus       
+		     ,  PROCESS_DE          processDe        
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE A.OPETR_ID = X.MBER_ID) opetrNm
+		     ,  PROCESS_PRVONSH     processPrvonsh   
+		  FROM  OE1TNMETADATAREQUESTINFO A
+		 WHERE  REQST_PROCESS_ID = #reqstProcessId#    
+		   AND  REQST_PROCESS_SN = #reqstProcessSn#
+	</select>	
+		
+	<!-- 메타데이터요청처리순번확인 -->
+	<select id="metaDataRequestDAO.selectReqstProcessSn" parameterClass="metaDataRequestInfo" resultClass="Long">
+        SELECT  NVL(MAX(A.REQST_PROCESS_SN),0) AS sn
+          FROM  OE1TNMETADATAREQUESTINFO    A
+         WHERE  A.REQST_PROCESS_ID = #reqstProcessId#  
+    </select>
+    
+    <!-- 메타데이터신청등록 -->
+	<insert id="metaDataRequestDAO.insertMetaDataReqst">
+	<![CDATA[
+        INSERT
+          INTO  OE1TNMETADATAREQUESTINFO
+             (  REQST_PROCESS_ID
+             ,  REQST_PROCESS_SN
+             ,  JOB_SE_CODE
+             ,  REQST_DE
+             ,  APPLCNT_ID
+             ,  REQST_PRVONSH
+             ,  PROCESS_STTUS_CODE
+             ,  PROCESS_DE
+             ,  OPETR_ID
+             ,  PROCESS_PRVONSH
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             ,  LAST_UPDT_PNTTM
+             ,  LAST_UPDUSR_ID
+             )
+        VALUES
+             (  #reqstProcessId#
+             ,  #reqstProcessSn#
+             ,  #jobSeCode#
+             ,  TO_CHAR(SYSDATE, 'YYYYMMDD')
+             ,  #applcntId#
+             ,  #reqstPrvonsh#
+             ,  #processSttusCode#
+             ,  #processDe#
+             ,  #opetrId#
+             ,  #processPrvonsh#
+             ,  SYSDATE
+             ,  #frstRegisterId#
+             ,  SYSDATE
+             ,  #frstRegisterId#
+             )
+	]]>
+	</insert>
+	
+	<!-- 메타데이터신청수정 -->
+	<update id="metaDataRequestDAO.updateMetaDataReqst">
+	<![CDATA[
+        UPDATE  OE1TNMETADATAREQUESTINFO
+           SET  REQST_DE = TO_CHAR(SYSDATE, 'YYYYMMDD')
+             ,  REQST_PRVONSH = #reqstPrvonsh#
+             ,  PROCESS_STTUS_CODE = #processSttusCode#
+             ,  PROCESS_DE = #processDe#
+             ,  OPETR_ID = #opetrId#
+             ,  PROCESS_PRVONSH = #processPrvonsh#
+             ,  LAST_UPDT_PNTTM = SYSDATE
+             ,  LAST_UPDUSR_ID = #lastUpdusrId#
+         WHERE  REQST_PROCESS_ID = #reqstProcessId#
+           AND  REQST_PROCESS_SN = #reqstProcessSn#
+	]]>
+	</update>
+	
+	<!-- 신청 승인 -->
+	<update id="approvalDAO.insertApproval">
+	<![CDATA[
+        UPDATE  OE1TNMETADATAREQUESTINFO
+           SET  PROCESS_STTUS_CODE = #processSttusCode#
+             ,  PROCESS_DE = TO_CHAR(SYSDATE, 'YYYYMMDD')
+             ,  OPETR_ID = #opetrId#
+             ,  PROCESS_PRVONSH = #processPrvonsh#
+             ,  LAST_UPDT_PNTTM = SYSDATE
+             ,  LAST_UPDUSR_ID = #lastUpdusrId#
+         WHERE  REQST_PROCESS_ID = #reqstProcessId#
+           AND  REQST_PROCESS_SN = #reqstProcessSn#
+	]]>
+	</update>
+	
+	<!-- 메타데이터신청삭제 -->
+	<delete id="metaDataRequestDAO.deleteMetaDataReqst">
+	<![CDATA[
+		DELETE
+		  FROM  OE1TNMETADATAREQUESTINFO
+		 WHERE  REQST_PROCESS_ID = #reqstProcessId#    
+		   AND  REQST_PROCESS_SN = #reqstProcessSn#
+	]]>
+	</delete>
+
+	
+</sqlMap>

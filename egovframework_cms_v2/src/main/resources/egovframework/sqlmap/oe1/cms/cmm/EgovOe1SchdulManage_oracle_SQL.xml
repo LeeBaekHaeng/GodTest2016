@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SchdulManage">
+
+	<typeAlias  alias="egovMap" 		type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="comDefaultVO" 	type="egovframework.oe1.cms.com.service.EgovOe1ComDefaultVO"/>
+	<typeAlias  alias="SchdulManageVO" 	type="egovframework.oe1.cms.cmm.service.EgovOe1SchdulManageVO"/>
+
+	<resultMap id="SchdulManage" class="egovframework.oe1.cms.cmm.service.EgovOe1SchdulManageVO">
+		<result property="schdulId" 			column="SCHDUL_ID"/>
+		<result property="schdulSe" 			column="SCHDUL_SE" />
+		<result property="codeNmOfSchdulSe" 	column="CODE_NM_OF_SCHDUL_SE" />
+		<result property="schdulDeptId" 		column="SCHDUL_DEPT_ID" />
+		<result property="schdulKindCode" 		column="SCHDUL_KIND_CODE" />
+		<result property="schdulBgnde" 			column="SCHDUL_BGNDE" />
+		<result property="schdulEndde" 			column="SCHDUL_ENDDE" />
+		<result property="schdulNm" 			column="SCHDUL_NM" />
+		<result property="schdulCn" 			column="SCHDUL_CN" />
+		<result property="schdulPlace" 			column="SCHDUL_PLACE" />
+		<result property="schdulIpcrCode" 		column="SCHDUL_IPCR_CODE" />
+		<result property="codeNmOfSchdulIpcrCode" column="CODE_NM_OF_SCHDUL_IPCR_CODE" />
+		<result property="schdulChargerId" 		column="SCHDUL_CHARGER_ID" />
+		<result property="schdulChargerName" 	column="SCHDUL_CHARGER_NAME" />
+		<result property="atchFileId" 			column="ATCH_FILE_ID" />
+		<result property="reptitSeCode" 		column="REPTIT_SE_CODE" 		/>		
+		<result property="reptitDfk"			column="REPTIT_DFK" 			/>				
+		<result property="reptitDfkName"		column="REPTIT_DFK_NAME"		/>						
+		<result property="codeNmOfReptitSeCode" column="CODE_NM_OF_REPTIT_SE_CODE" />
+		<result property="frstRegisterPnttm" 	column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" 		column="FRST_REGISTER_ID" 	/>	
+		<result property="frstMberNm" 			column="FRST_REGISTER_NAME"	/>
+		<result property="lastUpdusrPnttm" 		column="LAST_UPDUSR_PNTTM" 	/>
+		<result property="lastUpdusrId" 		column="LAST_UPDUSR_ID" 	/>	
+		<result property="lastMberNm" 			column="LAST_UPDUSR_NAME" 	/>			
+	</resultMap>
+
+	<!-- 메인페이지/전체일정조회 -->  
+	<select id="DeptSchdulManage.selectMainSchdulList" parameterClass="java.util.Map" resultClass="egovMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        
+        /* 구현 Sql */
+        <![CDATA[
+			SELECT 
+				A.SCHDUL_ID,
+				TO_CHAR(A.SCHDUL_BGNDE,'YYYY-MM-DD') SCHDUL_BGNDE,
+				TO_CHAR(A.SCHDUL_ENDDE,'YYYY-MM-DD') SCHDUL_ENDDE,
+				A.SCHDUL_NM,
+				TO_CHAR(A.FRST_REGISTER_PNTTM,'YYYY-MM-DD') FRST_REGISTER_PNTTM,
+				A.FRST_REGISTER_ID,
+				TO_CHAR(A.LAST_UPDUSR_PNTTM,'YYYY-MM-DD') LAST_UPDUSR_PNTTM,
+				A.LAST_UPDUSR_ID
+			FROM OE1TNSCHDULINFO A
+			WHERE TO_CHAR(A.SCHDUL_BGNDE,'YYYY-MM-DD') >= TO_CHAR(SYSDATE,'YYYY-MM-DD')
+			ORDER BY A.SCHDUL_BGNDE, A.FRST_REGISTER_PNTTM DESC
+        ]]>
+        /* 구현 Sql */
+        
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > 0
+               AND  RNUM <= 4
+        ]]>
+        
+	</select>
+	
+	<!-- 메인페이지/일정관리조회 -->  
+	<select id="DeptSchdulManage.selectDeptSchdulManageMainList" parameterClass="java.util.Map" resultClass="egovMap">
+		SELECT 
+			TO_CHAR(sysdate,'yyyy-mm-dd') TO_DAY, 
+			A.SCHDUL_ID,
+			A.SCHDUL_SE,
+			A.SCHDUL_DEPT_ID,
+			A.SCHDUL_KIND_CODE,
+			A.SCHDUL_BGNDE,
+			A.SCHDUL_ENDDE,
+			A.SCHDUL_NM,
+			A.SCHDUL_CN,
+			A.SCHDUL_PLACE,
+			A.SCHDUL_IPCR_CODE,
+			A.SCHDUL_CHARGER_ID,		
+			A.ATCH_FILE_ID,
+			A.REPTIT_SE_CODE, 
+			(SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1034' AND CODE = A.REPTIT_SE_CODE ) AS CODE_NM_OF_REPTIT_SE_CODE,
+			A.REPTIT_DFK,
+			CASE A.REPTIT_DFK WHEN '0' THEN '매주일요일'
+			            WHEN '1' THEN '매주월요일'
+			            WHEN '2' THEN '매주화요일'
+			            WHEN '3' THEN '매주수요일'
+			            WHEN '4' THEN '매주목요일'
+			            WHEN '5' THEN '매주금요일'
+			            ELSE '매주토요일' END AS REPTIT_DFK_NAME,
+			TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM,
+			A.FRST_REGISTER_ID,
+			(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME,
+			TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM,
+			A.LAST_UPDUSR_ID,
+			(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME				            				
+		FROM OE1TNSCHDULINFO A
+		WHERE 1=1 
+		AND A.SCHDUL_KIND_CODE = '1'   
+		AND (A.SCHDUL_CHARGER_ID = #uniqId# OR A.FRST_REGISTER_ID = #uniqId#)  
+		
+		<![CDATA[
+		AND ( 
+		 ( SUBSTR(A.SCHDUL_BGNDE,1,8) > TO_CHAR(sysdate,'yyyymmdd') AND SUBSTR(A.SCHDUL_BGNDE,1,8) <= TO_CHAR(sysdate,'yyyymmdd'))
+		OR
+		 ( SUBSTR(A.SCHDUL_ENDDE,1,8) >TO_CHAR(sysdate,'yyyymmdd') AND SUBSTR(A.SCHDUL_BGNDE,1,8) <= TO_CHAR(sysdate,'yyyymmdd'))
+		) 
+		AND ROWNUM >= 0 AND ROWNUM <= 4		
+		]]>
+		
+		ORDER BY A.FRST_REGISTER_PNTTM DESC
+	</select>
+
+	<!-- 일간/주간/월간 조회 -->
+	<select id="DeptSchdulManage.selectDeptSchdulManageRetrieve" parameterClass="java.util.Map" resultClass="egovMap">
+	 <![CDATA[
+		SELECT 
+			A.SCHDUL_ID,
+			A.SCHDUL_SE,
+			(SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1028' AND X.CODE = TRIM(A.SCHDUL_SE)) AS CODE_NM_OF_SCHDUL_SE, 
+			A.SCHDUL_DEPT_ID,
+			A.SCHDUL_KIND_CODE,
+			TO_CHAR(A.SCHDUL_BGNDE,'YYYYMMDDHH24MI') SCHDUL_BGNDE,
+			TO_CHAR(A.SCHDUL_ENDDE,'YYYYMMDDHH24MI') SCHDUL_ENDDE,
+			A.SCHDUL_NM,
+			A.SCHDUL_CN,
+			A.SCHDUL_PLACE,
+			A.SCHDUL_IPCR_CODE,
+			A.SCHDUL_CHARGER_ID,		
+			A.ATCH_FILE_ID,
+			A.REPTIT_SE_CODE, 
+			(SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1034' AND CODE = A.REPTIT_SE_CODE ) AS CODE_NM_OF_REPTIT_SE_CODE,
+			A.REPTIT_DFK,
+			CASE A.REPTIT_DFK WHEN '0' THEN '매주일요일'
+			            WHEN '1' THEN '매주월요일'
+			            WHEN '2' THEN '매주화요일'
+			            WHEN '3' THEN '매주수요일'
+			            WHEN '4' THEN '매주목요일'
+			            WHEN '5' THEN '매주금요일'
+			            ELSE '매주토요일' END AS REPTIT_DFK_NAME	,
+			TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM,
+			A.FRST_REGISTER_ID,
+			(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME,
+			TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM,
+			A.LAST_UPDUSR_ID,
+			(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME				            	
+		FROM OE1TNSCHDULINFO A
+		WHERE 1=1 
+		AND A.SCHDUL_KIND_CODE = '1' 
+	 ]]>
+
+	 <isNotEmpty property="searchMode">
+	 <isEqual property="searchMode" compareValue="MONTH">
+		 <isNotEmpty property="searchMonth">
+		 	<isNotEqual property="searchMonth" compareValue="">
+		 	 AND (#searchMonth# BETWEEN SUBSTR(TO_CHAR(A.SCHDUL_BGNDE,'YYYYMMDD'), 1, 6)  AND SUBSTR(TO_CHAR(A.SCHDUL_ENDDE,'YYYYMMDD'), 1, 6) ) 
+		 	</isNotEqual>
+		 </isNotEmpty>
+	 </isEqual>
+	 <isEqual property="searchMode" compareValue="WEEK">
+	 <![CDATA[ 
+		AND (  
+		 ( TO_CHAR(A.SCHDUL_BGNDE,'YYYYMMDD') > #schdulBgnde# AND TO_CHAR(A.SCHDUL_BGNDE,'YYYYMMDD') <= #schdulEndde#)
+		OR
+		 ( TO_CHAR(A.SCHDUL_ENDDE,'YYYYMMDD') > #schdulBgnde# AND TO_CHAR(A.SCHDUL_ENDDE,'YYYYMMDD') <= #schdulEndde#)
+		)
+	]]>
+	 </isEqual>
+	 <isEqual property="searchMode" compareValue="DAILY">
+	 <![CDATA[
+	 	 AND (#searchDay# BETWEEN TO_CHAR(A.SCHDUL_BGNDE,'YYYYMMDD')  AND TO_CHAR(A.SCHDUL_ENDDE,'YYYYMMDD') )
+	  ]]> 
+	 </isEqual>
+	  <isNotEqual prepend="AND" property="searchSchdulSeCode" compareValue="">
+	    SCHDUL_SE = #searchSchdulSeCode#
+	  </isNotEqual>	 
+	 </isNotEmpty>
+	 
+	</select>
+	
+	<!-- 부서일정정보::목록조회_게시물 총갯수  -->
+	<select id="DeptSchdulManage.selectDeptSchdulManageCnt" parameterClass="SchdulManageVO" resultClass="int">
+		SELECT 
+		COUNT(*) totcnt
+		FROM OE1TNSCHDULINFO
+		WHERE 1=1 
+	 		AND SCHDUL_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+	  <isNotEqual prepend="AND" property="searchSchdulSeCode" compareValue="">
+	    SCHDUL_SE = #searchSchdulSeCode#
+	  </isNotEqual>	  	 		
+	</select>
+
+	 <!-- 수정 -->
+	<update id="DeptSchdulManage.updateDeptSchdulManage"> 
+		UPDATE OE1TNSCHDULINFO 
+		SET  
+			SCHDUL_SE			=trim(#schdulSe#),
+			SCHDUL_DEPT_ID 		=trim(#schdulDeptId#),
+			SCHDUL_KIND_CODE	=trim(#schdulKindCode#),
+			SCHDUL_NM			=trim(#schdulNm#),
+			SCHDUL_BGNDE		=TO_DATE(trim(#schdulBgnde#), 'yyyyMMddhh24mi'),
+			SCHDUL_ENDDE		=TO_DATE(trim(#schdulEndde#), 'yyyyMMddhh24mi'),
+			SCHDUL_CN			=trim(#schdulCn#),
+			SCHDUL_PLACE		=trim(#schdulPlace#),
+			SCHDUL_IPCR_CODE	=trim(#schdulIpcrCode#),
+			SCHDUL_CHARGER_ID	=trim(#schdulChargerId#),
+			ATCH_FILE_ID		=trim(#atchFileId#),
+			REPTIT_SE_CODE		=trim(#reptitSeCode#),
+			REPTIT_DFK			=trim(#reptitDfk#),
+			LAST_UPDUSR_ID 		=trim(#lastUpdusrId#), 
+			LAST_UPDUSR_PNTTM 	= sysdate
+		WHERE SCHDUL_ID 		=trim(#schdulId#)
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="DeptSchdulManage.deleteDeptSchdulManage"> 
+		<![CDATA[
+			DELETE FROM OE1TNSCHDULINFO 
+			WHERE SCHDUL_ID = #schdulId#
+		]]>
+	</delete>
+	
+	<!-- 상세 -->
+	<select id="DeptSchdulManage.selectDeptSchdulManageDetail" resultMap="SchdulManage">	
+	 <![CDATA[	
+        SELECT
+		        A.SCHDUL_ID,
+		        A.SCHDUL_NM, 
+		        A.SCHDUL_DEPT_ID,
+		        A.SCHDUL_KIND_CODE,
+		        TO_CHAR(A.SCHDUL_BGNDE,'YYYY-MM-DD HH24:MI') SCHDUL_BGNDE,
+		        TO_CHAR(A.SCHDUL_ENDDE,'YYYY-MM-DD HH24:MI') SCHDUL_ENDDE,
+		        A.SCHDUL_CN,
+		        A.SCHDUL_PLACE,   
+		   		A.ATCH_FILE_ID,
+		        trim(A.SCHDUL_SE) SCHDUL_SE, 
+		        (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1028' AND X.CODE = TRIM(A.SCHDUL_SE)) AS CODE_NM_OF_SCHDUL_SE,         
+		        trim(A.SCHDUL_IPCR_CODE) SCHDUL_IPCR_CODE, 
+		        (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1027' AND X.CODE = TRIM(A.SCHDUL_IPCR_CODE)) AS CODE_NM_OF_SCHDUL_IPCR_CODE,        
+		        trim(A.REPTIT_SE_CODE) REPTIT_SE_CODE, 
+		        (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1029' AND X.CODE = TRIM(A.REPTIT_SE_CODE)) AS CODE_NM_OF_REPTIT_SE_CODE, 
+		        trim(A.SCHDUL_CHARGER_ID) SCHDUL_CHARGER_ID,  
+		        (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE X.MBER_ID = A.SCHDUL_CHARGER_ID) AS SCHDUL_CHARGER_NAME,
+				trim(A.REPTIT_DFK) REPTIT_DFK,
+				CASE A.REPTIT_DFK WHEN '0' THEN '매주일요일'
+		            WHEN '1' THEN '매주월요일'
+		            WHEN '2' THEN '매주화요일'
+		            WHEN '3' THEN '매주수요일'
+		            WHEN '4' THEN '매주목요일'
+		            WHEN '5' THEN '매주금요일'
+		            ELSE '매주토요일' END AS REPTIT_DFK_NAME	,
+				TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM,
+				A.FRST_REGISTER_ID,
+				(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME,
+                TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM,
+                A.LAST_UPDUSR_ID,
+                (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME                            
+          FROM  OE1TNSCHDULINFO A
+         WHERE  A.SCHDUL_ID         = #schdulId#
+	]]>		
+	</select>
+
+	<!-- 목록 -->
+	<select id="DeptSchdulManage.selectDeptSchdulManage" parameterClass="SchdulManageVO" resultMap="SchdulManage">
+        <![CDATA[
+	SELECT  *
+	  FROM  (
+	SELECT ROWNUM RNUM, ALL_LIST.*
+	  FROM  (
+
+        SELECT
+	        A.SCHDUL_ID,
+	        A.SCHDUL_NM, 
+	        A.SCHDUL_DEPT_ID,
+	        A.SCHDUL_KIND_CODE,
+	        TO_CHAR(A.SCHDUL_BGNDE,'YYYY-MM-DD HH24:MI') SCHDUL_BGNDE,
+	        TO_CHAR(A.SCHDUL_ENDDE,'HH24:MI') SCHDUL_ENDDE,
+	        A.SCHDUL_CN,
+	        A.SCHDUL_PLACE,   
+	   		A.ATCH_FILE_ID,
+	        A.SCHDUL_SE, 
+	        (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1028' AND X.CODE = TRIM(A.SCHDUL_SE)) AS CODE_NM_OF_SCHDUL_SE,         
+	        A.SCHDUL_IPCR_CODE, 
+	        (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1027' AND X.CODE = TRIM(A.SCHDUL_IPCR_CODE)) AS CODE_NM_OF_SCHDUL_IPCR_CODE,        
+	        A.REPTIT_SE_CODE, 
+	        (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1029' AND X.CODE = TRIM(A.REPTIT_SE_CODE)) AS CODE_NM_OF_REPTIT_SE_CODE, 
+	        A.SCHDUL_CHARGER_ID,  
+	        (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE X.MBER_ID = A.SCHDUL_CHARGER_ID) AS SCHDUL_CHARGER_NAME, 
+			A.REPTIT_DFK,
+			CASE A.REPTIT_DFK WHEN '0' THEN '매주일요일'
+			            WHEN '1' THEN '매주월요일'
+			            WHEN '2' THEN '매주화요일'
+			            WHEN '3' THEN '매주수요일'
+			            WHEN '4' THEN '매주목요일'
+			            WHEN '5' THEN '매주금요일'
+			            ELSE '매주토요일' END AS REPTIT_DFK_NAME,	
+			TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM,
+			A.FRST_REGISTER_ID,
+			(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME,
+			TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM,
+			A.LAST_UPDUSR_ID,
+			(SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME				            
+        FROM 
+        	OE1TNSCHDULINFO A 
+        WHERE 
+        	A.SCHDUL_NM  LIKE '%'||#searchKeyword#||'%'
+	]]>        	
+		  <isNotEqual prepend="AND" property="searchSchdulSeCode" compareValue="">
+		    A.SCHDUL_SE = #searchSchdulSeCode#
+		  </isNotEqual>	       
+    <![CDATA[		    	
+		  	ORDER BY A.SCHDUL_ID DESC
+	
+	       ) ALL_LIST
+	       )
+	WHERE  RNUM  > #firstIndex#
+	  AND  RNUM <= #firstIndex# + #recordCountPerPage#	
+	]]>
+	</select>
+		
+	<!-- 등록  -->
+	<insert id="DeptSchdulManage.insertDeptSchdulManage">
+	 <![CDATA[
+		INSERT INTO OE1TNSCHDULINFO ( 
+			SCHDUL_ID,
+			SCHDUL_SE,
+			SCHDUL_DEPT_ID,
+			SCHDUL_KIND_CODE,
+			SCHDUL_BGNDE,
+			SCHDUL_ENDDE,
+			SCHDUL_NM,
+			SCHDUL_CN,
+			SCHDUL_PLACE,
+			SCHDUL_IPCR_CODE,
+			SCHDUL_CHARGER_ID,
+			ATCH_FILE_ID,
+			REPTIT_SE_CODE,
+			REPTIT_DFK,
+			FRST_REGISTER_PNTTM,
+			FRST_REGISTER_ID,
+			LAST_UPDUSR_PNTTM,
+			LAST_UPDUSR_ID
+		)VALUES( 
+			trim(#schdulId#),
+			trim(#schdulSe#),
+			trim(#schdulDeptId#),
+			trim(#schdulKindCode#),
+			TO_DATE(trim(#schdulBgnde#), 'yyyyMMddhh24mi'),
+			TO_DATE(trim(#schdulEndde#), 'yyyyMMddhh24mi'),
+			trim(#schdulNm#),
+			trim(#schdulCn#),
+			trim(#schdulPlace#),
+			trim(#schdulIpcrCode#),
+			trim(#schdulChargerId#),
+			trim(#atchFileId#),
+			trim(#reptitSeCode#), 
+			trim(#reptitDfk#),   
+			sysdate,
+			trim(#frstRegisterId#),
+			sysdate,
+			trim(#lastUpdusrId#) 
+		)
+
+	 ]]>
+	</insert>
+
+
+</sqlMap>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MenuCreate">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="menuCreateMngVO" type="egovframework.oe1.cms.sys.service.EgovOe1MenuCreateVO"/>
+	<typeAlias  alias="comDefaultVO" type="egovframework.oe1.cms.com.service.EgovOe1ComDefaultVO"/>
+	
+	<!-- ID 존재여부 조회 -->
+	<select id="menuCreateMngDAO.selectUsrByPk" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+		select count(AUTHOR_CODE) from OE1TNEMPLYRSCRTYESTBS
+		where SCRTY_ESTBS_ID =
+			(select UNIQ_ID from OE1TNUSERINFO
+			where MBER_ID = #searchKeyword# )
+		]]>
+	</select>
+	
+	<!-- ID에 대한 권한코드 조회 -->
+	<select id="menuCreateMngDAO.selectAuthorByUsr" parameterClass="comDefaultVO" resultClass="menuCreateMngVO">
+		<![CDATA[
+		select AUTHOR_CODE AS authorCode from OE1TNEMPLYRSCRTYESTBS
+		where SCRTY_ESTBS_ID =
+			(select UNIQ_ID from OE1TNUSERINFO
+			where MBER_ID = #searchKeyword# )
+		]]>
+	</select>
+	
+	<!-- 총 건수 조회 -->
+	<select id="menuCreateMngDAO.selectMenuCreatManageTotCnt_S" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+			SELECT COUNT(AUTHOR_CODE) AS totcnt
+			  FROM OE1TNAUTHORINFO
+			 WHERE AUTHOR_CODE like CONCAT('%', #searchKeyword#, '%')
+		]]>
+	</select>	
+	
+	<!-- 메뉴 생성 내역 조회 -->
+	<select id="menuCreateMngDAO.selectMenuCreatCnt_S" parameterClass="menuCreateMngVO" resultClass="int">
+		<![CDATA[
+			SELECT COUNT(AUTHOR_CODE) AS totcnt
+			  FROM OE1TNAUTHORINFO
+			 WHERE AUTHOR_CODE = #authorCode#
+		]]>
+	</select>
+	
+	<!-- 목록 -->
+	<select id="menuCreateMngDAO.selectMenuCreatList_D" parameterClass="comDefaultVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT  AUTHOR_CODE   AS authorCode,
+					AUTHOR_NM     AS authorNm,
+					AUTHOR_DC     AS authorDc,
+					AUTHOR_CREAT_DE AS authorCreatDe,
+				   (SELECT COUNT(B.AUTHOR_CODE)
+					FROM   OE1TNMENUCREATE B
+					WHERE  B.AUTHOR_CODE = A.AUTHOR_CODE ) AS chkYeoBu
+			FROM    OE1TNAUTHORINFO A
+			WHERE   A.AUTHOR_CODE like CONCAT('%', #searchKeyword#, '%')
+			ORDER BY AUTHOR_CREAT_DE
+			limit #firstIndex#, #recordCountPerPage#	
+        ]]>
+	</select> 
+	
+	<!-- 상세 -->
+	<select id="menuCreateMngDAO.selectMenuCreat_D" parameterClass="menuCreateMngVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				  A.MENU_ID AS menuId
+				, A.MENU_ORDR AS menuOrdr
+				, A.MENU_NM AS menuNm
+				, A.UPPER_MENU_ID AS upperMenuId
+				, A.PROGRM_ID AS progrmId
+			    , (SELECT count(B.MENU_ID) 
+			         FROM OE1TNMENUCREATE B   
+			        WHERE B.MENU_ID  = A.MENU_ID 
+			          AND B.AUTHOR_CODE = #authorCode#) AS chkYeoBu
+			FROM OE1TNMENUINFO A
+			ORDER BY A.MENU_ORDR 
+		 ]]>
+	</select> 	
+	
+	<!-- 입력받은 상위메뉴ID들의 하위메뉴(들)의 상세 -->
+	<select id="menuCreateMngDAO.selectMenuCreatWithUpper" parameterClass="menuCreateMngVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT
+				  MENU_ID	AS menuId
+				, MENU_NM AS menuNm
+				, UPPER_MENU_ID AS upperMenuId
+				FROM OE1TNMENUINFO
+				WHERE
+					UPPER_MENU_ID = #upperMenuId#		  	
+		]]>
+		</select>	
+	
+	<select id="menuCreateMngDAO.selectMenuCreat_New" parameterClass="menuCreateMngVO" resultClass="egovMap">
+			<![CDATA[
+SELECT  *, (SELECT count(SUE.MENU_ID) 
+			         FROM OE1TNMENUCREATE SUE  
+			        WHERE SUE.MENU_ID  = MENU.MENU_ID 
+			          AND SUE.AUTHOR_CODE = #authorCode#) AS chkYeoBu 
+FROM (
+SELECT '1' LV, A.UPPER_MENU_ID MENU_ID_F0, A.MENU_ID MENU_ID_F1, '' MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT FROM OE1TNMENUINFO A WHERE A.UPPER_MENU_ID = '0'
+UNION ALL
+SELECT '2' LV, X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT  
+  FROM OE1TNMENUINFO A
+     , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+ WHERE A.UPPER_MENU_ID = X.MENU_ID_F1
+UNION ALL
+SELECT '3' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, A.MENU_ID MENU_ID_F3, '' MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT    
+  FROM OE1TNMENUINFO A     
+     , (SELECT X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT  
+          FROM OE1TNMENUINFO A
+             , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+         WHERE A.UPPER_MENU_ID = X.MENU_ID_F1) X
+ WHERE A.UPPER_MENU_ID = X.MENU_ID_F2
+UNION ALL
+SELECT '4' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, X.MENU_ID_F3, A.MENU_ID MENU_ID_F4, A.MENU_ID, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT    
+  FROM OE1TNMENUINFO A
+     , (SELECT '3' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, A.MENU_ID MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT    
+          FROM OE1TNMENUINFO A     
+             , (SELECT X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.MENU_NM, A.MENU_DC, A.MENU_ORDR, A.PROGRM_ID, A.USE_AT  
+                  FROM OE1TNMENUINFO A
+                     , (SELECT UPPER_MENU_ID MENU_ID_F0, MENU_ID MENU_ID_F1 FROM OE1TNMENUINFO WHERE UPPER_MENU_ID = '0') X
+                 WHERE A.UPPER_MENU_ID = X.MENU_ID_F1) X
+         WHERE A.UPPER_MENU_ID = X.MENU_ID_F2) X
+ WHERE A.UPPER_MENU_ID = X.MENU_ID_F3
+) MENU
+ORDER BY MENU.MENU_ID_F1, MENU.MENU_ID_F2, MENU.MENU_ID_F3, MENU.MENU_ID_F4
+					]]>
+		</select>			
+	
+	<!-- 등록 -->
+	<insert id="menuCreateMngDAO.insertMenuCreat_S">
+		<![CDATA[
+			INSERT INTO OE1TNMENUCREATE ( MENU_ID, AUTHOR_CODE )
+			VALUES ( #menuId#, #authorCode# )
+		]]>
+	</insert>
+	
+	<!-- 수정 -->
+	<delete id="menuCreateMngDAO.updateMenuCreat_S">
+		<![CDATA[ 
+		    UPDATE OE1TNMENUCREATE  
+		       SET MAPCREAT_ID=#mapCreatId# 
+		     WHERE AUTHOR_CODE=#authorCode#
+		]]>                                
+	</delete> 
+
+	<!-- 삭제 -->
+	<delete id="menuCreateMngDAO.deleteMenuCreat_S">
+		<![CDATA[                          
+			DELETE FROM OE1TNMENUCREATE              
+			 WHERE AUTHOR_CODE=#authorCode#      
+		]]>                                
+	</delete> 
+	
+	<!-- 삭제 -->
+	<delete id="menuCreateMngDAO.deleteMenuCreat_SWhenDeleteProgrm">
+		<![CDATA[                          
+			DELETE FROM OE1TNMENUCREATE              
+			 WHERE MENU_ID IN (SELECT MENU_ID FROM OE1TNMENUINFO WHERE PROGRM_ID = #progrmId#)      
+		]]>                                
+	</delete> 
+
+</sqlMap>                            

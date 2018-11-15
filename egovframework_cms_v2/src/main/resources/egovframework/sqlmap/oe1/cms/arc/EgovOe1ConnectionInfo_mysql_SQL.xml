@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ConnectionInfo">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1ConnectionInfoVO" type="egovframework.oe1.cms.arc.service.EgovOe1ConnectionInfoVO"/>
+
+	<insert id="egovOe1ConnectionInfoDAO.insertConnectionInfo">
+		<![CDATA[
+			INSERT INTO OE1TNCNTCINFO 
+				( CNTC_INFO_ID
+				  ,CNTC_NM              
+				  ,PROVD_INSTT              
+				  ,CTTPC
+				  ,CNTC_BEGIN_DE
+				  ,CNTC_END_DE
+				  ,USE_AT
+				  ,CNTC_INFO_DC
+				  ,FRST_REGISTER_PNTTM  
+				  ,FRST_REGISTER_ID
+				  ,LAST_UPDUSR_PNTTM    
+				  ,LAST_UPDUSR_ID        )
+			VALUES ( #cntcInfoId#
+				  , #cntcNm#
+				  , #provdInstt#
+				  , #cttpc#
+				  , REPLACE(#cntcBeginDe#,'-','')  
+				  ,REPLACE(#cntcEndDe#,'-','')  
+				  , #useAt#
+				  ,#cntcInfoDc#
+				  , now()
+				  , #frstRegisterId#
+				  , now()
+				  ,#frstRegisterId#)
+		]]>
+	</insert>
+	
+	<update id="egovOe1ConnectionInfoDAO.updateServiceConnectionInfo">
+		<![CDATA[
+			UPDATE OE1TNCNTCINFO 
+			SET CNTC_INFO_ID=#cntcInfoId#
+				,CNTC_NM=#cntcNm#
+				,PROVD_INSTT = #provdInstt#
+				,CTTPC = #cttpc#
+				,CNTC_BEGIN_DE =REPLACE(#cntcBeginDe#,'-','')  
+				,CNTC_END_DE = REPLACE(#cntcEndDe#,'-','')  
+				,CNTC_INFO_DC = #cntcInfoDc#
+				,USE_AT=#useAt#
+				,LAST_UPDUSR_PNTTM = now()
+				,LAST_UPDUSR_ID = #lastUpdusrId#
+			WHERE CNTC_INFO_ID=#cntcInfoId#
+		]]>
+	</update>
+	
+	<delete id="egovOe1ConnectionInfoDAO.deleteConnectionInfo">
+		<![CDATA[
+			DELETE FROM OE1TNCNTCINFO 
+			WHERE CNTC_INFO_ID=#cntcInfoId#
+		]]>
+	</delete>
+	
+	<select id="egovOe1ConnectionInfoDAO.selectConnectionInfo" resultClass="egovOe1ConnectionInfoVO">
+		<![CDATA[
+			SELECT CNTC_INFO_ID cntcInfoId
+				,CNTC_NM cntcNm
+				,PROVD_INSTT provdInstt
+				,CTTPC cttpc
+				,DATE_FORMAT(CNTC_BEGIN_DE, '%Y-%m-%d')   cntcBeginDe
+				,DATE_FORMAT(CNTC_END_DE, '%Y-%m-%d')  cntcEndDe
+				,CNTC_INFO_DC cntcInfoDc
+				,USE_AT useAt
+			FROM OE1TNCNTCINFO 
+			WHERE CNTC_INFO_ID=#cntcInfoId#
+		]]>
+	</select>
+	
+	<select id="egovOe1ConnectionInfoDAO.selectConnectionInfoList" parameterClass="egovOe1ConnectionInfoVO" resultClass="egovMap">
+			SELECT
+				CNTC_INFO_ID cntcInfoId
+				,CNTC_NM cntcNm
+				,PROVD_INSTT provdInstt
+				,CTTPC cttpc
+				,DATE_FORMAT(CNTC_BEGIN_DE, '%Y-%m-%d')  cntcBeginDe
+				,DATE_FORMAT(CNTC_END_DE, '%Y-%m-%d') cntcEndDe
+				,CNTC_INFO_DC cntcInfoDc
+				,USE_AT useAt
+			FROM OE1TNCNTCINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CNTC_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				PROVD_INSTT LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			ORDER BY CNTC_INFO_ID DESC
+			limit #firstIndex#, #recordCountPerPage#	
+	</select>
+	
+	<select id="egovOe1ConnectionInfoDAO.selectConnectionInfoListTot" parameterClass="egovOe1ConnectionInfoVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNCNTCINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CNTC_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				PROVD_INSTT LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+</sqlMap>

@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+    
+    	<!-- 도메인분류  -->
+        <form name="domainClassInfo">
+			<field property="domnClNm" depends="required, maxlength">
+        		<arg0 key="도메인분류명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="useAt" depends="required">
+        		<arg0 key="사용여부" />
+			</field>	
+			<field property="processPrvonsh" depends="required, maxlength">
+        		<arg0 key="처리사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>						
+        </form>  
+        
+        
+    	<!-- 도메인분류신청  -->
+        <form name="domainClassRequestInfo">
+			<field property="domnClNm" depends="required, maxlength">
+        		<arg0 key="도메인분류명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="reqstPrvonsh" depends="required, maxlength">
+        		<arg0 key="신청사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>						
+        </form>  
+ 
+    	<!-- 도메인  -->
+        <form name="domainInfo">
+			<field property="domnNm" depends="required, maxlength">
+        		<arg0 key="도메인명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="domnClId" depends="required">
+        		<arg0 key="도메인분류" />
+			</field>
+			<field property="dataTy" depends="required">
+        		<arg0 key="데이터유형" />
+			</field>
+			<field property="dataLt" depends="integer">
+        		<arg0 key="데이터길이" />
+			</field>	
+			<field property="domnDc" depends="required, maxlength">
+        		<arg0 key="도메인설명" />
+        		<arg1 key="1000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>1000</var-value>
+				</var>   
+			</field>	
+			<field property="useAt" depends="required">
+        		<arg0 key="사용여부" />
+			</field>
+			<field property="processPrvonsh" depends="required, maxlength">
+        		<arg0 key="처리사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+        </form>  
+        
+        
+    	<!-- 도메인신청  -->
+        <form name="domainRequestInfo">
+			<field property="domnNm" depends="required, maxlength">
+        		<arg0 key="도메인명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="domnClId" depends="required">
+        		<arg0 key="도메인분류" />
+			</field>
+			<field property="dataTy" depends="required">
+        		<arg0 key="데이터유형" />
+			</field>
+			<field property="dataLt" depends="integer">
+        		<arg0 key="데이터길이" />
+			</field>	
+			<field property="domnDc" depends="required, maxlength">
+        		<arg0 key="도메인설명" />
+        		<arg1 key="1000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>1000</var-value>
+				</var>   
+			</field>
+			<field property="reqstPrvonsh" depends="required, maxlength">
+        		<arg0 key="신청사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+        </form>  
+ 
+     	<!-- 용어사전  -->
+        <form name="wordDic">
+			<field property="wordNm" depends="required, maxlength">
+        		<arg0 key="용어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordEngNm" depends="required, maxlength, alphabetic">
+        		<arg0 key="용어영문명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordEngAbrvNm" depends="required, maxlength, alphabetic">
+        		<arg0 key="용어영문약어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordDc" depends="required, maxlength">
+        		<arg0 key="용어설명" />
+        		<arg1 key="1000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>1000</var-value>
+				</var>   
+			</field>
+			<field property="useAt" depends="required">
+        		<arg0 key="사용여부" />
+			</field>
+			<field property="processPrvonsh" depends="required, maxlength">
+        		<arg0 key="처리사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>	
+        </form>  
+        
+        
+     	<!-- 용어사전신청  -->
+        <form name="wordDicRequestInfo">	
+			<field property="wordNm" depends="required, maxlength">
+        		<arg0 key="용어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordEngNm" depends="required, maxlength, alphabetic">
+        		<arg0 key="용어영문명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordEngAbrvNm" depends="required, maxlength, alphabetic">
+        		<arg0 key="용어영문약어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordDc" depends="required, maxlength">
+        		<arg0 key="용어설명" />
+        		<arg1 key="1000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>1000</var-value>
+				</var>   
+			</field>
+			<field property="reqstPrvonsh" depends="required, maxlength">
+        		<arg0 key="신청사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+        </form>
+        
+     	<!-- 동의어  -->
+        <form name="synonymInfo">
+			<field property="synonmNm" depends="required, maxlength">
+        		<arg0 key="동의어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordEngAbrvNm" depends="required, maxlength">
+        		<arg0 key="용어영문약어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="useAt" depends="required">
+        		<arg0 key="사용여부" />
+			</field>
+			<field property="processPrvonsh" depends="required, maxlength">
+        		<arg0 key="처리사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>	
+        </form>  
+        
+     	<!-- 동의어신청  -->
+        <form name="synonymRequestInfo">	
+			<field property="synonmNm" depends="required, maxlength">
+        		<arg0 key="동의어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordEngAbrvNm" depends="required, maxlength">
+        		<arg0 key="용어영문약어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="reqstPrvonsh" depends="required, maxlength">
+        		<arg0 key="신청사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+        </form>
+               
+      	<!-- 자료사전  -->
+        <form name="dataDic">
+			<field property="dtaDicaryNm" depends="required, maxlength">
+        		<arg0 key="자료사전명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="dtaDicaryEngNm" depends="required">
+        		<arg0 key="자료사전영문명" />
+			</field>
+			<field property="domnNm" depends="required">
+        		<arg0 key="도메인명" />
+			</field>
+			<field property="useAt" depends="required">
+        		<arg0 key="사용여부" />
+			</field>
+			<field property="processPrvonsh" depends="required, maxlength">
+        		<arg0 key="처리사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>	
+        </form>  
+        
+     	<!-- 자료사전신청  -->
+        <form name="dataDicRequestInfo">	
+			<field property="dtaDicaryNm" depends="required, maxlength">
+        		<arg0 key="자료사전명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="dtaDicaryEngNm" depends="required">
+        		<arg0 key="자료사전영문명" />
+			</field>
+			<field property="domnNm" depends="required">
+        		<arg0 key="도메인명" />
+			</field>
+			<field property="reqstPrvonsh" depends="required, maxlength">
+        		<arg0 key="신청사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+        </form>
+        
+        
+        <!-- 신청승인/반려  -->
+        <form name="approval">
+			<field property="processPrvonsh" depends="required, maxlength">
+        		<arg0 key="처리사유" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>						
+        </form> 
+        
+    </formset>   
+</form-validation>

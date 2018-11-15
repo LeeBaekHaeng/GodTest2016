@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ArcMenu">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1ArcMenuVO" type="egovframework.oe1.cms.arc.service.EgovOe1ArcMenuVO"/>
+
+	<resultMap id="ArcMenu" class="EgovOe1ArcMenuVO">
+		<result property="archtcMenuId" column="ARCHTC_MENU_ID" />		
+		<result property="archtcMenuNm" column="ARCHTC_MENU_NM" />
+		<result property="archtcMenuDc" column="ARCHTC_MENU_DC" />
+		<result property="archtcMenuOrdr" column="ARCHTC_MENU_ORDR" />
+		<result property="upperArchtcMenu" column="UPPER_MENU_ID" />
+		<result property="scrinId" column="SCRIN_ID" />
+		<result property="useAt" column="USE_AT" />		
+	</resultMap>
+	
+	<resultMap id="ArcMenuTree" class="EgovOe1ArcMenuVO">
+		<result property="level" column="LV" />
+		<result property="menuIdF0" column="MENU_ID_F0" />
+		<result property="menuIdF1" column="MENU_ID_F1" />
+		<result property="menuIdF2" column="MENU_ID_F2" />
+		<result property="menuIdF3" column="MENU_ID_F3" />
+		<result property="menuIdF4" column="MENU_ID_F4" />
+		<result property="archtcMenuId" column="ARCHTC_MENU_ID" />		
+		<result property="archtcMenuNm" column="ARCHTC_MENU_NM" />
+		<result property="archtcMenuOrdr" column="ARCHTC_MENU_ORDR" />
+		<result property="scrinId" column="SCRIN_ID" />
+		<result property="useAt" column="USE_AT" />		
+	</resultMap>
+	
+	<resultMap id="ArcMenu2" class="EgovOe1ArcMenuVO">
+		<result property="archtcMenuId" column="ARCHTC_MENU_ID" />		
+		<result property="archtcMenuNm" column="ARCHTC_MENU_NM" />
+		<result property="archtcMenuDc" column="ARCHTC_MENU_DC" />
+		<result property="archtcMenuOrdr" column="ARCHTC_MENU_ORDR" />
+		<result property="upperArchtcMenu" column="UPPER_MENU_ID" />
+		<result property="upperArchtcMenuNm" column="UPPER_MENU_ID_NM" />
+		<result property="scrinId" column="SCRIN_ID" />
+		<result property="useAt" column="USE_AT" />		
+	</resultMap>
+		
+	<insert id="egovOe1ArcMenuDAO.insertArcMenu">
+		<![CDATA[
+		INSERT INTO OE1TNARCHTCMENU
+				( ARCHTC_MENU_ID
+				  ,ARCHTC_MENU_NM              
+				  ,ARCHTC_MENU_DC              
+				  ,ARCHTC_MENU_ORDR
+				  ,UPPER_MENU_ID
+				  ,SCRIN_ID
+				  ,USE_AT
+				  ,FRST_REGISTER_PNTTM  
+				  ,FRST_REGISTER_ID
+				  ,LAST_UPDUSR_PNTTM    
+				  ,LAST_UPDUSR_ID        )
+			VALUES ( #archtcMenuId#
+				  , #archtcMenuNm#
+				  , #archtcMenuDc#
+				  , #archtcMenuOrdr#
+				  , #upperArchtcMenu#
+				  , #scrinId#
+				  , #useAt#
+				  , sysdate
+				  , #frstRegisterId#
+				  , sysdate
+				  , #lastUpdusrId#)
+		]]>
+	</insert>
+	
+	<update id="egovOe1ArcMenuDAO.updateArcMenu">
+		<![CDATA[
+			UPDATE OE1TNARCHTCMENU 
+			SET ARCHTC_MENU_NM=#archtcMenuNm#
+				,ARCHTC_MENU_DC=#archtcMenuDc#
+				,ARCHTC_MENU_ORDR = #archtcMenuOrdr#
+				,UPPER_MENU_ID = #upperArchtcMenu#
+				,SCRIN_ID = #scrinId#
+				,USE_AT = #useAt#
+				,LAST_UPDUSR_PNTTM = sysdate
+				,LAST_UPDUSR_ID = #lastUpdusrId#
+			WHERE ARCHTC_MENU_ID=#archtcMenuId#
+		]]>
+	</update>
+	
+	<delete id="egovOe1ArcMenuDAO.deleteArcMenu">
+		<![CDATA[
+			DELETE FROM OE1TNARCHTCMENU 
+			WHERE ARCHTC_MENU_ID=#archtcMenuId#
+		]]>
+	</delete>
+	
+	<select id="egovOe1ArcMenuDAO.selectArcMenu" resultMap="ArcMenu">
+		<![CDATA[
+			SELECT ARCHTC_MENU_ID
+			      ,ARCHTC_MENU_NM             
+				  ,ARCHTC_MENU_DC             
+				  ,ARCHTC_MENU_ORDR
+				  ,UPPER_MENU_ID
+				  ,SCRIN_ID
+				  ,USE_AT
+			FROM OE1TNARCHTCMENU 
+			WHERE ARCHTC_MENU_ID=#archtcMenuId#
+		]]>
+	</select>
+	
+	<select id="egovOe1ArcMenuDAO.selectArcMenuList" parameterClass="egovOe1ArcMenuVO" resultMap="ArcMenu2">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+			SELECT
+				A.ARCHTC_MENU_ID
+			      ,A.ARCHTC_MENU_NM             
+				  ,A.ARCHTC_MENU_DC             
+				  ,A.ARCHTC_MENU_ORDR
+				  ,A.UPPER_MENU_ID
+				  ,(SELECT ARCHTC_MENU_NM FROM OE1TNARCHTCMENU WHERE ARCHTC_MENU_ID = A.UPPER_MENU_ID) AS UPPER_MENU_ID_NM
+				  ,A.SCRIN_ID
+				  ,A.USE_AT
+			FROM OE1TNARCHTCMENU A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.ARCHTC_MENU_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			ORDER BY A.LAST_UPDUSR_PNTTM DESC
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+	
+	<select id="egovOe1ArcMenuDAO.selectArcMenuListTot" parameterClass="egovOe1ArcMenuVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNARCHTCMENU
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				ARCHTC_MENU_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+	</select>
+
+	<!-- for Tree  -->
+	<select id="egovOe1ArcMenuDAO.selectArcMenuTree" parameterClass="egovOe1ArcMenuVO" resultMap="ArcMenuTree">
+		
+		
+		SELECT  LV, MENU_ID_F0, MENU_ID_F1, MENU_ID_F2, MENU_ID_F3, MENU_ID_F4, ARCHTC_MENU_ID, ARCHTC_MENU_NM, ARCHTC_MENU_ORDR, SCRIN_ID, USE_AT
+FROM (
+SELECT '1' LV, A.UPPER_MENU_ID MENU_ID_F0, A.ARCHTC_MENU_ID MENU_ID_F1, '' MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.ARCHTC_MENU_ID, A.ARCHTC_MENU_NM, A.ARCHTC_MENU_DC, A.ARCHTC_MENU_ORDR, A.SCRIN_ID, A.USE_AT FROM OE1TNARCHTCMENU A WHERE A.UPPER_MENU_ID = '0'
+UNION ALL
+SELECT '2' LV, X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.ARCHTC_MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.ARCHTC_MENU_ID, A.ARCHTC_MENU_NM, A.ARCHTC_MENU_DC, A.ARCHTC_MENU_ORDR, A.SCRIN_ID, A.USE_AT  
+  FROM OE1TNARCHTCMENU A
+     , (SELECT UPPER_MENU_ID MENU_ID_F0, ARCHTC_MENU_ID MENU_ID_F1 FROM OE1TNARCHTCMENU WHERE UPPER_MENU_ID = '0') X
+ WHERE A.UPPER_MENU_ID = X.MENU_ID_F1
+UNION ALL
+SELECT '3' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, A.ARCHTC_MENU_ID MENU_ID_F3, '' MENU_ID_F4, A.ARCHTC_MENU_ID, A.ARCHTC_MENU_NM, A.ARCHTC_MENU_DC, A.ARCHTC_MENU_ORDR, A.SCRIN_ID, A.USE_AT    
+  FROM OE1TNARCHTCMENU A     
+     , (SELECT X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.ARCHTC_MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.ARCHTC_MENU_NM, A.ARCHTC_MENU_DC, A.ARCHTC_MENU_ORDR, A.SCRIN_ID, A.USE_AT  
+          FROM OE1TNARCHTCMENU A
+             , (SELECT UPPER_MENU_ID MENU_ID_F0, ARCHTC_MENU_ID MENU_ID_F1 FROM OE1TNARCHTCMENU WHERE UPPER_MENU_ID = '0') X
+         WHERE A.UPPER_MENU_ID = X.MENU_ID_F1) X
+ WHERE A.UPPER_MENU_ID = X.MENU_ID_F2
+UNION ALL
+SELECT '4' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, X.MENU_ID_F3, A.ARCHTC_MENU_ID MENU_ID_F4, A.ARCHTC_MENU_ID, A.ARCHTC_MENU_NM, A.ARCHTC_MENU_DC, A.ARCHTC_MENU_ORDR, A.SCRIN_ID, A.USE_AT    
+  FROM OE1TNARCHTCMENU A
+     , (SELECT '3' LV, X.MENU_ID_F0, X.MENU_ID_F1, X.MENU_ID_F2, A.ARCHTC_MENU_ID MENU_ID_F3, '' MENU_ID_F4, A.ARCHTC_MENU_NM, A.ARCHTC_MENU_DC, A.ARCHTC_MENU_ORDR, A.SCRIN_ID, A.USE_AT    
+          FROM OE1TNARCHTCMENU A     
+             , (SELECT X.MENU_ID_F0, A.UPPER_MENU_ID MENU_ID_F1, A.ARCHTC_MENU_ID MENU_ID_F2, '' MENU_ID_F3, '' MENU_ID_F4, A.ARCHTC_MENU_NM, A.ARCHTC_MENU_DC, A.ARCHTC_MENU_ORDR, A.SCRIN_ID, A.USE_AT  
+                  FROM OE1TNARCHTCMENU A
+                     , (SELECT UPPER_MENU_ID MENU_ID_F0, ARCHTC_MENU_ID MENU_ID_F1 FROM OE1TNARCHTCMENU WHERE UPPER_MENU_ID = '0') X
+                 WHERE A.UPPER_MENU_ID = X.MENU_ID_F1) X
+         WHERE A.UPPER_MENU_ID = X.MENU_ID_F2) X
+ WHERE A.UPPER_MENU_ID = X.MENU_ID_F3
+) MENU 
+ WHERE MENU.USE_AT = 'Y' 
+ ORDER BY NVL(MENU.MENU_ID_F1,' '), NVL(MENU.MENU_ID_F2,' '), NVL(MENU.MENU_ID_F3,' '), NVL(MENU.MENU_ID_F4,' ')
+		
+		<!-- 
+		SELECT ARCHTC_MENU_ORDR
+		       ,ARCHTC_MENU_NM
+		       ,ARCHTC_MENU_ID
+		       ,UPPER_MENU_ID
+		       ,SCRIN_ID
+		FROM OE1TNARCHTCMENU 
+		WHERE ARCHTC_MENU_ORDR = '1'
+		ORDER BY ARCHTC_MENU_ORDR
+		 -->	
+	</select>
+	<select id="egovOe1ArcMenuDAO.selectArcMenuTree2" parameterClass="egovOe1ArcMenuVO" resultMap="ArcMenuTree">
+		SELECT ARCHTC_MENU_ORDR
+		       ,ARCHTC_MENU_NM
+		       ,ARCHTC_MENU_ID
+		       ,UPPER_MENU_ID
+		       ,SCRIN_ID
+		FROM OE1TNARCHTCMENU 
+		WHERE UPPER_MENU_ID = #archtcMenuId#
+		ORDER BY ARCHTC_MENU_ORDR
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1WordDic">
+	
+	<typeAlias  alias="egovMap" 			type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="wordDic" 	type="egovframework.oe1.cms.cmm.service.WordDic"/>
+	<typeAlias  alias="searchVO" 	        type="egovframework.oe1.cms.cmm.service.MetaDataSearchVO"/>
+	
+	<resultMap id="wordDicHistMap" class="egovframework.oe1.cms.cmm.service.WordDic">
+        <result property="wordEngAbrvNm" column="wordEngAbrvNm" columnIndex="1"/>
+        <result property="wordDicarySn" column="wordDicarySn" columnIndex="2"/>
+        <result property="sttusCode" column="sttusCode" columnIndex="3"/>
+        <result property="processPrvonsh" column="processPrvonsh" columnIndex="4"/>
+        <result property="wordNm" column="wordNm" columnIndex="5"/>
+        <result property="wordEngNm" column="wordEngNm" columnIndex="6"/>
+        <result property="wordDc" column="wordDc" columnIndex="7"/>
+        <result property="useAt" column="useAt" columnIndex="8"/>
+        <result property="frstRegistPnttm" column="frstRegistPnttm" columnIndex="9"/>
+        <result property="frstRegisterId" column="frstRegisterId" columnIndex="10"/>
+        <result property="frstRegisterNm" column="frstRegisterNm" columnIndex="11"/>
+    </resultMap>
+	
+	<resultMap id="wordDicMap" class="egovframework.oe1.cms.cmm.service.WordDic">
+        <result property="wordEngAbrvNm" column="wordEngAbrvNm" columnIndex="1"/>
+        <result property="wordNm" column="wordNm" columnIndex="2"/>
+        <result property="wordEngNm" column="wordEngNm" columnIndex="3"/>
+        <result property="wordDc" column="wordDc" columnIndex="4"/>
+        <result property="useAt" column="useAt" columnIndex="5"/>
+        <result property="lastUpdtPnttm" column="lastUpdtPnttm" columnIndex="6"/>
+        <result property="lastUpdusrId" column="lastUpdusrId" columnIndex="7"/>
+        <result property="lastUpdusrNm" column="lastUpdusrNm" columnIndex="8"/>
+    </resultMap>
+    
+    <resultMap id="wordDicPopUpMap" class="egovframework.oe1.cms.cmm.service.WordDic">
+        <result property="wordEngAbrvNm" column="wordEngAbrvNm" columnIndex="1"/>
+        <result property="wordNm" column="wordNm" columnIndex="2"/>
+        <result property="synonmNm" column="synonmNm" columnIndex="3"/>
+        <result property="wordEngNm" column="wordEngNm" columnIndex="4"/>
+        <result property="lastUpdtPnttm" column="lastUpdtPnttm" columnIndex="5"/>
+        <result property="lastUpdusrId" column="lastUpdusrId" columnIndex="6"/>
+        <result property="lastUpdusrNm" column="lastUpdusrNm" columnIndex="7"/>
+    </resultMap>
+		
+	<!-- 용어영문약어명 등록건수조회 -->
+	<select id="wordDicDAO.selectWordEngAbrvNmCnt" parameterClass="wordDic" resultClass="wordDic">
+		SELECT  WORD_ENG_ABRV_NM wordEngAbrvNm
+             ,  WORD_NM          wordNm       
+             ,  WORD_ENG_NM      wordEngNm    
+             ,  WORD_DC          wordDc       
+          FROM  OE1TNWORDDIC A
+         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm#
+    </select>
+	
+	<!-- 용어사전목록총수조회 -->
+	<select id="wordDicDAO.selectWordDicListTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+		  FROM  OE1TNWORDDIC A
+         WHERE  WORD_NM LIKE CONCAT(CONCAT('%', #srchWordNm#), '%')
+		<isNotEmpty prepend="AND" property="srchUseAt" >
+                USE_AT = #srchUseAt#
+        </isNotEmpty>
+		<isNotEmpty prepend="AND" property="srchLastUpdusrNm" >
+				(SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchLastUpdusrNm#),'%')
+        </isNotEmpty>
+		<isNotEmpty prepend="AND" property="srchWordEngAbrvNm" >
+				WORD_ENG_ABRV_NM = #srchWordEngAbrvNm# 
+        </isNotEmpty>
+    </select>	
+	<!-- 용어사전목록조회 -->
+	<select id="wordDicDAO.selectWordDicList" parameterClass="searchVO" resultMap="wordDicMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        /* 구현 Sql */
+        
+		<![CDATA[
+		
+		SELECT  WORD_ENG_ABRV_NM wordEngAbrvNm 
+             ,  WORD_NM          wordNm        
+             ,  WORD_ENG_NM      wordEngNm     
+             ,  WORD_DC          wordDc        
+		     ,  USE_AT           useAt         
+		     ,  TO_CHAR(LAST_UPDT_PNTTM,'YYYY-MM-DD') lastUpdtPnttm
+		     ,  LAST_UPDUSR_ID   lastUpdusrId
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNWORDDIC A
+         WHERE  WORD_NM LIKE CONCAT(CONCAT('%', #srchWordNm#), '%')
+         
+		]]>
+		
+		<isNotEmpty prepend="AND" property="srchUseAt" >
+                USE_AT = #srchUseAt#
+        </isNotEmpty>
+		<isNotEmpty prepend="AND" property="srchLastUpdusrNm" >
+				(SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchLastUpdusrNm#),'%')
+        </isNotEmpty>
+		<isNotEmpty prepend="AND" property="srchWordEngAbrvNm" >
+				WORD_ENG_ABRV_NM = #srchWordEngAbrvNm# 
+        </isNotEmpty>
+        ORDER BY LAST_UPDT_PNTTM DESC
+			
+        /* 구현 Sql */
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+
+	<!-- 용어사전팝업목록총수조회 -->
+	<select id="wordDicDAO.selectWordDicListPopUpTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+		  FROM  (
+		SELECT  WORD_ENG_ABRV_NM wordEngAbrvNm 
+             ,  WORD_NM          wordNm        
+             ,  WORD_ENG_NM      wordEngNm     
+		     ,  TO_CHAR(LAST_UPDT_PNTTM,'YYYY-MM-DD') lastUpdtPnttm
+		     ,  LAST_UPDUSR_ID   lastUpdusrId
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNWORDDIC A
+         WHERE  WORD_NM LIKE CONCAT(CONCAT('%', #srchWordNm#), '%')
+           AND  USE_AT = 'Y'
+        UNION ALL
+		SELECT  A.WORD_ENG_ABRV_NM wordEngAbrvNm 
+             ,  A.WORD_NM || '(' || B.SYNONM_NM || ')'  wordNm        
+             ,  A.WORD_ENG_NM      wordEngNm     
+		     ,  TO_CHAR(B.LAST_UPDT_PNTTM,'YYYY-MM-DD') lastUpdtPnttm
+		     ,  B.LAST_UPDUSR_ID   lastUpdusrId
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE B.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNWORDDIC A
+             ,  OE1TNSYNONYMINFO B
+         WHERE  B.SYNONM_NM LIKE CONCAT(CONCAT('%', #srchWordNm#), '%')
+           AND  A.WORD_ENG_ABRV_NM = B.WORD_ENG_ABRV_NM
+           AND  A.USE_AT = 'Y'
+           AND  B.USE_AT = 'Y'
+		  )
+    </select>	
+	<!-- 용어사전팝업목록조회 -->
+	<select id="wordDicDAO.selectWordDicListPopUp" parameterClass="searchVO" resultMap="wordDicPopUpMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        /* 구현 Sql */
+        
+		<![CDATA[
+
+		SELECT  WORD_ENG_ABRV_NM wordEngAbrvNm 
+             ,  WORD_NM          wordNm        
+             ,  ''               synonmNm          
+             ,  WORD_ENG_NM      wordEngNm     
+		     ,  TO_CHAR(LAST_UPDT_PNTTM,'YYYY-MM-DD') lastUpdtPnttm
+		     ,  LAST_UPDUSR_ID   lastUpdusrId
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNWORDDIC A
+         WHERE  WORD_NM LIKE CONCAT(CONCAT('%', #srchWordNm#), '%')
+           AND  USE_AT = 'Y'
+        UNION ALL
+		SELECT  A.WORD_ENG_ABRV_NM wordEngAbrvNm 
+             ,  A.WORD_NM          wordNm        
+			 ,  B.SYNONM_NM        synonmNm        
+             ,  A.WORD_ENG_NM      wordEngNm     
+		     ,  TO_CHAR(B.LAST_UPDT_PNTTM,'YYYY-MM-DD') lastUpdtPnttm
+		     ,  B.LAST_UPDUSR_ID   lastUpdusrId
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE B.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNWORDDIC A
+             ,  OE1TNSYNONYMINFO B
+         WHERE  B.SYNONM_NM LIKE CONCAT(CONCAT('%', #srchWordNm#), '%')
+           AND  A.WORD_ENG_ABRV_NM = B.WORD_ENG_ABRV_NM
+           AND  A.USE_AT = 'Y'
+           AND  B.USE_AT = 'Y'
+			
+		]]>
+			
+        /* 구현 Sql */
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+            ORDER BY wordNm
+        ]]>
+	</select>
+	
+	
+	<select id="wordDicDAO.selectWordDicListForSelect" resultClass="wordDic">
+		SELECT  WORD_ENG_ABRV_NM wordEngAbrvNm     
+		     ,  WORD_NM          wordNm     
+		  FROM  OE1TNWORDDIC A
+		 WHERE  USE_AT = 'Y'
+		ORDER BY WORD_NM
+	</select>
+	
+	
+	<!-- 용어사전상세조회 -->
+	<select id="wordDicDAO.selectWordDic" parameterClass="wordDic" resultClass="wordDic">
+		SELECT  WORD_ENG_ABRV_NM wordEngAbrvNm
+             ,  WORD_NM          wordNm       
+             ,  WORD_ENG_NM      wordEngNm    
+             ,  WORD_DC          wordDc       
+		     ,  USE_AT           useAt         
+		     ,  TO_CHAR(LAST_UPDT_PNTTM,'YYYY-MM-DD') lastUpdtPnttm
+		     ,  LAST_UPDUSR_ID   lastUpdusrId
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNWORDDIC A
+         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm#
+	</select>	
+		
+	<!-- 용어사전등록 -->
+	<insert id="wordDicDAO.insertWordDic">
+	<![CDATA[
+        INSERT
+          INTO  OE1TNWORDDIC
+             (  WORD_ENG_ABRV_NM
+             ,  WORD_NM
+             ,  WORD_ENG_NM
+             ,  WORD_DC
+             ,  USE_AT
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             ,  LAST_UPDT_PNTTM
+             ,  LAST_UPDUSR_ID
+             )
+        VALUES
+             (  #wordEngAbrvNm#
+             ,  #wordNm#
+             ,  #wordEngNm#
+             ,  #wordDc#
+             ,  #useAt#
+		     ,  SYSDATE
+		     ,  #frstRegisterId#
+		     ,  SYSDATE
+		     ,  #frstRegisterId#
+             )
+	]]>
+	</insert>
+	
+	<!-- 용어사전수정 -->
+	<update id="wordDicDAO.updateWordDic">
+	<![CDATA[
+        UPDATE  OE1TNWORDDIC
+           SET  WORD_NM = #wordNm#
+             ,  WORD_ENG_NM = #wordEngNm#
+             ,  WORD_DC = #wordDc#
+             ,  USE_AT = #useAt#
+		     ,  LAST_UPDT_PNTTM = SYSDATE
+		     ,  LAST_UPDUSR_ID = #lastUpdusrId#
+         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm# 
+	]]>
+	</update>
+	
+	<!-- 용어사전삭제 -->
+	<update id="wordDicDAO.deleteWordDic">
+	<![CDATA[
+        UPDATE  OE1TNWORDDIC
+           SET  USE_AT = #useAt#
+		     ,  LAST_UPDT_PNTTM = SYSDATE
+		     ,  LAST_UPDUSR_ID = #lastUpdusrId#
+         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm# 
+	]]>
+	</update>
+
+	<!-- 용어사전이력전체삭제 -->
+	<delete id="wordDicDAO.deleteWordDicHistAll">
+	<![CDATA[
+        DELETE
+          FROM  OE1THWORDDICHIST
+	]]>
+	</delete>
+	
+	<!-- 용어사전전체삭제 -->
+	<delete id="wordDicDAO.deleteWordDicAll">
+	<![CDATA[
+        DELETE
+          FROM  OE1TNWORDDIC
+	]]>
+	</delete>
+	
+	<!-- 용어사전이력목록조회 -->
+	<select id="wordDicDAO.selectWordDicHistList" parameterClass="wordDic" resultMap="wordDicHistMap">
+        SELECT  WORD_ENG_ABRV_NM        wordEngAbrvNm
+             ,  WORD_DICARY_SN          wordDicarySn
+		     ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1102' AND X.CODE = A.STTUS_CODE) sttusCode     
+		     ,  PROCESS_PRVONSH processPrvonsh
+             ,  WORD_NM                 wordNm
+             ,  WORD_ENG_NM             wordEngNm
+             ,  WORD_DC                 wordDc
+		     ,  USE_AT                  useAt         
+		     ,  TO_CHAR(FRST_REGIST_PNTTM,'YYYY-MM-DD') frstRegistPnttm
+		     ,  FRST_REGISTER_ID  frstRegisterId 
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1THWORDDICHIST A
+         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm#
+	</select>
+	
+	<!-- 용어사전이력상세조회 -->
+	<select id="wordDicDAO.selectWordDicHist" parameterClass="wordDic" resultClass="wordDic">
+        SELECT  WORD_ENG_ABRV_NM        wordEngAbrvNm
+             ,  WORD_DICARY_SN          wordDicarySn
+		     ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1102' AND X.CODE = A.STTUS_CODE) sttusCode     
+		     ,  PROCESS_PRVONSH processPrvonsh
+             ,  WORD_NM                 wordNm
+             ,  WORD_ENG_NM             wordEngNm
+             ,  WORD_DC                 wordDc
+		     ,  USE_AT                  useAt         
+		     ,  TO_CHAR(FRST_REGIST_PNTTM,'YYYY-MM-DD') frstRegistPnttm
+		     ,  FRST_REGISTER_ID  frstRegisterId 
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1THWORDDICHIST A
+         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm#
+           AND  WORD_DICARY_SN = #wordDicarySn#	
+	</select>	
+		
+	<!-- 용어사전이력등록 -->
+	<insert id="wordDicDAO.insertWordDicHist">
+	<selectKey resultClass="java.lang.Long" keyProperty="wordDicarySn">
+		SELECT  NVL(MAX(WORD_DICARY_SN),0)+1 wordDicarySn  
+		  FROM  OE1THWORDDICHIST
+		 WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm#
+	</selectKey>	
+   
+	<![CDATA[
+        INSERT
+          INTO  OE1THWORDDICHIST
+             (  WORD_ENG_ABRV_NM
+             ,  WORD_DICARY_SN
+             ,  STTUS_CODE
+             ,  WORD_NM
+             ,  WORD_ENG_NM
+             ,  WORD_DC
+             ,  USE_AT
+             ,  PROCESS_PRVONSH
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             )
+        VALUES
+             (  #wordEngAbrvNm#
+             ,  #wordDicarySn#
+             ,  #sttusCode#
+             ,  #wordNm#
+             ,  #wordEngNm#
+             ,  #wordDc#
+             ,  #useAt#
+             ,  #processPrvonsh#
+		     ,  SYSDATE
+		     ,  #frstRegisterId#
+             )
+	]]>
+	</insert>
+
+	
+</sqlMap>

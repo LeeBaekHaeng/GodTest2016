@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1DicGovTerm">
+	
+	<typeAlias  alias="egovMap" 				type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1DicGovTermVO" 	type="egovframework.oe1.cms.cmm.service.EgovOe1DicGovTermVO"/>
+
+	<!-- 행정용어사전 처리를 위한 resultMap -->
+	<resultMap id="egovOe1DicGovTerm" class="egovframework.oe1.cms.cmm.service.EgovOe1DicGovTermVO">
+		<result property="administWordId" 		column="ADMINIST_WORD_ID" 		/>		
+		<result property="administWordSe" 		column="ADMINIST_WORD_SE" 		/>
+		<result property="administWordSeNm" 	column="ADMINIST_WORD_SE_NM" 	/>
+		<result property="themaRelm" 			column="THEMA_RELM" 			/>
+		<result property="administWordNm" 		column="ADMINIST_WORD_NM" 		/>
+		<result property="administWordEngNm" 	column="ADMINIST_WORD_ENG_NM" 	/>		
+		<result property="administWordAbrv" 	column="ADMINIST_WORD_ABRV" 	/>
+		<result property="administWordDc" 		column="ADMINIST_WORD_DC" 		/>
+		<result property="useAt" 				column="USE_AT" 				/>
+		<result property="frstRegisterPnttm" 	column="FRST_REGISTER_PNTTM" 	/>
+		<result property="frstRegisterId" 		column="FRST_REGISTER_ID" 		/>
+		<result property="frstRegisterName" 	column="FRST_REGISTER_NAME" 	/>
+		<result property="lastUpdusrPnttm" 		column="LAST_UPDUSR_PNTTM"		/>
+		<result property="lastUpdusrId" 		column="LAST_UPDUSR_ID" 		/>
+		<result property="lastUpdusrName" 		column="LAST_UPDUSR_NAME" 		/>		
+
+	</resultMap>
+	
+	
+	<!-- 행정용어사전 등록 -->
+	<insert id="egovOe1DicGovTermDAO.insertDicGovTerm">
+		<![CDATA[
+			INSERT INTO OE1TNADMINISTDIC 
+				( ADMINIST_WORD_ID
+				  , ADMINIST_WORD_SE
+				  , THEMA_RELM
+				  , ADMINIST_WORD_NM
+				  , ADMINIST_WORD_ENG_NM
+				  , ADMINIST_WORD_ABRV
+				  , ADMINIST_WORD_DC
+				  , USE_AT
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID)
+			VALUES ( #administWordId#
+				  , #administWordSe#
+				  , #themaRelm#
+				  , #administWordNm#
+				  , #administWordEngNm#
+				  , #administWordAbrv#
+				  , #administWordDc#
+				  , #useAt#
+				  , SYSDATE
+				  , #frstRegisterId#)
+		]]>
+	</insert>
+	
+	<!-- 행정용어사전 중복 체크  -->
+	<select id="egovOe1DicGovTermDAO.dupCheckDicGovTerm" parameterClass="egovOe1DicGovTermVO" resultClass="int">
+			SELECT COUNT(*) dup_count
+			FROM OE1TNADMINISTDIC
+			WHERE 1=1				
+			and (ADMINIST_WORD_NM = #administWordNm# or ADMINIST_WORD_ENG_NM = #administWordEngNm# or ADMINIST_WORD_ABRV = #administWordAbrv# )
+	</select>	
+		
+	<!-- 행정용어사전 수정 -->
+	<update id="egovOe1DicGovTermDAO.updateDicGovTerm">
+		<![CDATA[
+			UPDATE OE1TNADMINISTDIC 
+			SET 	ADMINIST_WORD_SE				= #administWordSe#
+				  , THEMA_RELM						= #themaRelm#
+				  , ADMINIST_WORD_DC				= #administWordDc#
+				  , USE_AT							= #useAt#
+				  , LAST_UPDUSR_PNTTM				= SYSDATE
+				  , LAST_UPDUSR_ID					= #lastUpdusrId#
+			WHERE ADMINIST_WORD_ID					= #administWordId#
+		]]>
+	</update>
+	
+	<!-- 행정용어사전 삭제 -->
+	<delete id="egovOe1DicGovTermDAO.deleteDicGovTerm">
+		<![CDATA[
+			DELETE FROM OE1TNADMINISTDIC 
+			WHERE ADMINIST_WORD_ID=#administWordId#
+		]]>
+	</delete>
+	
+	<!-- 행정용어사전 상세 -->
+	<select id="egovOe1DicGovTermDAO.selectDicGovTerm" resultMap="egovOe1DicGovTerm">
+		<![CDATA[
+			SELECT
+				A.ADMINIST_WORD_ID
+				, A.ADMINIST_WORD_SE
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1035' AND CODE = A.ADMINIST_WORD_SE ) AS ADMINIST_WORD_SE_NM
+				, A.THEMA_RELM
+				, A.ADMINIST_WORD_NM
+				, A.ADMINIST_WORD_ENG_NM
+				, A.ADMINIST_WORD_ABRV
+				, A.ADMINIST_WORD_DC
+				, A.USE_AT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME 
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME 
+			FROM OE1TNADMINISTDIC A
+			WHERE A.ADMINIST_WORD_ID=#administWordId#
+		]]>
+	</select>
+	
+	<!-- 행정용어사전 조회 -->
+	<select id="egovOe1DicGovTermDAO.selectDicGovTermList" parameterClass="egovOe1DicGovTermVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+			SELECT
+				A.ADMINIST_WORD_ID
+				, A.ADMINIST_WORD_SE
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1035' AND CODE = A.ADMINIST_WORD_SE ) AS ADMINIST_WORD_SE_NM
+				, A.THEMA_RELM
+				, A.ADMINIST_WORD_NM
+				, A.ADMINIST_WORD_ENG_NM
+				, A.ADMINIST_WORD_ABRV
+				, A.ADMINIST_WORD_DC
+				, CASE WHEN TRIM(A.USE_AT) = 'Y' THEN 'Yes' ELSE 'No' END  USE_AT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME 
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME 
+			FROM OE1TNADMINISTDIC A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				A.ADMINIST_WORD_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				A.ADMINIST_WORD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordEngNm">
+				A.ADMINIST_WORD_ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>			
+			ORDER BY A.ADMINIST_WORD_NM ASC			
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+
+	</select>
+	
+	<select id="egovOe1DicGovTermDAO.selectDicGovTermListTot" parameterClass="egovOe1DicGovTermVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNADMINISTDIC
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				ADMINIST_WORD_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				ADMINIST_WORD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordEngNm">
+				ADMINIST_WORD_ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>			
+	</select>	
+	
+	<!-- 행정용어사전 전체 삭제 -->
+	<delete id="egovOe1DicGovTermDAO.deleteExcelDicGovTerm">
+		<![CDATA[
+			DELETE FROM OE1TNADMINISTDIC 
+		]]>
+	</delete>	 
+	
+	<!-- 행정용어사전엑셀 등록 -->
+	<insert id="egovOe1DicGovTermDAO.insertExcelDicGovTerm">
+		<![CDATA[
+			INSERT INTO OE1TNADMINISTDIC 
+				( ADMINIST_WORD_ID
+				  , ADMINIST_WORD_SE
+				  , THEMA_RELM
+				  , ADMINIST_WORD_NM
+				  , ADMINIST_WORD_ENG_NM
+				  , ADMINIST_WORD_ABRV
+				  , ADMINIST_WORD_DC
+				  , USE_AT
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID)
+			VALUES ( #administWordId#
+				  , #administWordSe#
+				  , #themaRelm#
+				  , #administWordNm#
+				  , #administWordEngNm#
+				  , #administWordAbrv#
+				  , #administWordDc#
+				  , #useAt#
+				  , SYSDATE
+				  , #frstRegisterId#)
+		]]>		
+	</insert>	
+	
+	<!-- 행정용어사전 목록 Excel 다운로드 -->
+	<select id="egovOe1DicGovTermDAO.selectDicGovTermListExcelDown" parameterClass="egovOe1DicGovTermVO" resultMap="egovOe1DicGovTerm">
+			SELECT
+				A.ADMINIST_WORD_ID
+				, ADMINIST_WORD_SE
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1035' AND CODE = A.ADMINIST_WORD_SE ) AS ADMINIST_WORD_SE_NM
+				, A.THEMA_RELM
+				, A.ADMINIST_WORD_NM
+				, A.ADMINIST_WORD_ENG_NM
+				, A.ADMINIST_WORD_ABRV
+				, A.ADMINIST_WORD_DC
+				, A.USE_AT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME
+			FROM OE1TNADMINISTDIC A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				A.ADMINIST_WORD_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				A.ADMINIST_WORD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordEngNm">
+				A.ADMINIST_WORD_ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>			
+			ORDER BY A.ADMINIST_WORD_NM ASC					
+	</select>		
+</sqlMap>

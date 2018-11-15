@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+        <form name="authorManage">
+            <field property="authorCode" depends="required">
+                <arg0 key="권한코드" resource="false"/>
+            </field>
+            <field property="authorNm" depends="required">
+                <arg0 key="권한명" resource="false"/>
+            </field>
+        </form>
+    </formset>
+
+    <formset>
+        <form name="roleManage">
+            <field property="roleNm" depends="required">
+                <arg0 key="롤명" resource="false"/>
+            </field>
+            <field property="rolePttrn" depends="required">
+                <arg0 key="롤패턴" resource="false"/>
+            </field>
+            <field property="roleSort" depends="required, maxlength, integer">
+                <arg0 key="롤소트" resource="false"/>
+        		<arg1 key="3" resource="false"/>
+            </field>            
+        </form>
+    </formset>
+    
+</form-validation>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovOe1ServiceInfo_oracle_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovOe1ConnectionInfo_oracle_SQL.xml" />
+
+	<!-- UI Adaptor 관리 --> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovOe1UIAdaptorInfo_oracle_SQL.xml" />
+
+	<!-- 메시지관리 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovMsg_oracle_SQL.xml" /> 
+
+	<!-- 메시지 코드 관리 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovMsgCode_oracle_SQL.xml" />
+
+	<!-- 아키텍쳐 정보 통합 SQL MAP -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovOe1ArcInfo_oracle_SQL.xml" />
+
+	<!-- 공통코드 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovCmmCodeManage_oracle_SQL.xml" /> 
+	 
+	 	
+	<!-- 아키텍쳐 화면 정보관리 -->
+		<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovOe1Compn_oracle_SQL.xml" /> 
+		<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovOe1Class_oracle_SQL.xml" /> 
+		<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovOe1Scrin_oracle_SQL.xml" /> 
+		<sqlMap resource="egovframework/sqlmap/oe1/cms/arc/EgovOe1ArcMenu_oracle_SQL.xml" />
+</sqlMapConfig>

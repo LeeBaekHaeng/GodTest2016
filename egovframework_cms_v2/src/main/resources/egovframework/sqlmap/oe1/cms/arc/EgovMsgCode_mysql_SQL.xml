@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MsgCode">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="msgCodeManageVO" type="egovframework.oe1.cms.arc.service.EgovOe1MsgCodeManageVO"/>
+
+	<resultMap id="msgCodeManage" class="egovframework.oe1.cms.arc.service.EgovOe1MsgCodeManageVO">
+		<result property="mssageId" column="MSSAGE_ID"/>
+		<result property="mssageCode" column="MSSAGE_CODE"/>
+		<result property="mssageCodeNm" column="MSSAGE_CODE_NM"/>
+		<result property="mssageCodeDc" column="MSSAGE_CODe_DC"/>
+		<result property="useAt" column="USE_AT"/>
+		<result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDUSR_PNTTM"/>
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+	</resultMap>
+
+	<insert id="msgCodeManageDAO.insertMsgCodeManage">
+		<![CDATA[
+				INSERT INTO OE1TCMSGCDINFO
+						(MSSAGE_ID, 
+						 MSSAGE_CODE, 
+						 MSSAGE_CODE_NM, 
+						 MSSAGE_CODE_DC,
+						 USE_AT,
+						 FRST_REGISTER_PNTTM,
+						 FRST_REGISTER_ID,
+						 LAST_UPDUSR_PNTTM,
+						 LAST_UPDUSR_ID) 
+				VALUES (#mssageId#, 
+						#mssageCode#, 
+						#mssageCodeNm#, 
+						#mssageCodeDc#, 
+						#useAt#,
+						sysdate(),
+						#frstRegisterId#,
+						sysdate(),
+						#lastUpdusrId#)
+		]]>
+	</insert>
+	
+	<update id="msgCodeManageDAO.updateMsgCodeManage">
+		<![CDATA[
+			UPDATE OE1TCMSGCDINFO 
+				SET 
+			  		MSSAGE_ID = #mssageId#, 
+			  		MSSAGE_CODE = #mssageCode#, 
+			  		MSSAGE_CODE_NM = #mssageCodeNm#, 
+			  		MSSAGE_CODE_DC = #mssageCodeDc#, 
+			  		USE_AT = #useAt#,
+			  		LAST_UPDUSR_PNTTM = sysdate(),
+			  		LAST_UPDUSR_ID = #lastUpdusrId#
+				WHERE MSSAGE_ID = #mssageId#
+				AND MSSAGE_CODE = #mssageCode#
+		]]>
+	</update>
+	
+	<delete id="msgCodeManageDAO.deleteMsgCodeManage">
+		<![CDATA[
+			DELETE FROM OE1TCMSGCDINFO 
+				WHERE MSSAGE_ID = #mssageId#
+				AND MSSAGE_CODE = #mssageCode#
+		]]>
+	</delete>
+	
+	<select id="msgCodeManageDAO.selectMsgCodeManage" resultMap="msgCodeManage">
+		<![CDATA[
+			SELECT MSSAGE_ID, 
+				   MSSAGE_CODE, 
+				   MSSAGE_CODE_NM, 
+				   MSSAGE_CODE_DC,
+				   USE_AT,
+				   FRST_REGISTER_PNTTM,
+				   FRST_REGISTER_ID,
+				   LAST_UPDUSR_PNTTM,
+				   LAST_UPDUSR_ID 
+				FROM OE1TCMSGCDINFO
+				WHERE MSSAGE_ID = #mssageId#
+				AND MSSAGE_CODE = #mssageCode#
+		]]>
+	</select>
+	
+	<select id="msgCodeManageDAO.selectMsgCodeManageList" parameterClass="msgCodeManageVO" resultClass="egovMap">	
+			SELECT MSSAGE_ID, 
+				   MSSAGE_CODE, 
+				   MSSAGE_CODE_NM, 
+				   MSSAGE_CODE_DC,
+				   USE_AT,
+    			   DATE_FORMAT(LAST_UPDUSR_PNTTM, '%Y-%m-%d') as LAST_UPDUSR_PNTTM 
+				FROM OE1TCMSGCDINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MSSAGE_CODE LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				MSSAGE_CODE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>			
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				USE_AT LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>		
+			ORDER BY MSSAGE_ID DESC
+			limit #firstIndex#, #recordCountPerPage#
+	</select>
+	
+	<select id="msgCodeManageDAO.selectMsgCodeManageListTotCnt" parameterClass="msgCodeManageVO" resultClass="int">
+
+			SELECT COUNT(*) totcnt
+			FROM OE1TCMSGCDINFO
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				MSSAGE_CODE LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				MSSAGE_CODE_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>			
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				USE_AT LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+	</select>
+	
+	<delete id="msgCodeManageDAO.deleteMsg" parameterClass="msgCodeManageVO">
+        <![CDATA[
+            DELETE FROM OE1TCMSGCDINFO 
+            WHERE MSSAGE_ID=#mssageId#
+            	AND MSSAGE_CODE=#mssageCode#
+        ]]>
+    </delete>
+
+	<select id="msgCodeManageDAO.selectMsgSYYeoBuList" resultClass="egovMap">	
+			SELECT MSSAGE_ID, 
+				   MSSAGE_CODE, 
+				   MSSAGE_CODE_NM, 
+				   MSSAGE_CODE_DC,
+				   USE_AT,
+				   DATE_FORMAT(LAST_UPDUSR_PNTTM, '%Y-%m-%d') as LAST_UPDUSR_PNTTM 
+				FROM OE1TCMSGCDINFO
+			WHERE 
+				MSSAGE_ID = #mssageId#
+			ORDER BY MSSAGE_ID DESC
+	</select>
+</sqlMap>

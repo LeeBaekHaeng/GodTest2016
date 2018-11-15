@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1DataDicRequest">
+	
+	<typeAlias  alias="egovMap" 			     type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="dataDicRequestInfo" 	     type="egovframework.oe1.cms.cmm.service.DataDicRequestInfo"/>
+	<typeAlias  alias="dataDicDetailRequestInfo" type="egovframework.oe1.cms.cmm.service.DataDicDetailRequestInfo"/>
+	<typeAlias  alias="searchVO" 	             type="egovframework.oe1.cms.cmm.service.MetaDataSearchVO"/>
+
+	<resultMap id="dataDicRequestInfoMap" class="egovframework.oe1.cms.cmm.service.DataDicRequestInfo">
+        <result property="reqstProcessId"   column="reqstProcessId"   columnIndex="1"/>
+        <result property="reqstProcessSn"   column="reqstProcessSn"   columnIndex="2"/>
+        <result property="applcntNm"        column="applcntNm"        columnIndex="3"/>
+        <result property="jobSeCode"        column="jobSeCode"        columnIndex="4"/>
+        <result property="processSttusCode" column="processSttusCode" columnIndex="5"/>
+        <result property="reqstDe"          column="reqstDe"          columnIndex="6"/>
+        <result property="dtaDicaryNm"      column="dtaDicaryNm"      columnIndex="7"/>
+        <result property="dtaDicaryEngNm"   column="dtaDicaryEngNm"   columnIndex="8"/>
+        <result property="domnNm"           column="domnNm"           columnIndex="9"/>
+        <result property="dataTy"           column="dataTy"           columnIndex="10"/>
+        <result property="dataLt"           column="dataLt"           columnIndex="11"/>
+    </resultMap>
+	
+	<!-- 자료사전신청목록총수조회 -->
+	<select id="dataDicRequestDAO.selectDataDicRequestInfoListTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+          FROM  OE1TNDATADICREQUESTINFO  A
+             ,  OE1TNMETADATAREQUESTINFO B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+           AND  A.REQST_PROCESS_SN = (SELECT MAX(REQST_PROCESS_SN) FROM OE1TNDATADICREQUESTINFO X WHERE X.REQST_PROCESS_ID = A.REQST_PROCESS_ID)
+           AND  A.DTA_DICARY_NM LIKE CONCAT(CONCAT('%', #srchDtaDicaryNm#), '%')
+        <isNotEmpty prepend="AND" property="srchApplcntNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchApplcntNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchProcessSttusCode" >
+                PROCESS_STTUS_CODE = #srchProcessSttusCode#
+        </isNotEmpty>
+    </select>	
+    
+	<!-- 자료사전신청목록조회 -->
+	<select id="dataDicRequestDAO.selectDataDicRequestInfoList" parameterClass="searchVO" resultMap="dataDicRequestInfoMap">
+        SELECT  A.REQST_PROCESS_ID reqstProcessId
+             ,  A.REQST_PROCESS_SN reqstProcessSn
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) applcntNm
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1103' AND X.CODE = B.JOB_SE_CODE) jobSeCode
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1104' AND X.CODE = B.PROCESS_STTUS_CODE) processSttusCode
+             ,  B.REQST_DE         reqstDe
+             ,  A.DTA_DICARY_NM     dtaDicaryNm
+             ,  A.DTA_DICARY_ENG_NM dtaDicaryEngNm
+             ,  A.DOMN_NM           domnNm
+             ,  A.DATA_TY           dataTy
+             ,  A.DATA_LT           dataLt
+          FROM  OE1TNDATADICREQUESTINFO  A
+             ,  OE1TNMETADATAREQUESTINFO B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+           AND  A.REQST_PROCESS_SN = (SELECT MAX(REQST_PROCESS_SN) FROM OE1TNDATADICREQUESTINFO X WHERE X.REQST_PROCESS_ID = A.REQST_PROCESS_ID)
+           AND  A.DTA_DICARY_NM LIKE CONCAT(CONCAT('%', #srchDtaDicaryNm#), '%')
+        <isNotEmpty prepend="AND" property="srchApplcntNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchApplcntNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchProcessSttusCode" >
+                PROCESS_STTUS_CODE = #srchProcessSttusCode#
+        </isNotEmpty>
+        ORDER BY A.REQST_PROCESS_ID DESC
+         LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+	
+	<!-- 자료사전신청상세조회 -->
+	<select id="dataDicRequestDAO.selectDataDicRequestInfo" parameterClass="dataDicRequestInfo" resultClass="dataDicRequestInfo">
+        SELECT  A.REQST_PROCESS_ID reqstProcessId
+             ,  A.REQST_PROCESS_SN reqstProcessSn
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1103' AND X.CODE = B.JOB_SE_CODE) jobSeCode
+             ,  B.APPLCNT_ID       applcntId
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.APPLCNT_ID = X.MBER_ID) applcntNm
+             ,  B.REQST_DE         reqstDe
+             ,  B.REQST_PRVONSH    reqstPrvonsh
+             ,  B.PROCESS_STTUS_CODE processSttusCode
+             ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1104' AND X.CODE = B.PROCESS_STTUS_CODE) processSttus
+             ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE B.OPETR_ID = X.MBER_ID) opetrNm
+             ,  B.PROCESS_DE       processDe
+             ,  B.PROCESS_PRVONSH  processPrvonsh
+             ,  A.DTA_DICARY_NM     dtaDicaryNm
+             ,  A.DTA_DICARY_ENG_NM dtaDicaryEngNm
+             ,  A.DOMN_NM           domnNm
+             ,  A.DATA_TY           dataTy
+             ,  A.DATA_LT           dataLt
+          FROM  OE1TNDATADICREQUESTINFO  A
+             ,  OE1TNMETADATAREQUESTINFO B
+         WHERE  A.REQST_PROCESS_ID = B.REQST_PROCESS_ID
+           AND  A.REQST_PROCESS_SN = B.REQST_PROCESS_SN
+		   AND  A.REQST_PROCESS_ID = #reqstProcessId#    
+		   AND  A.REQST_PROCESS_SN = #reqstProcessSn#
+	</select>	
+		
+	<!-- 자료사전신청등록 -->
+	<insert id="dataDicRequestDAO.insertDataDicRequestInfo">
+	<![CDATA[
+        INSERT
+          INTO  OE1TNDATADICREQUESTINFO
+             (  REQST_PROCESS_ID
+             ,  REQST_PROCESS_SN
+             ,  DTA_DICARY_NM
+             ,  DTA_DICARY_ENG_NM
+             ,  DOMN_NM
+             ,  DATA_TY
+             ,  DATA_LT
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             ,  LAST_UPDT_PNTTM
+             ,  LAST_UPDUSR_ID
+             )
+        VALUES
+             (  #reqstProcessId#
+             ,  #reqstProcessSn#
+             ,  #dtaDicaryNm#
+             ,  #dtaDicaryEngNm#
+             ,  #domnNm#
+             ,  #dataTy#
+             ,  #dataLt#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+             )
+	]]>
+	</insert>
+	
+	<!-- 자료사전신청수정 -->
+	<update id="dataDicRequestDAO.updateDataDicRequestInfo">
+	<![CDATA[
+        UPDATE  OE1TNDATADICREQUESTINFO
+           SET  REQST_PROCESS_ID  = #reqstProcessId#
+             ,  REQST_PROCESS_SN  = #reqstProcessSn#
+             ,  DTA_DICARY_NM     = #dtaDicaryNm#
+             ,  DTA_DICARY_ENG_NM = #dtaDicaryEngNm#
+             ,  DOMN_NM           = #domnNm#
+             ,  DATA_TY           = #dataTy#
+             ,  DATA_LT           = #dataLt#
+		     ,  LAST_UPDT_PNTTM   = SYSDATE()
+		     ,  LAST_UPDUSR_ID    = #lastUpdusrId#
+         WHERE  REQST_PROCESS_ID  = #reqstProcessId#
+           AND  REQST_PROCESS_SN  = #reqstProcessSn#
+	]]>
+	</update>
+	
+	<!-- 자료사전신청삭제 -->
+	<delete id="dataDicRequestDAO.deleteDataDicRequestInfo">
+	<![CDATA[
+        DELETE
+          FROM  OE1TNDATADICREQUESTINFO
+         WHERE  REQST_PROCESS_ID = #reqstProcessId#
+           AND  REQST_PROCESS_SN = #reqstProcessSn#
+	]]>
+	
+
+	</delete>
+
+	<!-- 자료사전상세신청목록조회 -->
+	<select id="dataDicRequestDAO.selectDataDicDetailRequestList" parameterClass="dataDicDetailRequestInfo" resultClass="dataDicDetailRequestInfo">
+	<![CDATA[
+        SELECT  REQST_PROCESS_ID     reqstProcessId
+             ,  REQST_PROCESS_SN     reqstProcessSn
+             ,  SORT_ORDR            sortOrdr
+             ,  WORD_ENG_ABRV_NM     wordEngAbrvNm
+             ,  WORD_NM              wordNm
+		     ,  DATE_FORMAT(FRST_REGIST_PNTTM,'%Y-%m-%d') frstRegistPnttm
+		     ,  FRST_REGISTER_ID     frstRegisterId 
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1TNDATADICDETAILREQUESTINFO A
+         WHERE  REQST_PROCESS_ID = #reqstProcessId#
+           AND  REQST_PROCESS_SN = #reqstProcessSn#
+        ORDER BY SORT_ORDR ASC
+	]]>
+	</select>
+	
+	<!-- 자료사전상세신청등록 -->
+	<insert id="dataDicRequestDAO.insertDataDicDetailRequestInfo">
+	<selectKey resultClass="java.lang.Long" keyProperty="sortOrdr">
+		SELECT  IFNULL(MAX(SORT_ORDR),0)+1 sortOrdr  
+		  FROM  OE1TNDATADICDETAILREQUESTINFO
+		 WHERE  REQST_PROCESS_ID = #reqstProcessId#
+		   AND  REQST_PROCESS_SN = #reqstProcessSn#
+	</selectKey>	
+	
+	<![CDATA[
+        INSERT
+          INTO  OE1TNDATADICDETAILREQUESTINFO
+             (  REQST_PROCESS_ID
+             ,  REQST_PROCESS_SN
+             ,  SORT_ORDR
+             ,  WORD_ENG_ABRV_NM
+             ,  WORD_NM
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             )
+        VALUES
+             (  #reqstProcessId#
+             ,  #reqstProcessSn#
+             ,  #sortOrdr#
+             ,  #wordEngAbrvNm#
+             ,  #wordNm#
+		     ,  SYSDATE()
+		     ,  #frstRegisterId#
+             )
+	
+	]]>
+	</insert>
+
+	<!-- 자료사전상세신청삭제 -->
+	<delete id="dataDicRequestDAO.deleteDataDicDetailRequestInfo">
+	<![CDATA[
+        DELETE
+          FROM  OE1TNDATADICDETAILREQUESTINFO
+         WHERE  REQST_PROCESS_ID = #reqstProcessId#
+           AND  REQST_PROCESS_SN = #reqstProcessSn#
+	]]>
+	</delete>
+
+	
+</sqlMap>

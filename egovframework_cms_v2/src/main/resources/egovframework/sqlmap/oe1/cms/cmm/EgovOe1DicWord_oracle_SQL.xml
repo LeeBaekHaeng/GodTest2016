@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1DicWord">
+	
+	<typeAlias  alias="egovMap" 			type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1DicWordVO" 	type="egovframework.oe1.cms.cmm.service.EgovOe1DicWordVO"/>
+
+	<!-- 단어사전 처리를 위한 resultMap -->
+	<resultMap id="egovOe1DicWord" class="egovframework.oe1.cms.cmm.service.EgovOe1DicWordVO">
+		<result property="wrdId" 				column="WRD_ID" 			/>
+		<result property="wrdNm" 				column="WRD_NM" 			/>
+		<result property="wrdEngAbrv"			column="WRD_ENG_ABRV" 	/>
+		<result property="wrdEngNm" 			column="WRD_ENG_NM" 		/>
+		<result property="wrdDc" 				column="WRD_DC" 			/>
+		<result property="useAt" 				column="USE_AT" 			/>
+		<result property="rdcnt" 				column="RDCNT" 				/>
+		<result property="frstRegisterPnttm" 	column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" 		column="FRST_REGISTER_ID" 	/>	
+		<result property="frstRegisterName" 	column="FRST_REGISTER_NAME"	/>
+		<result property="lastUpdusrPnttm" 		column="LAST_UPDUSR_PNTTM" 	/>
+		<result property="lastUpdusrId" 		column="LAST_UPDUSR_ID" 	/>	
+		<result property="lastUpdusrName" 		column="LAST_UPDUSR_NAME" 	/>			
+	</resultMap>
+	
+	
+	<!-- 단어사전 등록 -->
+	<insert id="egovOe1DicWordDAO.insertDicWord">
+		<![CDATA[
+			INSERT INTO OE1TNWRDDIC 
+				( WRD_ID
+				  , WRD_NM
+				  , WRD_ENG_ABRV
+				  , WRD_ENG_NM
+				  , WRD_DC
+				  , USE_AT
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID)
+			VALUES ( #wrdId#
+				  , #wrdNm#
+				  , #wrdEngAbrv#
+				  , #wrdEngNm#
+				  , #wrdDc#
+				  , #useAt#
+				  , SYSDATE
+				  , #frstRegisterId#)
+		]]>
+	</insert>
+	
+	<!-- 용어사전 중복 체크  -->
+	<select id="EgovOe1DicWordDAO.dupCheckDicWord" parameterClass="egovOe1DicWordVO" resultClass="int">
+			SELECT COUNT(*) dup_count
+			FROM OE1TNWRDDIC
+			WHERE 1=1				
+			and (WRD_NM = #wrdNm# or WRD_ENG_NM = #wrdEngNm# or WRD_ENG_ABRV = #wrdEngAbrv# )
+	</select>	
+		
+	<!-- 단어사전 수정 -->
+	<update id="egovOe1DicWordDAO.updateDicWord">
+		<![CDATA[
+			UPDATE OE1TNWRDDIC 
+			SET 	WRD_DC				= #wrdDc#
+				  , USE_AT				= #useAt#
+				  , LAST_UPDUSR_PNTTM	= SYSDATE
+				  , LAST_UPDUSR_ID		= #lastUpdusrId#
+			WHERE WRD_ID				= #wrdId#
+		]]>
+	</update>
+	
+	<!-- 단어사전 삭제 -->
+	<delete id="egovOe1DicWordDAO.deleteDicWord">
+		<![CDATA[
+			DELETE FROM OE1TNWRDDIC 
+			WHERE WRD_ID=#wrdId#
+		]]>
+	</delete>
+	
+	<!-- 단어사전 상세 -->
+	<select id="egovOe1DicWordDAO.selectDicWord" resultMap="egovOe1DicWord">
+		<![CDATA[
+			SELECT
+				A.WRD_ID
+				, A.WRD_NM
+				, A.WRD_ENG_ABRV
+				, A.WRD_ENG_NM
+				, A.WRD_DC
+				, A.USE_AT	
+				, NVL(A.RDCNT,0) AS RDCNT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME
+			FROM OE1TNWRDDIC A
+			WHERE A.WRD_ID=#wrdId#
+		]]>
+	</select>
+	
+	<!-- 단어사전 조회 -->
+	<select id="egovOe1DicWordDAO.selectDicWordList" parameterClass="egovOe1DicWordVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+			SELECT
+				A.WRD_ID
+				, A.WRD_NM
+				, A.WRD_ENG_ABRV
+				, A.WRD_ENG_NM
+				, A.WRD_DC
+				, CASE WHEN TRIM(A.USE_AT) = 'Y' THEN 'Yes' ELSE 'No' END  USE_AT		
+				, NVL(A.RDCNT,0) AS RDCNT		
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME
+			FROM OE1TNWRDDIC A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				A.WRD_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				A.WRD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordEngNm">
+				A.WRD_ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>	
+			ORDER BY A.WRD_NM ASC					
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>				
+
+	</select>
+	
+	<select id="egovOe1DicWordDAO.selectDicWordListTot" parameterClass="egovOe1DicWordVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNWRDDIC
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				WRD_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				WRD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordEngNm">
+				WRD_ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>				
+	</select>
+		
+	<!-- 단어사전 조회수 증가 -->
+	<update id="egovOe1DicWordDAO.updateRDCnt">
+		<![CDATA[
+			UPDATE OE1TNWRDDIC 
+			SET 	RDCNT				= NVL(RDCNT,0)  + 1
+			WHERE WRD_ID				= #wrdId#
+		]]>
+	</update>
+	
+	 
+	<!-- 단어사전 전체 삭제 -->
+	<delete id="egovOe1DicWordDAO.deleteExcelDicWord">
+		<![CDATA[
+			DELETE FROM OE1TNWRDDIC 
+		]]>
+	</delete>	 
+	
+	<!-- 단어사전엑셀 등록 -->
+	<insert id="egovOe1DicWordDAO.insertExcelDicWord">
+		<![CDATA[
+			INSERT INTO OE1TNWRDDIC 
+				( WRD_ID
+				  , WRD_NM
+				  , WRD_ENG_NM
+				  , WRD_ENG_ABRV
+				  , WRD_DC
+				  , USE_AT
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID)
+			VALUES ( 
+				  #wrdId#
+				  , #wrdNm#
+				  , #wrdEngNm#
+				  , #wrdEngAbrv#
+				  , #wrdDc#
+				  , #useAt#
+				  , SYSDATE
+				  , #frstRegisterId#
+				  )
+		]]>
+	</insert>	
+	
+	<!-- 단어사전 목록 Excel 다운로드 -->
+	<select id="egovOe1DicWordDAO.selectDicWordListExcelDown" parameterClass="egovOe1DicWordVO" resultMap="egovOe1DicWord">
+			SELECT
+				A.WRD_ID
+				, A.WRD_NM
+				, A.WRD_ENG_NM
+				, A.WRD_ENG_ABRV
+				, A.WRD_DC
+				, A.USE_AT
+				, NVL(A.RDCNT,0) AS RDCNT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME
+			FROM OE1TNWRDDIC A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				A.WRD_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				A.WRD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordEngNm">
+				A.WRD_ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>	
+			ORDER BY A.WRD_NM ASC
+	</select>		
+</sqlMap>

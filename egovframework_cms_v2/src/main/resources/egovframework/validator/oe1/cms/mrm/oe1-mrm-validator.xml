@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+    <formset>
+    	<!-- 회의실관리  -->
+        <form name="mtgrmForm">
+        	<field property="mtgPlaceNm" depends="required, maxlength">
+        		<arg0 key="회의실명" />
+        		<arg1 key="200" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>100</var-value>
+				</var>           		
+			</field>
+			<field property="mtgAtndncNmpr" depends="required, maxlength">
+                <arg0 key="입장가능 인원" />
+        		<arg1 key="100" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>100</var-value>
+				</var>                 
+            </field>
+			<field property="mngrNm" depends="required">
+                <arg0 key="관리자" />
+            </field>  
+			<field property="mtgRmCn" depends="required, maxlength">
+                <arg0 key="회의실 설명" />
+        		<arg1 key="2000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>2000</var-value>
+				</var>                  
+            </field>              			
+        </form>      
+        
+    	<!-- 회의실예약  -->
+        <form name="resvemtgForm">
+        	<field property="mtgNm" depends="required, maxlength">
+        		<arg0 key="제목" />
+        		<arg1 key="200" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>200</var-value>
+				</var>           		
+			</field>
+			<field property="mtgAttenInfo" depends="maxlength">
+                <arg0 key="참석자(비사용자)" />
+        		<arg1 key="200" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>200</var-value>
+				</var>                 
+            </field>
+			<field property="mtgCn" depends="required, maxlength">
+                <arg0 key="회의내용" />
+        		<arg1 key="2000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>2000</var-value>
+				</var>                  
+            </field>              			
+        </form>          
+   </formset>
+</form-validation>

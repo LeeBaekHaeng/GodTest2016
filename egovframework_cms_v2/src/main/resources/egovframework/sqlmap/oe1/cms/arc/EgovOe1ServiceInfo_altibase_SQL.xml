@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ServiceInfo">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1ServiceInfoVO" type="egovframework.oe1.cms.arc.service.EgovOe1ServiceInfoVO"/>
+
+    <resultMap id="service" class="egovframework.oe1.cms.arc.service.EgovOe1ServiceInfoVO">
+        <result property="svcId" column="SVC_ID" columnIndex="1"/>
+        <result property="svcNm" column="SVC_NM" columnIndex="2"/>
+        <result property="svcDc" column="SVC_DC" columnIndex="3"  jdbcType="CLOB" typeHandler="egovframework.oe1.cms.com.AltibaseClobStringTypeHandler"/>
+        <result property="svcOffer" column="SVC_OFFER" columnIndex="4"/>
+        <result property="svcBeginDe" column="SVC_BEGIN_DE" columnIndex="5"/>
+        <result property="useAt" column="USE_AT" columnIndex="6"/>
+
+    </resultMap>
+    
+	<insert id="egovOe1ServiceInfoDAO.insertServiceInfo">
+		<![CDATA[
+			INSERT INTO OE1TNSERVICEINFO 
+				( SVC_ID
+				  ,SVC_NM              
+				  ,SVC_DC              
+				  ,SVC_OFFER
+				  ,SVC_BEGIN_DE
+				  ,USE_AT
+				  ,FRST_REGISTER_PNTTM  
+				  ,FRST_REGISTER_ID
+				  ,LAST_UPDUSR_PNTTM    
+				  ,LAST_UPDUSR_ID        )
+			VALUES ( #svcId#
+				  , #svcNm#
+				  , #svcDc#
+				  , #svcOffer#
+				  ,REPLACE(#svcBeginDe#,'-','')  
+				  , #useAt#
+				  , sysdate
+				  , #frstRegisterId#
+				  , sysdate
+				  , #frstRegisterId#)
+		]]>
+	</insert>
+	
+	<update id="egovOe1ServiceInfoDAO.updateServiceInfo">
+		<![CDATA[
+			UPDATE OE1TNSERVICEINFO 
+			SET SVC_NM=#svcNm#
+				,SVC_DC=#svcDc#
+				,SVC_OFFER = #svcOffer#
+				,SVC_BEGIN_DE = REPLACE(#svcBeginDe#,'-','')  
+				,USE_AT=#useAt#
+				,LAST_UPDUSR_PNTTM = sysdate
+				,LAST_UPDUSR_ID = #lastUpdusrId#
+			WHERE SVC_ID=#svcId#
+		]]>
+	</update>
+	
+	<delete id="egovOe1ServiceInfoDAO.deleteServiceInfo">
+		<![CDATA[
+			DELETE FROM OE1TNSERVICEINFO 
+			WHERE SVC_ID=#svcId#
+		]]>
+	</delete>
+	
+	<select id="egovOe1ServiceInfoDAO.selectServiceInfo" resultMap="service">
+		<![CDATA[
+			SELECT SVC_ID  
+			, SVC_NM   
+			, SVC_DC  
+			 , SVC_OFFER  
+			 ,TO_CHAR(TO_DATE(SVC_BEGIN_DE, 'YYYYMMDD'), 'YYYY-MM-DD')   as SVC_BEGIN_DE
+			 ,USE_AT 
+			FROM OE1TNSERVICEINFO 
+			WHERE SVC_ID=#svcId#
+		]]>
+	</select>
+	
+	<select id="egovOe1ServiceInfoDAO.selectServiceInfoList" parameterClass="egovOe1ServiceInfoVO" resultMap="service">
+        <![CDATA[
+	SELECT * FROM (SELECT ROWNUM rn, TB.* FROM (
+			SELECT
+				SVC_ID 
+				, SVC_NM   
+				, SVC_DC  
+				, SVC_OFFER   
+			     ,TO_CHAR(TO_DATE(SVC_BEGIN_DE, 'YYYYMMDD'), 'YYYY-MM-DD')   as SVC_BEGIN_DE
+				 ,USE_AT 
+			FROM OE1TNSERVICEINFO
+			WHERE 1=1
+			]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				SVC_NM LIKE  CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SVC_OFFER LIKE  CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+		 <![CDATA[
+			ORDER BY SVC_ID DESC
+			) TB ) WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+	
+	<select id="egovOe1ServiceInfoDAO.selectServiceInfoListTot" parameterClass="egovOe1ServiceInfoVO" resultClass="int">
+    <![CDATA[
+			SELECT COUNT(*) totcnt
+			FROM OE1TNSERVICEINFO
+			WHERE 1=1
+			]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				SVC_NM LIKE  CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				SVC_OFFER LIKE  CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+	</select>
+
+</sqlMap>

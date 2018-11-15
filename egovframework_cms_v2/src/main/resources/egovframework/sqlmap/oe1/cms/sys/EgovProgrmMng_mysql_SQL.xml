@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="ProgrmMng">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="comDefaultVO" type="egovframework.oe1.cms.com.service.EgovOe1ComDefaultVO"/>
+	<typeAlias  alias="progrmMngVO" type="egovframework.oe1.cms.sys.service.EgovOe1ProgrmMngVO"/>
+
+	<!-- 프로그램 정보 상세 조회 -->
+	<select id="progrmMngDAO.selectProgrmMng" resultClass="progrmMngVO">
+		<![CDATA[
+			SELECT 
+				  PROGRM_ID progrmId, 
+				  PROGRM_NM progrmNm, 
+				  PROGRM_DC progrmDc, 
+				  FILE_PATH filePath, 
+				  FILE_URL fileUrl
+			FROM OE1TNPROGRMINFO 
+			WHERE 	PROGRM_ID = #progrmId#
+		]]>
+	</select>
+	
+	<!-- 프로그램 정보 목록 조회 -->
+	<select id="progrmMngDAO.selectProgrmMngList" parameterClass="comDefaultVO"  resultClass="egovMap">
+		<![CDATA[
+			SELECT 
+				  PROGRM_ID progrmId, 
+				  PROGRM_NM progrmNm, 
+				  PROGRM_DC progrmDc, 
+				  FILE_PATH filePath, 
+				  FILE_URL fileUrl
+			FROM OE1TNPROGRMINFO
+			WHERE 1=1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				PROGRM_ID  LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				PROGRM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			ORDER BY PROGRM_ID DESC
+			limit #firstIndex#, #recordCountPerPage#		
+	</select>
+
+	<!-- 프로그램 목록 갯수 조회 -->
+	<select id="progrmMngDAO.selectProgrmMngListTotCnt" parameterClass="comDefaultVO" resultClass="int">
+		<![CDATA[
+		SELECT COUNT(*) AS totcnt
+		FROM OE1TNPROGRMINFO
+		WHERE 1=1  
+		]]>	
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				PROGRM_ID  LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				PROGRM_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+	<!-- 프로그램 정보 수정 -->
+	<update id="progrmMngDAO.updateProgrmMng">
+		<![CDATA[
+			UPDATE OE1TNPROGRMINFO 
+			SET PROGRM_NM = #progrmNm# 
+				, PROGRM_DC = #progrmDc# 
+				, FILE_PATH = #filePath# 
+				, FILE_URL = #fileUrl# 
+			WHERE PROGRM_ID = #progrmId# 
+		]]>
+	</update>
+
+	<!-- 프로그램 정보 삭제 -->
+	<delete id="progrmMngDAO.deleteProgrmMng">
+		<![CDATA[                          
+			DELETE FROM OE1TNPROGRMINFO               
+			WHERE PROGRM_ID = #progrmId#                 
+		]]>                                
+	</delete> 
+
+	<!-- 프로그램 정보 등록 -->
+	<insert id="progrmMngDAO.insertProgrmMng">
+		<![CDATA[
+			INSERT INTO OE1TNPROGRMINFO 
+				( PROGRM_ID, PROGRM_NM, PROGRM_DC, FILE_PATH, FILE_URL )
+			VALUES
+				( #progrmId#, #progrmNm#, #progrmDc#, #filePath#, #fileUrl# )
+		]]>
+	</insert>
+
+</sqlMap>

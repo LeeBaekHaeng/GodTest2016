@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1Synonym">
+    
+    <typeAlias  alias="egovMap"             type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="synonymInfo"          type="egovframework.oe1.cms.cmm.service.SynonymInfo"/>
+    <typeAlias  alias="searchVO"            type="egovframework.oe1.cms.cmm.service.MetaDataSearchVO"/>
+    
+    <resultMap id="synonymHistMap" class="egovframework.oe1.cms.cmm.service.SynonymInfo">
+        <result property="wordEngAbrvNm" column="wordEngAbrvNm" columnIndex="1"/>
+        <result property="wordNm" column="wordNm" columnIndex="2"/>
+        <result property="synonmIdntfcNo" column="synonmIdntfcNo" columnIndex="3"/>
+        <result property="synonmSn" column="synonmSn" columnIndex="4"/>
+        <result property="sttusCode" column="sttusCode" columnIndex="5"/>
+        <result property="processPrvonsh" column="processPrvonsh" columnIndex="6"/>
+        <result property="synonmNm" column="synonmNm" columnIndex="7"/>
+        <result property="useAt" column="useAt" columnIndex="8"/>
+        <result property="frstRegistPnttm" column="frstRegistPnttm" columnIndex="9"/>
+        <result property="frstRegisterId" column="frstRegisterId" columnIndex="10"/>
+        <result property="frstRegisterNm" column="frstRegisterNm" columnIndex="11"/>
+    </resultMap>
+    
+    <resultMap id="synonymInfoMap" class="egovframework.oe1.cms.cmm.service.SynonymInfo">
+        <result property="wordEngAbrvNm" column="wordEngAbrvNm" columnIndex="1"/>
+        <result property="wordNm" column="wordNm" columnIndex="2"/>
+        <result property="wordEngNm" column="wordEngNm" columnIndex="3"/>
+        <result property="synonmIdntfcNo" column="synonmIdntfcNo" columnIndex="4"/>
+        <result property="synonmNm" column="synonmNm" columnIndex="5"/>    
+        <result property="useAt" column="useAt" columnIndex="6"/>
+        <result property="lastUpdtPnttm" column="lastUpdtPnttm" columnIndex="7"/>
+        <result property="lastUpdusrId" column="lastUpdusrId" columnIndex="8"/>
+        <result property="lastUpdusrNm" column="lastUpdusrNm" columnIndex="9"/>
+    </resultMap>
+
+	<!-- 동의어명 등록건수조회 -->
+    <select id="synonymDAO.selectSynonmNmCnt" parameterClass="synonymInfo" resultClass="synonymInfo">
+        SELECT  WORD_ENG_ABRV_NM   wordEngAbrvNm
+             ,  (SELECT WORD_NM FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM) wordNm
+             ,  SYNONM_IDNTFC_NO   synonmIdntfcNo
+             ,  SYNONM_NM          synonmNm
+             ,  USE_AT             useAt       
+          FROM  OE1TNSYNONYMINFO A
+         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm#
+           AND  SYNONM_IDNTFC_NO = (SELECT  MAX(SYNONM_IDNTFC_NO) SYNONM_IDNTFC_NO
+							          FROM  OE1TNSYNONYMINFO 
+							         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm#
+							           AND  SYNONM_NM        = #synonmNm#
+                                    <isNotEmpty prepend="AND" property="synonmIdntfcNo" >
+                                            SYNONM_IDNTFC_NO   != #synonmIdntfcNo#
+                                    </isNotEmpty> 
+							       )
+    </select>   
+    
+    <!-- 동의어목록총수조회 -->
+    <select id="synonymDAO.selectSynonymListTotCnt" parameterClass="searchVO" resultClass="int">
+        SELECT  COUNT(*) AS totCnt
+          FROM  OE1TNSYNONYMINFO A
+         WHERE  SYNONM_NM LIKE CONCAT(CONCAT('%',#srchSynonmNm#),'%')
+        <isNotEmpty prepend="AND" property="srchUseAt" >
+                USE_AT = #srchUseAt#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchLastUpdusrNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchLastUpdusrNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchWordEngAbrvNm" >
+                WORD_ENG_ABRV_NM = #srchWordEngAbrvNm#
+        </isNotEmpty>
+    </select>   
+    <!-- 동의어목록조회 -->
+    <select id="synonymDAO.selectSynonymList" parameterClass="searchVO" resultMap="synonymInfoMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        /* 구현 Sql */
+        
+		<![CDATA[
+		
+        SELECT  WORD_ENG_ABRV_NM   wordEngAbrvNm
+             ,  (SELECT WORD_NM FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM) wordNm
+             ,  (SELECT WORD_ENG_NM FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM) wordEngNm
+             ,  SYNONM_IDNTFC_NO   synonmIdntfcNo
+             ,  SYNONM_NM          synonmNm
+             ,  USE_AT                  useAt       
+             ,  TO_CHAR(LAST_UPDT_PNTTM,'YYYY-MM-DD') lastUpdtPnttm
+             ,  LAST_UPDUSR_ID          lastUpdusrId
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNSYNONYMINFO A
+         WHERE  SYNONM_NM LIKE CONCAT(CONCAT('%',#srchSynonmNm#),'%')
+         
+		]]>
+		
+        <isNotEmpty prepend="AND" property="srchUseAt" >
+                USE_AT = #srchUseAt#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchLastUpdusrNm" >
+                (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID) LIKE CONCAT(CONCAT('%',#srchLastUpdusrNm#),'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="srchWordEngAbrvNm" >
+                WORD_ENG_ABRV_NM = #srchWordEngAbrvNm#
+        </isNotEmpty>
+        ORDER BY LAST_UPDT_PNTTM DESC
+			
+        /* 구현 Sql */
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+    </select>
+    
+    <!-- 동의어상세조회 -->
+    <select id="synonymDAO.selectSynonym" parameterClass="synonymInfo" resultClass="synonymInfo">
+        SELECT  WORD_ENG_ABRV_NM   wordEngAbrvNm
+             ,  (SELECT WORD_NM FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM) wordNm
+             ,  SYNONM_IDNTFC_NO   synonmIdntfcNo
+             ,  SYNONM_NM          synonmNm
+             ,  USE_AT                  useAt       
+             ,  TO_CHAR(LAST_UPDT_PNTTM,'YYYY-MM-DD') lastUpdtPnttm
+             ,  LAST_UPDUSR_ID          lastUpdusrId
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.LAST_UPDUSR_ID = X.MBER_ID)  lastUpdusrNm 
+          FROM  OE1TNSYNONYMINFO A
+         WHERE  WORD_ENG_ABRV_NM   = #wordEngAbrvNm#
+           AND  SYNONM_IDNTFC_NO   = #synonmIdntfcNo#
+    </select>   
+        
+    <!-- 동의어등록 -->
+    <insert id="synonymDAO.insertSynonym">
+    <selectKey resultClass="java.lang.Long" keyProperty="synonmIdntfcNo">
+        SELECT  NVL(MAX(SYNONM_IDNTFC_NO),0)+1 synonmIdntfcNo  
+          FROM  OE1TNSYNONYMINFO
+         WHERE  WORD_ENG_ABRV_NM = #wordEngAbrvNm#
+    </selectKey> 
+    <![CDATA[
+        INSERT
+          INTO  OE1TNSYNONYMINFO
+             (  WORD_ENG_ABRV_NM
+             ,  SYNONM_IDNTFC_NO
+             ,  SYNONM_NM
+             ,  USE_AT
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             ,  LAST_UPDT_PNTTM
+             ,  LAST_UPDUSR_ID
+             )
+        VALUES
+             (  #wordEngAbrvNm#
+             ,  #synonmIdntfcNo#
+             ,  #synonmNm#
+             ,  #useAt#
+             ,  SYSDATE
+             ,  #frstRegisterId#
+             ,  SYSDATE
+             ,  #frstRegisterId#
+             )
+    ]]>
+    </insert>
+    
+    <!-- 동의어수정 -->
+    <update id="synonymDAO.updateSynonym">
+    <![CDATA[
+        UPDATE  OE1TNSYNONYMINFO
+           SET  WORD_ENG_ABRV_NM   = #wordEngAbrvNm#
+             ,  SYNONM_IDNTFC_NO   = #synonmIdntfcNo#
+             ,  SYNONM_NM          = #synonmNm#
+             ,  USE_AT             = #useAt#                     
+             ,  LAST_UPDT_PNTTM    = SYSDATE
+             ,  LAST_UPDUSR_ID     = #lastUpdusrId#
+         WHERE  WORD_ENG_ABRV_NM   = #wordEngAbrvNm#
+           AND  SYNONM_IDNTFC_NO   = #synonmIdntfcNo#
+    ]]>
+    </update>
+    
+    <!-- 동의어삭제 -->
+    <update id="synonymDAO.deleteSynonym">
+    <![CDATA[
+        UPDATE  OE1TNSYNONYMINFO
+           SET  USE_AT             = #useAt#                     
+             ,  LAST_UPDT_PNTTM    = SYSDATE
+             ,  LAST_UPDUSR_ID     = #lastUpdusrId#
+         WHERE  WORD_ENG_ABRV_NM   = #wordEngAbrvNm#
+           AND  SYNONM_IDNTFC_NO   = #synonmIdntfcNo#
+    ]]>
+    </update>
+
+	<!-- 동의어이력전체삭제 -->
+	<delete id="synonymDAO.deleteSynonymHistAll">
+	<![CDATA[
+        DELETE
+          FROM  OE1THSYNONYMHIST
+	]]>
+	</delete>
+	
+	<!-- 동의어전체삭제 -->
+	<delete id="synonymDAO.deleteSynonymAll">
+	<![CDATA[
+        DELETE
+          FROM  OE1TNSYNONYMINFO
+	]]>
+	</delete>
+
+    <!-- 동의어이력목록조회 -->
+    <select id="synonymDAO.selectSynonymHistList" parameterClass="synonymInfo" resultMap="synonymHistMap">
+        SELECT  WORD_ENG_ABRV_NM      wordEngAbrvNm
+             ,  (SELECT WORD_NM FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM) wordNm
+             ,  SYNONM_IDNTFC_NO      synonmIdntfcNo
+             ,  SYNONM_SN             synonmSn
+             ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1102' AND X.CODE = A.STTUS_CODE) sttusCode     
+             ,  PROCESS_PRVONSH       processPrvonsh
+             ,  SYNONM_NM             synonmNm
+             ,  USE_AT              useAt            
+             ,  TO_CHAR(FRST_REGIST_PNTTM,'YYYY-MM-DD') frstRegistPnttm
+             ,  FRST_REGISTER_ID    frstRegisterId 
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1THSYNONYMHIST A
+         WHERE  WORD_ENG_ABRV_NM    = #wordEngAbrvNm#
+           AND  SYNONM_IDNTFC_NO    = #synonmIdntfcNo#
+    </select>
+    
+    <!-- 동의어이력상세조회 -->
+    <select id="synonymDAO.selectSynonymHist" parameterClass="synonymInfo" resultClass="synonymInfo">
+        SELECT  WORD_ENG_ABRV_NM      wordEngAbrvNm
+             ,  (SELECT WORD_NM FROM OE1TNWORDDIC X WHERE A.WORD_ENG_ABRV_NM = X.WORD_ENG_ABRV_NM) wordNm
+             ,  SYNONM_IDNTFC_NO      synonmIdntfcNo
+             ,  SYNONM_SN             synonmSn
+             ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE_ID = 'OE1102' AND X.CODE = A.STTUS_CODE) sttusCode     
+             ,  PROCESS_PRVONSH       processPrvonsh
+             ,  SYNONM_NM             synonmNm
+             ,  USE_AT              useAt            
+             ,  TO_CHAR(FRST_REGIST_PNTTM,'YYYY-MM-DD') frstRegistPnttm
+             ,  FRST_REGISTER_ID    frstRegisterId 
+             ,  (SELECT MBER_NM FROM OE1TNUSERINFO X WHERE A.FRST_REGISTER_ID = X.MBER_ID) frstRegisterNm
+          FROM  OE1THSYNONYMHIST A
+         WHERE  WORD_ENG_ABRV_NM    = #wordEngAbrvNm#
+           AND  SYNONM_IDNTFC_NO    = #synonmIdntfcNo#
+           AND  SYNONM_SN           = #synonmSn#
+    </select>   
+        
+    <!-- 동의어이력등록 -->
+    <insert id="synonymDAO.insertSynonymHist">
+    <selectKey resultClass="java.lang.Long" keyProperty="synonmSn">
+        SELECT  NVL(MAX(SYNONM_SN),0)+1 synonmSn 
+          FROM  OE1THSYNONYMHIST
+         WHERE  WORD_ENG_ABRV_NM    = #wordEngAbrvNm#
+           AND  SYNONM_IDNTFC_NO    = #synonmIdntfcNo#
+    </selectKey>    
+    <![CDATA[
+        INSERT
+          INTO  OE1THSYNONYMHIST
+             (  WORD_ENG_ABRV_NM
+             ,  SYNONM_IDNTFC_NO
+             ,  SYNONM_SN
+             ,  STTUS_CODE
+             ,  PROCESS_PRVONSH
+             ,  SYNONM_NM
+             ,  USE_AT
+             ,  FRST_REGIST_PNTTM
+             ,  FRST_REGISTER_ID
+             )
+        VALUES
+             (  #wordEngAbrvNm#
+             ,  #synonmIdntfcNo#
+             ,  #synonmSn#
+             ,  #sttusCode#
+             ,  #processPrvonsh#
+             ,  #synonmNm#
+             ,  #useAt#
+             ,  SYSDATE
+             ,  #frstRegisterId#
+             )
+    ]]>
+    </insert>
+
+    
+</sqlMap>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="EgovOe1ChangeWorkExecute">
+
+<typeAlias  alias="ChangeWorkPlanVO" type="egovframework.oe1.cms.sim.service.EgovOe1ChangeWorkPlanVO"/>
+
+<!-- 변경작업계획 총건수 조회 -->
+    <select id="egovOe1ChangeWorkExecuteDAO.selectChangeWorkPlanListTotCnt" parameterClass="ChangeWorkPlanVO" resultClass="int">
+            SELECT COUNT(*) totcnt
+            FROM OE1TNCHANGEPROCINFO
+             WHERE CHANGE_PROCESS_STTUS_CODE NOT IN ('01')    
+             AND CHANGE_OPERTOR_ID = #changeOpertorId#
+				<isNotEmpty prepend="AND" property="emrgncyProcessAt">
+	                EMRGNCY_PROCESS_AT = #emrgncyProcessAt#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="changeProcessSttusCode">
+	                CHANGE_PROCESS_STTUS_CODE = #changeProcessSttusCode#
+	         	</isNotEmpty>
+				<isNotEmpty prepend="AND" property="fromDate">
+	                  CHANGE_RCEPT_DE BETWEEN  REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','') 
+	         	</isNotEmpty>
+    </select>
+    
+<!-- 변경작업계획 목록 조회 -->
+    <select id="egovOe1ChangeWorkExecuteDAO.selectChangeWorkPlanList" parameterClass="ChangeWorkPlanVO"  resultClass="egovMap">
+     <![CDATA[
+			SELECT 
+			A.CHANGE_REQUST_PROCESS_ID	       AS changeRequstProcessId
+			, A.CHANGE_PROCESS_STTUS_CODE      AS changeProcessSttusCode
+			, DATE_FORMAT(A.CHANGE_RCEPT_DE,'%Y-%m-%d')  AS changeRceptDe
+			, DATE_FORMAT(A.PLAN_BEGIN_DE,'%Y-%m-%d')    AS planBeginDe
+			, DATE_FORMAT(A.PLAN_END_DE,'%Y-%m-%d')      AS planEndDe
+			, DATE_FORMAT(B.CHANGE_REQUST_DE,'%Y-%m-%d') AS changeRequstDe
+			, A.PLAN_EXMNT_MNDT_AT             AS planExmntMndtAt   
+			, A.COMPT_EXMNT_MNDT_AT            AS comptExmntMndtAt  
+			, B.CHANGE_REQUST_NM               AS changeRequstNm 
+			, T1.CODE_NM AS changeProcessSttusCodeNm
+			, T2.CODE_NM AS emrgncyProcessAt
+			, T3.CODE_NM AS changeSeCode
+			, IFNULL(U1.MBER_NM,'')  AS changeOpertorNm
+			, A.CHANGE_OPERTOR_ID    AS changeOpertorId
+			, C.EXMNT_RESULT_CODE    AS planExmntResultCode
+			, D.EXMNT_RESULT_CODE    AS comptExmntResultCode
+            , B.CHANGE_RQESTER_ID    AS changeRqesterId
+            , IFNULL(U2.MBER_NM,'')  AS changeRqesterNm
+			FROM OE1TNCHANGEPROCINFO A 
+			LEFT OUTER JOIN OE1TNCHANGEREQUSTINFO B on A.CHANGE_REQUST_PROCESS_ID = B.CHANGE_REQUST_PROCESS_ID
+			LEFT OUTER JOIN OE1TNOECOMMDETAILCD T1 on T1.CODE_ID = 'OE1003' AND A.CHANGE_PROCESS_STTUS_CODE  = T1.CODE
+			LEFT OUTER JOIN OE1TNOECOMMDETAILCD T2 on T2.CODE_ID = 'OE1005' AND A.EMRGNCY_PROCESS_AT  = T2.CODE
+			LEFT OUTER JOIN OE1TNOECOMMDETAILCD T3 on T3.CODE_ID = 'OE1016' AND A.CHANGE_SE_CODE  = T3.CODE
+			LEFT OUTER JOIN OE1TNUSERINFO U1 on U1.MBER_ID = A.CHANGE_OPERTOR_ID
+			LEFT OUTER JOIN OE1TNUSERINFO U2 on U2.MBER_ID = B.CHANGE_RQESTER_ID
+			LEFT OUTER JOIN OE1TNCHANGEEXMNTINFO C on C.CHANGE_REQUST_PROCESS_ID = A.CHANGE_REQUST_PROCESS_ID AND C.EXMNT_SE_CODE = '1' AND C.EXMNT_SN = '0'
+			LEFT OUTER JOIN OE1TNCHANGEEXMNTINFO D on D.CHANGE_REQUST_PROCESS_ID = A.CHANGE_REQUST_PROCESS_ID AND D.EXMNT_SE_CODE = '2' AND D.EXMNT_SN = '0'
+			WHERE A.CHANGE_PROCESS_STTUS_CODE NOT IN ('01')
+			AND A.CHANGE_OPERTOR_ID = #changeOpertorId#
+	    ]]> 
+				<isNotEmpty prepend="AND" property="emrgncyProcessAt">
+                   A.EMRGNCY_PROCESS_AT = #emrgncyProcessAt#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="changeProcessSttusCode">
+                   A.CHANGE_PROCESS_STTUS_CODE = #changeProcessSttusCode#
+            	</isNotEmpty>
+                <isNotEmpty prepend="AND" property="fromDate">
+                     A.CHANGE_RCEPT_DE BETWEEN  REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','')
+            	</isNotEmpty>
+             ORDER BY A.FRST_REGISTER_PNTTM DESC
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#      
+    </select>
+    
+<!-- 변경작업계획 상세 조회1 -->    
+	<select id="egovOe1ChangeWorkExecuteDAO.getChangeWorkPlan" parameterClass="ChangeWorkPlanVO"  resultClass="ChangeWorkPlanVO"> 
+        <![CDATA[
+				SELECT 
+					A.CHANGE_REQUST_ID AS changeRequstId
+					, A.CHANGE_REQUST_NM  AS changeRequstNm
+					, A.REQUST_SYS_BASIS_ID AS requstSysBasisId
+					, A.CHANGE_REQUST_SYS_CODE AS changeRequstSysCode
+					, DATE_FORMAT(A.COMPT_REQUST_DE,'%Y-%m-%d') AS comptRequstDe
+					, B.CHANGE_REQUST_PROCESS_ID AS changeRequstProcessId
+				    , B.OPERT_PLAN_CN AS opertPlanCn 
+					, B.CHANGE_CONFM_AT AS changeConfmAt
+				    , B.CHANGE_EXMNT_OPINION AS changeExmntOpinion
+				    , B.PLAN_EXMNT_MNDT_AT	AS planExmntMndtAt
+				    , B.COMPT_EXMNT_MNDT_AT	AS comptExmntMndtAt  
+					, B.CHANGE_OPERT_CN AS changeOpertCn  
+					, B.UNSOLV_CN AS unsolvCn  
+					, B.OPERT_COMPT_AT AS opertComptAt
+					, B.ATCH_FILE_ID AS atchFileId
+					, DATE_FORMAT(B.REAL_OPERT_BEGIN_DE,'%Y-%m-%d')  AS  realOpertBeginDe  
+					, DATE_FORMAT(B.REAL_OPERT_END_DE,'%Y-%m-%d')  AS realOpertEndDe 
+					, DATE_FORMAT(B.CHANGE_RCEPT_DE, '%Y-%m-%d') 	AS changeRceptDe
+					, DATE_FORMAT(B.CHANGE_CONFM_DE, '%Y-%m-%d') 	AS changeConfmDe
+					, DATE_FORMAT(B.PLAN_BEGIN_DE, '%Y-%m-%d') AS planBeginDe
+				    , DATE_FORMAT(B.PLAN_END_DE, '%Y-%m-%d') AS planEndDe   
+					, C1.CODE_NM AS changeProcessSttusCode
+					, C2.CODE_NM AS changeSeCode
+					, C3.CODE_NM AS emrgncyProcessAt
+					, C4.CODE_NM AS changeAffcSeCode
+					, C5.CODE_NM AS changeScopeSeCode
+					, IFNULL(U1.MBER_NM,'') AS changeOpertorNm	 
+				FROM OE1TNCHANGEREQUSTINFO A
+				LEFT OUTER JOIN OE1TNCHANGEPROCINFO B ON B.CHANGE_REQUST_PROCESS_ID = A.CHANGE_REQUST_PROCESS_ID
+				LEFT OUTER JOIN OE1TNOECOMMDETAILCD C1 ON C1.CODE_ID = 'OE1003' AND B.CHANGE_PROCESS_STTUS_CODE= C1.CODE
+				LEFT OUTER JOIN OE1TNOECOMMDETAILCD C2 ON C2.CODE_ID = 'OE1016' AND B.CHANGE_SE_CODE= C2.CODE
+				LEFT OUTER JOIN OE1TNOECOMMDETAILCD C3 ON C3.CODE_ID = 'OE1005' AND B.EMRGNCY_PROCESS_AT =C3.CODE
+				LEFT OUTER JOIN OE1TNOECOMMDETAILCD C4 ON C4.CODE_ID = 'OE1017' AND B.CHANGE_AFFC_SE_CODE =C4.CODE
+				LEFT OUTER JOIN OE1TNOECOMMDETAILCD C5 ON C5.CODE_ID = 'OE1018' AND B.CHANGE_SCOPE_SE_CODE =C5.CODE
+				LEFT OUTER JOIN OE1TNUSERINFO U1 ON U1.MBER_ID = B.CHANGE_OPERTOR_ID 
+				WHERE A.CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#
+        ]]>
+	</select>
+    
+<!-- 변경작업/계획 상세 뒷부분  -->    
+	<select id="egovOe1ChangeWorkExecuteDAO.getChangeWork"   resultClass="ChangeWorkPlanVO"> 
+        <![CDATA[
+				SELECT 
+					A.CHANGE_REQUST_PROCESS_ID AS changeRequstProcessId
+					, A.EXMNT_CN  AS planExmntCn  
+					, DATE_FORMAT(A.EXMNT_DE, '%Y-%m-%d') 	AS planExmntDt
+					, A.EXMNT_RESULT_CODE AS planExmntResultCode
+					, DATE_FORMAT(A.EXMNT_REQUST_DE,'%Y-%m-%d')  AS  planExmntReqDt  
+					, B.EXMNT_RESULT_CODE AS comptExmntResultCode
+					, B.EXMNT_CN AS comptExmntCn
+					, DATE_FORMAT(B.EXMNT_REQUST_DE, '%Y-%m-%d') AS comptExmntReqDt   
+					, DATE_FORMAT(B.EXMNT_DE, '%Y-%m-%d')AS	comptExmntDt  
+					, IFNULL(U1.MBER_NM,'') AS chckerNm
+					, IFNULL(U2.MBER_NM,'') AS chckerNm2			       
+				FROM OE1TNCHANGEEXMNTINFO AS A
+				LEFT OUTER JOIN OE1TNCHANGEEXMNTINFO B ON B.CHANGE_REQUST_PROCESS_ID = A.CHANGE_REQUST_PROCESS_ID 
+				AND B.EXMNT_SE_CODE = "2" AND B.EXMNT_SN = 0
+				LEFT OUTER JOIN OE1TNUSERINFO U1 ON U1.MBER_ID= A.CHCKER_ID 
+				LEFT OUTER JOIN OE1TNUSERINFO U2 ON U2.MBER_ID= B.CHCKER_ID
+				WHERE A.CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#  
+				AND A.EXMNT_SE_CODE = "1" AND A.EXMNT_SN = 0
+        ]]>
+	</select>
+    
+<!-- 변경작업계획 등록 -->
+    <update id="egovOe1ChangeWorkExecuteDAO.insertChangeWorkPlan" parameterClass="ChangeWorkPlanVO">
+        <![CDATA[
+           UPDATE OE1TNCHANGEPROCINFO 
+           SET  CHANGE_OPERTOR_ID = #changeOpertorId#
+                  , PLAN_BEGIN_DE = REPLACE(#planBeginDe#,'-','')
+                  , PLAN_END_DE = REPLACE(#planEndDe#,'-','')
+				  , OPERT_PLAN_CN = #opertPlanCn#
+			      , LAST_UPDUSR_ID = #frstRegisterId#
+			      , LAST_UPDUSR_PNTTM  = sysdate()
+			WHERE CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#
+        ]]> 
+    </update>    
+    
+ <!-- 검토 등록  -->
+    <insert id="egovOe1ChangeWorkExecuteDAO.insertChangeWork" parameterClass="ChangeWorkPlanVO">
+        <![CDATA[
+            INSERT INTO  OE1TNCHANGEEXMNTINFO	 
+            (CHANGE_REQUST_PROCESS_ID
+            , EXMNT_RESULT_CODE
+            , EXMNT_DE
+            , EXMNT_CN
+            , EXMNT_SE_CODE
+            , EXMNT_SN
+            , EXMNT_REQUST_DE
+            , FRST_REGISTER_ID
+            , FRST_REGISTER_PNTTM
+			, LAST_UPDUSR_ID 
+			, LAST_UPDUSR_PNTTM)
+			  VALUES ( #changeRequstProcessId#
+			  , #exmntResultCode#
+			  , REPLACE(#exmntDe#,'-','') 
+			  , #exmntCn#
+			  , #exmntSeCode#
+			  , 0
+			  , date_format(now(),'%Y%m%d')
+			  , #lastUpdusrId#
+			  , sysdate()
+			  , #lastUpdusrId#
+			  , sysdate())
+        ]]> 
+	</insert>    
+    
+<!-- 진행상태 수정-->
+	<update id="egovOe1ChangeWorkExecuteDAO.updateChangeProcessProgrsCode" parameterClass="ChangeWorkPlanVO">
+        <![CDATA[
+            UPDATE OE1TNCHANGEPROCINFO	 
+			SET CHANGE_PROCESS_STTUS_CODE = #changeProcessSttusCode#
+			 , LAST_UPDUSR_PNTTM = sysdate()
+			 , LAST_UPDUSR_ID = #lastUpdusrId#
+             WHERE CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#
+        ]]>
+    </update>
+    
+<!-- 변경작업 등록/수정  -->
+    <update id="egovOe1ChangeWorkExecuteDAO.updateChangeWork" parameterClass="ChangeWorkPlanVO">
+        <![CDATA[
+            UPDATE OE1TNCHANGEPROCINFO	 
+            SET 
+            		REAL_OPERT_BEGIN_DE = REPLACE(#realOpertBeginDe#,'-','') 
+                  , REAL_OPERT_END_DE =REPLACE(#realOpertEndDe#,'-','') 
+				  , CHANGE_OPERT_CN = #changeOpertCn#
+				  , UNSOLV_CN = #unsolvCn#
+				  , OPERT_COMPT_AT = #opertComptAt#
+				  , ATCH_FILE_ID = #atchFileId#
+			      , LAST_UPDUSR_ID =#lastUpdusrId#
+			      , LAST_UPDUSR_PNTTM = sysdate()
+             WHERE CHANGE_REQUST_PROCESS_ID = #changeRequstProcessId#
+        ]]> 
+	</update> 
+</sqlMap>

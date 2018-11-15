@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+	<formset>
+		<!-- 공통코드상세 관리 Validation 설정 -->
+		 <form name="cmmCode">
+			<field property="codeId" depends="required, maxlength">
+        		<arg0 key="코드ID" resource="false"/>
+        		<arg1 key="6" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>6</var-value>
+				</var>
+			</field> 
+			<field property="codeIdNm" depends="required, maxlength">
+        		<arg0 key="코드ID명" resource="false"/>
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>
+			</field> 
+			<field property="codeIdDc" depends="required, maxlength">
+        		<arg0 key="코드ID설명" resource="false"/>
+        		<arg1 key="200" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>200</var-value>
+				</var>
+			</field> 
+		</form>
+
+       <form name="cmmDetailCode">
+			<field property="codeId" depends="required, maxlength">
+        		<arg0 key="코드ID" resource="false"/>
+        		<arg1 key="6" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>6</var-value>
+				</var>
+			</field> 
+			<field property="code1" depends="required, maxlength">
+        		<arg0 key="코드1" resource="false"/>
+        		<arg1 key="15" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>15</var-value>
+				</var>
+			</field>
+			<field property="codeNm" depends="required, maxlength">
+        		<arg0 key="코드명" resource="false"/>
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>
+			</field> 
+		</form>
+		
+		<!-- 메시지 관리 Validation 설정 -->
+		<form name="msgManage">
+			<field property="mssageNm" depends="required, maxlength">
+				<arg0 key="msgManage.mssageNm" />
+				<arg1 key="60" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>60</var-value>
+				</var>
+			</field>
+			<field property="mssageDc" depends="maxlength">
+				<arg0 key="msgManage.mssageDc" />
+				<arg1 key="200" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>200</var-value>
+				</var>
+			</field>
+		</form>
+		
+		<!-- 메시지 코드 관리 Validation 설정 -->
+		<form name="msgCodeManage">
+			<field property="mssageId" depends="required">
+				<arg0 key="msgCodeManage.mssageId" />
+			</field>
+			<field property="mssageCode" depends="required, maxlength">
+				<arg0 key="msgCodeManage.mssageCode" />
+				<arg1 key="10" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>10</var-value>
+				</var>
+			</field>
+			<field property="mssageCodeNm" depends="required, maxlength">
+				<arg0 key="msgCodeManage.mssageCodeNm" />
+				<arg1 key="60" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>60</var-value>
+				</var>
+			</field>
+			<field property="mssageCodeDc" depends="maxlength">
+				<arg0 key="msgCodeManage.mssageCodeDc" />
+				<arg1 key="200" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>200</var-value>
+				</var>
+			</field>
+		</form>
+		
+<!-- uiAdaptorInfo 설정 -->
+		<form name="uiAdaptorInfo">
+			<field property="uiAdaptNm" depends="required">
+				<arg0 key="uiAdaptorInfo.uiAdaptNm" />
+			</field>
+		</form>
+
+<!-- 서비스 Validation 설정 -->
+		<form name="egovOe1ServiceInfoVO">
+			<field property="svcNm" depends="required, maxlength">
+				<arg0 key="serviceInfo.serviceNm" />
+				<arg1 key="60" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>60</var-value>
+				</var>		
+			</field>
+			<field property="svcOffer" depends="required, maxlength">
+				<arg0 key="serviceInfo.offer" />
+				<arg1 key="60" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>60</var-value>
+				</var>	
+			</field>
+			<field property="svcDc" depends="maxlength">
+				<arg0 key="serviceInfo.svcDc" />
+				<arg1 key="1000" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>1000</var-value>
+				</var>	
+			</field>	
+      	 	<field property="svcBeginDe" depends="date">
+        		<arg0 key="서비스시작일" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+		</form>
+
+<!-- 연계기관 Validation 설정 -->
+		<form name="egovOe1ConnectionInfoVO">
+			<field property="cntcNm" depends="required, maxlength">
+				<arg0 key="connectionInfo.conNm" />
+				<arg1 key="80" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>80</var-value>
+				</var>				
+			</field>
+			<field property="provdInstt" depends="required, maxlength">
+				<arg0 key="connectionInfo.provider" />
+				<arg1 key="80" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>80</var-value>
+				</var>				
+			</field>
+			<field property="cntcInfoDc" depends="maxlength">
+				<arg0 key="connectionInfo.cntcInfoDc" />
+				<arg1 key="1000" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>1000</var-value>
+				</var>				
+			</field>			
+      	 	<field property="cntcBeginDe" depends="date">
+        		<arg0 key="연계시작일" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+      	 	<field property="cntcEndDe" depends="date">
+        		<arg0 key="연계종료일" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+		  	</field>
+			
+		</form>
+
+		<!-- 화면관리 Validation 설정 -->
+		<form name="scrinVO">
+			<field property="sysNm" depends="required, maxlength">
+				<arg0 key="scrinVO.sysNm" />
+				<arg1 key="100" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+			<field property="compnPckage" depends="required, maxlength">
+				<arg0 key="scrinVO.compnPckage" />
+				<arg1 key="100" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+			<field property="scrinNm" depends="required, maxlength">
+				<arg0 key="scrinVO.scrinNm" />
+				<arg1 key="100" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+			<field property="scrinEnglNm" depends="required, maxlength">
+				<arg0 key="scrinVO.scrinEnglNm" />
+				<arg1 key="100" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>	
+			<field property="scrinDc" depends="maxlength">
+				<arg0 key="scrinVO.scrinDc" />
+				<arg1 key="900" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>900</var-value>
+				</var>
+			</field>
+			<field property="etcDc" depends="maxlength">
+				<arg0 key="scrinVO.etcDc" />
+				<arg1 key="900" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>900</var-value>
+				</var>
+			</field>
+		</form>
+		<!-- 컴포넌트관리 Validation 설정 -->
+		<form name="compnVO">
+			<field property="compnNm" depends="required, maxlength">
+				<arg0 key="compnVO.compnNm" />
+				<arg1 key="90" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>90</var-value>
+				</var>
+			</field>
+			<field property="compnPckage" depends="required, maxlength">
+				<arg0 key="compnVO.compnPckage" />
+				<arg1 key="90" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>200</var-value>
+				</var>
+			</field>
+		</form>
+		<!-- 아키텍쳐메뉴관리 Validation 설정 -->
+		<form name="vo">
+			<field property="archtcMenuNm" depends="required, maxlength">
+				<arg0 key="vo.archtcMenuNm" />
+				<arg1 key="100" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>100</var-value>
+				</var>
+			</field>
+			<field property="archtcMenuOrdr" depends="required, maxlength">
+				<arg0 key="vo.archtcMenuOrdr" />
+				<arg1 key="1" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>1</var-value>
+				</var>
+			</field>
+			<field property="useAt" depends="required, maxlength">
+				<arg0 key="vo.useAt" />
+				<arg1 key="1" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>1</var-value>
+				</var>
+			</field>
+			<field property="scrinId" depends="maxlength">
+				<arg0 key="vo.scrinId" />
+				<arg1 key="20" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>
+			<field property="upperArchtcMenu" depends="maxlength">
+				<arg0 key="vo.upperArchtcMenu" />
+				<arg1 key="20" resource="false"/>
+				<var>
+					<var-name>maxlength</var-name>
+					<var-value>20</var-value>
+				</var>
+			</field>							
+		</form>
+	</formset>
+</form-validation>

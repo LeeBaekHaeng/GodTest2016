@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Class">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1ClassSearchVO" type="egovframework.oe1.cms.arc.service.EgovOe1ClassSearchVO"/>
+	
+	<resultMap id="ClassMap" class="egovframework.oe1.cms.arc.service.EgovOe1ClassSearchVO">
+		<result property="classId" column="CLASS_ID"/>
+		<result property="classPckage" column="CLASS_PCKAGE"/>
+		<result property="classTy" column="CLASS_TY"/>
+		<result property="classNm" column="CLASS_NM"/>
+		<result property="classDc" column="CLASS_DC"/>
+	</resultMap>
+	
+	<resultMap id="MethdMap" class="egovframework.oe1.cms.arc.service.EgovOe1ClassSearchVO">
+		<result property="classPckage" column="CLASS_PCKAGE"/>
+		<result property="classId" column="CLASS_ID"/>
+		<result property="classDc" column="CLASS_DC"/>
+		<result property="classNm" column="CLASS_NM"/>
+		<result property="classTy" column="CLASS_TY"/>
+		<result property="methdAnt" column="METHD_ANNOT"/>
+		<result property="methdCode" column="METHD_CODE"/>
+		<result property="methdDc" column="METHD_DC"/>
+		<result property="methdId" column="METHD_ID"/>
+		<result property="methdNm" column="METHOD_NM"/>
+		<result property="methdTy" column="METHD_TY"/>		
+	</resultMap>
+
+	<select id="egovOe1ClassDAO.selectClassList" parameterClass="egovOe1ClassSearchVO" resultMap="ClassMap">
+			SELECT
+				CLASS_ID 
+				, CLASS_PCKAGE
+				, CLASS_TY
+				, CLASS_NM
+				, CLASS_DC
+			FROM OE1TNCLASS
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CLASS_PCKAGE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				CLASS_TY LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				CLASS_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			ORDER BY LAST_UPDUSR_PNTTM DESC
+			limit #firstIndex#, #recordCountPerPage#	
+	</select>
+	
+	<select id="egovOe1ClassDAO.selectClassListTot" parameterClass="egovOe1ClassSearchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNCLASS
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CLASS_PCKAGE LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				CLASS_TY LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				CLASS_NM LIKE CONCAT('%',#searchKeyword#,'%')
+			</isEqual>
+	</select>
+
+	<select id="egovOe1ClassDAO.selectMethdAntList" parameterClass="egovOe1ClassSearchVO" resultMap="MethdMap">
+        <![CDATA[
+			SELECT A.CLASS_PCKAGE
+			, A.CLASS_ID
+			, A.CLASS_DC
+			, A.CLASS_NM
+			, A.CLASS_TY
+			, B.METHD_ANNOT
+			, B.METHD_CODE
+			, B.METHD_DC
+			, B.METHD_ID
+			, B.METHOD_NM
+			, B.METHD_TY
+			FROM OE1TNCLASS A LEFT JOIN OE1TNMETHD B ON A.CLASS_ID = B.CLASS_ID
+        ]]>	
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				A.CLASS_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				B.METHOD_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				B.METHD_ANNOT LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			AND (B.METHD_ANNOT != '' AND B.METHD_ANNOT IS NOT NULL)
+			ORDER BY B.LAST_UPDUSR_PNTTM DESC
+			limit #firstIndex#, #recordCountPerPage#				
+	</select>
+	
+	<select id="egovOe1ClassDAO.selectMethdAntListTot" parameterClass="egovOe1ClassSearchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNCLASS A LEFT JOIN OE1TNMETHD B ON A.CLASS_ID = B.CLASS_ID
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				A.CLASS_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				B.METHOD_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				B.METHD_ANNOT LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			AND (B.METHD_ANNOT != '' AND B.METHD_ANNOT IS NOT NULL)
+	</select>
+
+</sqlMap>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1DocMng">
+	
+	<typeAlias  alias="egovMap" 			type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1DocMngVO" 	type="egovframework.oe1.cms.doc.service.EgovOe1DocMngVO"/>
+
+	<!-- 문서이력관리 처리를 위한 resultMap -->
+	<resultMap id="egovOe1DocMng" class="egovframework.oe1.cms.doc.service.EgovOe1DocMngVO">
+		<result property="documentId" 			column="DOCUMENT_ID" 		/>
+		<result property="procsStepDv" 			column="PROCS_STEP_DV" 		/>
+		<result property="procsStepDvName" 		column="PROCS_STEP_DV_NAME" />
+		<result property="documentSe" 			column="DOCUMENT_SE" 		/>
+		<result property="documentSeName" 		column="DOCUMENT_SE_NAME" 	/>
+		<result property="documentNm" 			column="DOCUMENT_NM" 		/>
+		<result property="documentDc" 			column="DOCUMENT_DC" 		jdbcType="CLOB" typeHandler="egovframework.oe1.cms.com.AltibaseClobStringTypeHandler"/>
+		<result property="rdcnt" 				column="RDCNT"				/>
+		<result property="atchFileId" 			column="ATCH_FILE_ID" 		/>
+		<result property="frstRegisterPnttm" 	column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" 		column="FRST_REGISTER_ID" 	/>	
+		<result property="frstRegisterName" 	column="FRST_REGISTER_NAME"	/>
+		<result property="lastUpdusrPnttm" 		column="LAST_UPDUSR_PNTTM" 	/>
+		<result property="lastUpdusrId" 		column="LAST_UPDUSR_ID" 	/>	
+		<result property="lastUpdusrName" 		column="LAST_UPDUSR_NAME" 	/>
+		<result property="docNo" 				column="DOC_NO" 	/>	
+		<result property="chghy" 				column="CHGHY" 	/>					
+	</resultMap>	
+	
+	<!-- 문서이력관리 등록 -->
+	<insert id="egovOe1DocMngDAO.insertDocMng">
+		<![CDATA[
+			INSERT INTO OE1TNDOC 
+				( DOCUMENT_ID
+				  , PROCS_STEP_DV
+				  , DOCUMENT_SE
+				  , DOCUMENT_NM
+				  , DOCUMENT_DC
+				  , ATCH_FILE_ID
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID
+				  , DOC_NO)				  
+			VALUES ( #documentId#
+				  , #procsStepDv#
+				  , #documentSe#
+				  , #documentNm#
+				  , #documentDc#
+				  , #atchFileId#
+				  , SYSDATE
+				  , #frstRegisterId#
+				  , 1)				  			  
+		]]>
+	</insert>
+	
+	<!-- 문서이력관리 수정 -->
+	<insert id="egovOe1DocMngDAO.updateDocMng">
+		<![CDATA[
+			INSERT INTO OE1TNDOC 
+				( DOCUMENT_ID
+				  , PROCS_STEP_DV
+				  , DOCUMENT_SE
+				  , DOCUMENT_NM
+				  , DOCUMENT_DC
+				  , ATCH_FILE_ID
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID
+				  , DOC_NO
+				  , CHGHY)				  
+			VALUES ( #documentId#
+				  , (SELECT PROCS_STEP_DV FROM OE1TNDOC WHERE  DOCUMENT_ID = #documentId# GROUP BY PROCS_STEP_DV)
+				  , (SELECT DOCUMENT_SE FROM OE1TNDOC WHERE  DOCUMENT_ID = #documentId#  GROUP BY DOCUMENT_SE)
+				  , #documentNm#
+				  , #documentDc#
+				  , #atchFileId#
+				  , SYSDATE
+				  , #frstRegisterId#
+				  , (SELECT NVL(MAX(DOC_NO), 0)+1 FROM  OE1TNDOC WHERE  DOCUMENT_ID = #documentId#)
+				  , #chghy# 
+				  )	
+				  		
+		]]>
+	</insert>
+	
+	<!-- 문서이력관리 삭제 -->
+	<delete id="egovOe1DocMngDAO.deleteDocMng">
+		<![CDATA[
+			DELETE FROM OE1TNDOC 
+			WHERE DOCUMENT_ID					= #documentId#
+		]]>
+	</delete>
+	
+	<!-- 문서이력관리 상세 -->
+	<select id="egovOe1DocMngDAO.selectDocMng" resultMap="egovOe1DocMng">
+		<![CDATA[
+            SELECT
+                A.DOCUMENT_ID
+                , TRIM(A.PROCS_STEP_DV) AS PROCS_STEP_DV
+                , TRIM(A.DOCUMENT_SE) AS DOCUMENT_SE
+                , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1011' AND CODE = TRIM(A.PROCS_STEP_DV) ) AS PROCS_STEP_DV_NAME
+                , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1010' AND CODE = TRIM(A.DOCUMENT_SE)) AS DOCUMENT_SE_NAME
+                , A.DOCUMENT_NM
+                , A.DOCUMENT_DC
+                , NVL(A.RDCNT,0) AS RDCNT
+                , (SELECT MAX(ATCH_FILE_ID) FROM OE1TNFILEDETAIL WHERE ATCH_FILE_ID = A.ATCH_FILE_ID) AS ATCH_FILE_ID
+                , TO_CHAR(A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+                , A.FRST_REGISTER_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+                , TO_CHAR(A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+                , A.LAST_UPDUSR_ID
+                , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME                
+                , A.DOC_NO
+                , A.CHGHY              
+            FROM OE1TNDOC A
+			WHERE A.DOCUMENT_ID				= #documentId#
+			AND A.DOC_NO					= #docNo#
+		]]>
+	</select>
+	
+	<!-- 문서이력관리 조회 -->
+	<select id="egovOe1DocMngDAO.selectDocMngList" parameterClass="egovOe1DocMngVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+					SELECT 
+						DOCUMENT_ID
+						, PROCS_STEP_DV_NAME
+						, DOCUMENT_SE_NAME
+						, DOCUMENT_NM 
+						, MAX(FRST_REGISTER_PNTTM) FRST_REGISTER_PNTTM 
+						, MAX(FRST_REGISTER_NAME) FRST_REGISTER_NAME
+						, MAX(DOC_NO) DOC_NO
+					FROM    
+					(
+					    SELECT                 
+					    A.DOCUMENT_ID                 
+					    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1011' AND CODE = TRIM(A.PROCS_STEP_DV) ) AS PROCS_STEP_DV_NAME                 
+					    , (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1010' AND CODE = TRIM(A.DOCUMENT_SE)) AS DOCUMENT_SE_NAME                 
+					    , A.DOCUMENT_NM                 
+					    , TO_CHAR(A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM                 
+					    , (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME                 
+					    , DOC_NO                                             
+					    FROM OE1TNDOC A             
+					    WHERE 1=1    
+						<isEqual prepend="AND" property="searchCondition" compareValue="docNm">
+							TRIM(A.DOCUMENT_NM) LIKE '%'||TRIM(#searchKeyword#)||'%'
+						</isEqual>
+						<isEqual prepend="AND" property="searchCondition" compareValue="docDc">
+							TRIM(A.DOCUMENT_DC) LIKE '%'||TRIM(#searchKeyword#)||'%'
+						</isEqual>
+						<isNotEqual prepend="AND" property="searchProcsStepDv" compareValue="">
+							TRIM(A.PROCS_STEP_DV) = TRIM(#searchProcsStepDv#)
+						</isNotEqual>
+						<isNotEqual prepend="AND" property="searchDocumentSe" compareValue="">
+							TRIM(A.DOCUMENT_SE)   = TRIM(#searchDocumentSe#)
+						</isNotEqual>
+               
+					) OE1TNDOC
+					GROUP BY DOCUMENT_ID, PROCS_STEP_DV_NAME, DOCUMENT_SE_NAME, DOCUMENT_NM    
+					ORDER BY DOCUMENT_ID DESC     
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>	
+	</select>
+	
+	<!-- 문서이력관리 조회수 증가 -->
+	<update id="egovOe1DocMngDAO.updateRDCnt">
+		<![CDATA[
+			UPDATE OE1TNDOC 
+			SET 	RDCNT				= NVL(RDCNT,0)  + 1
+			WHERE DOCUMENT_ID			= #documentId#
+			AND DOC_NO					= #docNo#
+		]]>
+	</update>	
+	
+	<select id="egovOe1DocMngDAO.selectDocMngListTot" parameterClass="egovOe1DocMngVO" resultClass="int">
+        SELECT COUNT(*) totcnt FROM 
+        (	
+            SELECT DOCUMENT_ID 
+            FROM OE1TNDOC
+            WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="docNm">
+				TRIM(DOCUMENT_NM) LIKE '%'||TRIM(#searchKeyword#)||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="docDc">
+				TRIM(DOCUMENT_DC) LIKE '%'||TRIM(#searchKeyword#)||'%'
+			</isEqual>
+			<isNotEqual prepend="AND" property="searchProcsStepDv" compareValue="">
+				TRIM(PROCS_STEP_DV) = TRIM(#searchProcsStepDv#)
+			</isNotEqual>
+			<isNotEqual prepend="AND" property="searchDocumentSe" compareValue="">
+				TRIM(DOCUMENT_SE)   = TRIM(#searchDocumentSe#)
+			</isNotEqual>
+			GROUP BY DOCUMENT_ID 
+        ) A			
+	</select>	
+	
+	<!-- 문서이력관리  코드 조회 -->
+	<select id="egovOe1DocMngDAO.selectDocMngCategoryList" parameterClass="egovOe1DocMngVO" resultClass="egovMap">
+		SELECT CODE AS DOCUMENT_SE, CODE_NM AS DOCUMENT_SE_NAME
+		FROM OE1TNOECOMMDETAILCD
+		WHERE USE_AT = 'Y'
+		<isEqual property="searchProcsStepDv" compareValue="">
+			AND CODE_ID = ''
+		</isEqual>
+		<isNotEqual property="searchProcsStepDv" compareValue="">
+			AND CODE_ID = 'OE1010'
+			AND CODE	LIKE #searchProcsStepDv#||'%'
+		</isNotEqual>	
+		ORDER BY CODE_NM
+	</select>	
+	
+	
+	<!-- 문서 History 목록 -->
+	<select id="egovOe1DocMngDAO.selectDocMngHistoryList" parameterClass="egovOe1DocMngVO" resultClass="egovMap">
+		    SELECT                 
+		    	FRST_REGISTER_PNTTM                 
+		    	, DOCUMENT_NM 
+		    	, CHGHY   
+		    	, ATCH_FILE_ID             
+		    FROM OE1TNDOC             
+		    WHERE DOCUMENT_ID = #documentId#
+		    ORDER BY DOCUMENT_ID DESC,  DOC_NO ASC
+	</select>		
+</sqlMap>

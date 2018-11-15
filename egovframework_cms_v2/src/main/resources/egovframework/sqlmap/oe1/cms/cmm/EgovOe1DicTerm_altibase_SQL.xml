@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EgovOe1DicTerm">
+	
+	<typeAlias  alias="egovMap" 			type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1DicTermVO" 	type="egovframework.oe1.cms.cmm.service.EgovOe1DicTermVO"/>
+
+	<!-- 용어사전 처리를 위한 resultMap -->
+	<resultMap id="egovOe1DicTerm" class="egovframework.oe1.cms.cmm.service.EgovOe1DicTermVO">
+		<result property="wordId" 				column="WORD_ID" 			/>
+		<result property="wordNm" 				column="WORD_NM" 			/>
+		<result property="synonm" 				column="SYNONM" 			/>
+		<result property="engNm" 				column="ENG_NM" 			/>
+		<result property="wordNmEngAbrv" 		column="WORD_NM_ENG_ABRV" 	/>
+		<result property="wordDc" 				column="WORD_DC" 			 jdbcType="CLOB" typeHandler="egovframework.oe1.cms.com.AltibaseClobStringTypeHandler"/>
+		<result property="useAt" 				column="USE_AT" 			/>
+		<result property="frstRegisterPnttm" 	column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" 		column="FRST_REGISTER_ID" 	/>	
+		<result property="frstRegisterName" 	column="FRST_REGISTER_NAME"	/>
+		<result property="lastUpdusrPnttm" 		column="LAST_UPDUSR_PNTTM" 	/>
+		<result property="lastUpdusrId" 		column="LAST_UPDUSR_ID" 	/>	
+		<result property="lastUpdusrName" 		column="LAST_UPDUSR_NAME" 	/>			
+	</resultMap>
+	
+	
+	<!-- 용어사전 등록 -->
+	<insert id="egovOe1DicTermDAO.insertDicTerm">
+		<![CDATA[
+			INSERT INTO OE1TNWORDDIC_OLD 
+				( WORD_ID
+				  , WORD_NM
+				  , SYNONM
+				  , ENG_NM
+				  , WORD_NM_ENG_ABRV
+				  , WORD_DC
+				  , USE_AT
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID)
+			VALUES ( #wordId# 
+				  , #wordNm#
+				  , #synonm#
+				  , #engNm#
+				  , #wordNmEngAbrv#
+				  , #wordDc#
+				  , #useAt#
+				  , SYSDATE
+				  , #frstRegisterId#)
+		]]>
+	</insert>
+	
+	<!-- 용어사전 중복 체크  -->
+	<select id="egovOe1DicTermDAO.dupCheckDicTerm" parameterClass="egovOe1DicTermVO" resultClass="int">
+			SELECT COUNT(*) dup_count
+			FROM OE1TNWORDDIC_OLD
+			WHERE 1=1				
+			and (WORD_NM = #wordNm# or ENG_NM = #engNm# or WORD_NM_ENG_ABRV = #wordNmEngAbrv# )
+	</select>			
+	
+	<!-- 용어사전 수정 -->
+	<update id="egovOe1DicTermDAO.updateDicTerm">
+		<![CDATA[
+			UPDATE OE1TNWORDDIC_OLD 
+			SET 	SYNONM				= #synonm#
+				  , WORD_DC				= #wordDc#
+				  , USE_AT				= #useAt#
+				  , LAST_UPDUSR_PNTTM	= SYSDATE
+				  , LAST_UPDUSR_ID		= #lastUpdusrId#
+			WHERE WORD_ID=#wordId#
+		]]>
+	</update>
+	
+	<!-- 용어사전 삭제 -->
+	<delete id="egovOe1DicTermDAO.deleteDicTerm">
+		<![CDATA[
+			DELETE FROM OE1TNWORDDIC_OLD 
+			WHERE WORD_ID=#wordId#
+		]]>
+	</delete>
+	
+	<!-- 용어사전 상세 -->
+	<select id="egovOe1DicTermDAO.selectDicTerm" resultMap="egovOe1DicTerm">
+		<![CDATA[
+			SELECT
+				A.WORD_ID
+				, A.CTGRY
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1036' AND CODE = A.CTGRY ) AS CTGRY_NM
+				, A.WORD_NM
+				, A.SYNONM
+				, A.ENG_NM
+				, A.WORD_NM_ENG_ABRV
+				, A.WORD_DC
+				, A.USE_AT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME
+			FROM OE1TNWORDDIC_OLD A
+			WHERE A.WORD_ID=#wordId#
+		]]>
+	</select>
+	
+	<!-- 용어사전 조회 -->
+	<select id="egovOe1DicTermDAO.selectDicTermList" parameterClass="egovOe1DicTermVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+			SELECT
+				A.WORD_ID
+				, A.CTGRY
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1036' AND CODE = A.CTGRY ) AS CTGRY_NM				
+				, A.WORD_NM
+				, A.SYNONM
+				, A.ENG_NM
+				, A.WORD_NM_ENG_ABRV
+				, A.WORD_DC
+				, CASE WHEN TRIM(A.USE_AT) = 'Y' THEN 'Yes' ELSE 'No' END  USE_AT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME
+			FROM OE1TNWORDDIC_OLD A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				(A.WORD_NM LIKE '%'||#searchKeyword#||'%' OR A.SYNONM LIKE '%'||#searchKeyword#||'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				A.WORD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="engNm">
+				A.ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>	
+			ORDER BY A.WORD_NM ASC					
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>			
+
+	</select>
+
+	<select id="egovOe1DicTermDAO.selectDicTermListTot" parameterClass="egovOe1DicTermVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNWORDDIC_OLD
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				(WORD_NM LIKE '%'||#searchKeyword#||'%' OR SYNONM LIKE '%'||#searchKeyword#||'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				WORD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="engNm">
+				ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>	
+	</select>
+	 
+	<!-- 용어사전 전체 삭제 -->
+	<delete id="egovOe1DicTermDAO.deleteExcelDicTerm">
+		<![CDATA[
+			DELETE FROM OE1TNWORDDIC_OLD 
+		]]>
+	</delete>	 
+	
+	<!-- 용어사전엑셀 등록 -->
+	<insert id="egovOe1DicTermDAO.insertExcelDicTerm">
+		<![CDATA[
+			INSERT INTO OE1TNWORDDIC_OLD 
+				( WORD_ID
+				  , WORD_NM
+				  , ENG_NM
+				  , WORD_NM_ENG_ABRV
+				  , WORD_DC
+				  , USE_AT
+				  , FRST_REGISTER_PNTTM
+				  , FRST_REGISTER_ID)
+			VALUES ( 
+				  #wordId#
+				  , #wordNm#
+				  , #engNm#
+				  , #wordNmEngAbrv#
+				  , #wordDc#
+				  , #useAt#
+				  , SYSDATE
+				  , #frstRegisterId#
+				  )
+		]]>
+	</insert>	
+	
+	<!-- 용어사전엑셀 일괄 등록 중 동의어 처리 등록 -->
+	<update id="egovOe1DicTermDAO.insertExcelDicTermSynonm">
+		<![CDATA[
+			UPDATE OE1TNWORDDIC_OLD 
+			SET 	SYNONM				= SYNONM || DECODE(SYNONM,'','',', ')||#wordNm#
+			WHERE ENG_NM=#engNm# 
+				AND WORD_NM_ENG_ABRV	= #wordNmEngAbrv#
+		]]>
+	</update>
+	
+	<!-- 용어사전 목록 Excel 다운로드 -->
+	<select id="egovOe1DicTermDAO.selectDicTermListExcelDown" parameterClass="egovOe1DicTermVO" resultMap="egovOe1DicTerm">
+			SELECT
+				A.WORD_ID
+				, A.WORD_NM
+				, A.SYNONM
+				, A.ENG_NM
+				, A.WORD_NM_ENG_ABRV
+				, A.WORD_DC
+				, A.USE_AT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME
+			FROM OE1TNWORDDIC_OLD A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				(A.WORD_NM LIKE '%'||#searchKeyword#||'%' OR A.SYNONM LIKE '%'||#searchKeyword#||'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				A.WORD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="engNm">
+				A.ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>	
+			ORDER BY A.WORD_NM ASC	
+	</select>	
+	
+	<!-- 용어사전 POPUP 조회 -->
+	<select id="egovOe1DicTermDAO.selectDicTermListPopup" parameterClass="egovOe1DicTermVO" resultClass="egovMap">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>	
+			SELECT
+				A.WORD_ID
+				, A.CTGRY
+				, (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD WHERE CODE_ID = 'OE1036' AND CODE = A.CTGRY ) AS CTGRY_NM				
+				, A.WORD_NM
+				, A.SYNONM
+				, A.ENG_NM
+				, A.WORD_NM_ENG_ABRV
+				, A.WORD_DC
+				, A.USE_AT
+				, TO_CHAR( A.FRST_REGISTER_PNTTM, 'yyyy-mm-dd') AS FRST_REGISTER_PNTTM
+				, A.FRST_REGISTER_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.FRST_REGISTER_ID)AS FRST_REGISTER_NAME
+				, TO_CHAR( A.LAST_UPDUSR_PNTTM, 'yyyy-mm-dd') AS LAST_UPDUSR_PNTTM
+				, A.LAST_UPDUSR_ID
+				, (SELECT MBER_NM FROM OE1TNUSERINFO WHERE MBER_ID = A.LAST_UPDUSR_ID)AS LAST_UPDUSR_NAME
+			FROM OE1TNWORDDIC_OLD A
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				(A.WORD_NM LIKE '%'||#searchKeyword#||'%' OR A.SYNONM LIKE '%'||#searchKeyword#||'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				A.WORD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordEngNm">
+				A.ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>	
+			AND A.USE_AT='Y'	
+			ORDER BY A.WORD_NM ASC			
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>	
+	</select>	
+	<!-- 용어사전 POPUP 조회 총 카운트-->
+	<select id="egovOe1DicTermDAO.selectDicTermListPopupTot" parameterClass="egovOe1DicTermVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM OE1TNWORDDIC_OLD
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordNm">
+				(WORD_NM LIKE '%'||#searchKeyword#||'%' OR SYNONM LIKE '%'||#searchKeyword#||'%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordDc">
+				WORD_DC LIKE '%'||#searchKeyword#||'%'
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="wordEngNm">
+				ENG_NM LIKE '%'||#searchKeyword#||'%'
+			</isEqual>	
+			AND USE_AT = 'Y'
+	</select>	
+	
+</sqlMap>

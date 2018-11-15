@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+
+    <formset>
+    	<!-- 용어사전  -->
+        <form name="dictermForm">
+			<field property="wordNm" depends="required, maxlength">
+                <arg0 key="한글 용어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>                
+            </field>
+        	<field property="synonm" depends="maxlength">
+        		<arg0 key="한글동의어" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>           		
+			</field>            
+        	<field property="engNm" depends="required, maxlength">
+        		<arg0 key="영문 용어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>           		
+			</field>
+			<field property="wordNmEngAbrv" depends="required, maxlength">
+        		<arg0 key="용어 영문명 약어" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>            		
+			</field>
+			<field property="wordDc" depends="maxlength">
+        		<arg0 key="영문 약어" />
+        		<arg1 key="2000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>2000</var-value>
+				</var>            		
+			</field>			
+        </form>  
+        
+        <!-- 행정용어사전  -->
+        <form name="dicgovtermForm">
+			<field property="themaRelm" depends="required, maxlength">
+                <arg0 key="주제영역" />
+        		<arg1 key="100" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>100</var-value>
+				</var>          		
+            </field>        
+			<field property="administWordNm" depends="required, maxlength">
+                <arg0 key="용어명" />
+        		<arg1 key="100" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>100</var-value>
+				</var>                
+            </field>
+        	<field property="administWordEngNm" depends="required, maxlength">
+        		<arg0 key="영문명" />
+        		<arg1 key="100" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>100</var-value>
+				</var>           		
+			</field>
+        	<field property="administWordAbrv" depends="required, maxlength">
+        		<arg0 key="영문 약어명" />
+        		<arg1 key="100" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>100</var-value>
+				</var>           		
+			</field>	
+        	<field property="administWordDc" depends="maxlength">
+        		<arg0 key="용어설명" />
+        		<arg1 key="2000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>2000</var-value>
+				</var>           		
+			</field>						
+        </form> 
+
+        <!-- 단어사전  -->
+        <form name="dicwordForm">
+			<field property="wrdNm" depends="required, maxlength">
+                <arg0 key="단어명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>                
+            </field>
+        	<field property="wrdEngNm" depends="required, maxlength">
+        		<arg0 key="영문명" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>           		
+			</field>
+        	<field property="wrdEngAbrv" depends="required, maxlength">
+        		<arg0 key="영문 약어" />
+        		<arg1 key="60" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>60</var-value>
+				</var>           		
+			</field>		
+        	<field property="wrdDc" depends="maxlength">
+        		<arg0 key="단어설명" />
+        		<arg1 key="2000" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>2000</var-value>
+				</var>           		
+			</field>					
+        </form>         
+   </formset>
+   
+
+   <formset>        
+        <!-- 프레임웍환경정보  -->
+        <form name="egovOe1FrmwrkInfoManageVO">
+			<field property="presnatnlyr" depends="required">        
+				<arg0 key="Presentation Layer" resource="false"/>
+            </field>
+			<field property="persstnlyr" depends="required">        
+				<arg0 key="Persistence Layer" resource="false"/>
+            </field>        
+            <field property="dbmsKindCode" depends="required">        
+				<arg0 key="DBMS 종류코드" resource="false"/>
+            </field>
+			<field property="websKindCode" depends="required">        
+				<arg0 key="WEB서버정류코드" resource="false"/>
+            </field>            
+			<field property="wasKindCode" depends="required">        
+				<arg0 key="WAS 종류코드" resource="false"/>
+            </field>
+			<field property="osKindCode" depends="required">        
+				<arg0 key="운영체제 종류코드" resource="false"/>
+            </field>            
+ 			<field property="jdkVerCode" depends="required">        
+				<arg0 key="JDK 버전코드" resource="false"/>
+            </field>           
+        </form> 
+   </formset>
+   
+   <!-- 행사일정관리 -->
+    <formset>
+		<form name="deptSchdulManageVO">
+			<field property="schdulSe" depends="required">
+        		<arg0 key="일정구분" resource="false"/>
+			</field>
+			
+			<field property="schdulIpcrCode" depends="required">
+        		<arg0 key="중요도" resource="false"/>
+			</field>
+			
+			<field property="schdulNm" depends="required, maxlength">
+        		<arg0 key="일정명" resource="false"/>
+				<var>
+				<var-name>maxlength</var-name>
+				<var-value>255</var-value>
+				</var>
+			</field>
+			
+			<field property="reptitSeCode" depends="required">
+        		<arg0 key="반복구분" resource="false"/>
+			</field>
+
+			<field property="schdulBgndeYYYMMDD" depends="required">
+        		<arg0 key="일정시작일자" resource="false"/>
+			</field>
+			
+			<field property="schdulEnddeYYYMMDD" depends="required">
+        		<arg0 key="일정종료일자" resource="false"/>
+			</field>
+			
+			<field property="schdulBgndeHH" depends="required">
+        		<arg0 key="일정시작(시)" resource="false"/>
+			</field>
+			<field property="schdulBgndeMM" depends="required">
+        		<arg0 key="일정시작(분)" resource="false"/>
+			</field>
+			
+			<field property="schdulEnddeHH" depends="required">
+        		<arg0 key="일정종료(시)" resource="false"/>
+			</field>
+			<field property="schdulEnddeMM" depends="required">
+        		<arg0 key="일정종료(분)" resource="false"/>
+			</field>
+			
+			<field property="schdulChargerName" depends="required">
+        		<arg0 key="담당자" resource="false"/>
+			</field>				
+
+		</form>
+    </formset>   
+</form-validation>

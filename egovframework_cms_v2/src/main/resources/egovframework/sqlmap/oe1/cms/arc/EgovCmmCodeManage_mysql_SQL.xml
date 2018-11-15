@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CmmCodeManage">
+
+	<typeAlias  alias="egovMap"    type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="CmmCodeVO" type="egovframework.oe1.cms.arc.service.EgovOe1CmmCodeVO"/>
+
+	<select id="CmmCodeManageDAO.selectCmmCodeList" parameterClass="CmmCodeVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT  A.CODE_ID
+			     ,  A.CODE_ID_NM
+			     ,  A.USE_AT
+			  FROM  OE1TNCOMMCD   A
+			 WHERE  1 = 1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<!-- <![CDATA[A.CODE_ID = #searchKeyword#]]> -->
+				<![CDATA[A.CODE_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[A.CODE_ID_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="clCode">
+				<![CDATA[A.CL_CODE = #searchKeyword#]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="clCode">
+				<![CDATA[A.USE_AT = 'Y']]>
+			</isEqual>
+ 			limit #firstIndex#, #recordCountPerPage#	
+	</select>
+
+	<select id="CmmCodeManageDAO.selectCmmCodeListTotCnt" parameterClass="CmmCodeVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt 
+			  FROM  OE1TNCOMMCD   A
+			 WHERE  1 = 1
+		]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				<![CDATA[A.CODE_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="2">
+				<![CDATA[A.CODE_ID_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')]]>
+			</isEqual>
+	</select>
+
+	<select id="CmmCodeManageDAO.selectCmmCodeCnt" parameterClass="CmmCodeVO" resultClass="int">
+		<![CDATA[
+		        SELECT  COUNT(*) AS totcnt
+				  FROM  OE1TNCOMMCD A
+				 WHERE A.CODE_ID  = #codeId#
+		]]>	
+	</select>
+	
+	<select id="CmmCodeManageDAO.selectCmmCodeDetail" parameterClass="CmmCodeVO" resultClass="CmmCodeVO">
+		<![CDATA[
+            SELECT  A.CODE_ID       codeId
+			     ,  A.CODE_ID_NM    codeIdNm
+                 ,  A.CODE_ID_DC    codeIdDc
+                 ,  A.USE_AT        useAt
+			  FROM  OE1TNCOMMCD   A
+			 WHERE  A.CODE_ID    = #codeId#
+		]]>
+	</select>
+
+	<insert id="CmmCodeManageDAO.insertCmmCode">
+		<![CDATA[
+		    INSERT 
+		      INTO  OE1TNCOMMCD
+		         (  CODE_ID
+		         ,  CODE_ID_NM
+		         ,  CODE_ID_DC
+		         ,  USE_AT
+		         ,  FRST_REGISTER_PNTTM
+		         ,  FRST_REGISTER_ID
+		         ,  LAST_UPDUSR_PNTTM
+		         ,  LAST_UPDUSR_ID
+		         ) 
+		    VALUES  
+		         (  #codeId#
+		         ,  #codeIdNm#
+		         ,  #codeIdDc#
+		         ,  'Y'
+		         ,  sysdate()
+		         ,  #frstRegisterId#
+		         ,  sysdate()
+		         ,  #frstRegisterId#
+		         ) 
+		]]>
+	</insert>
+
+	<update id="CmmCodeManageDAO.updateCmmCode">
+		<![CDATA[
+            UPDATE  OE1TNCOMMCD 
+               SET  USE_AT            = #useAt#
+                 ,  LAST_UPDUSR_PNTTM = sysdate()
+                 ,  LAST_UPDUSR_ID    = #lastUpdusrId#
+             WHERE  CODE_ID           = #codeId# 
+		]]>
+	</update>
+
+	<select id="CmmCodeManageDAO.selectCmmDetailCodeList" parameterClass="CmmCodeVO" resultClass="egovMap">
+		<![CDATA[
+			SELECT  A.CODE_ID   codeId
+			     ,  A.CODE_01   code1
+			     ,  A.CODE_02   code2
+			     ,  A.CODE_03   code3
+			     ,  A.CODE_04   code4
+			     ,  A.CODE_NM  codeNm
+			     ,  A.USE_AT   useAt
+			  FROM  OE1TNCOMMDETAILCD A
+			     ,  OE1TNCOMMCD       B
+			 WHERE 	A.CODE_ID = B.CODE_ID
+			   AND  A.CODE_ID = #codeId#
+		]]>
+			 LIMIT  #recordCountPerPage# OFFSET #firstIndex#
+	</select>
+
+	<select id="CmmCodeManageDAO.selectCmmDetailCodeListTotCnt" parameterClass="CmmCodeVO" resultClass="int">
+		<![CDATA[
+			SELECT  COUNT(*) totcnt 
+			  FROM  OE1TNCOMMDETAILCD A
+			     ,  OE1TNCOMMCD       B
+			 WHERE 	B.USE_AT  = 'Y'
+			   AND  A.CODE_ID = B.CODE_ID
+			   AND  A.CODE_ID = #codeId#
+		]]>
+	</select>
+
+	<insert id="CmmCodeManageDAO.insertCmmDetailCode">
+		<![CDATA[
+		    INSERT 
+		      INTO  OE1TNCOMMDETAILCD
+		         (  CODE_ID
+		         ,  CODE_01
+		         ,  CODE_02
+		         ,  CODE_03
+		         ,  CODE_04
+		         ,  CODE_NM
+		         ,  USE_AT
+		         ,  FRST_REGISTER_PNTTM
+		         ,  FRST_REGISTER_ID
+		         ,  LAST_UPDUSR_PNTTM
+		         ,  LAST_UPDUSR_ID
+		         ) 
+		    VALUES  
+		         (  #codeId#
+		         ,  #code1#
+		         ,  #code2#
+		         ,  #code3#
+		         ,  #code4#
+		         ,  #codeNm#
+		         ,  'Y'
+		         ,  sysdate()
+		         ,  #frstRegisterId#
+		         ,  sysdate()
+		         ,  #frstRegisterId#
+		         ) 
+		]]>
+	</insert>
+
+	<update id="CmmCodeManageDAO.updateCmmDetailCode">
+		<![CDATA[
+            UPDATE  OE1TNCOMMDETAILCD 
+               SET  USE_AT            = #useAt#
+                 ,  LAST_UPDUSR_PNTTM = sysdate()
+                 ,  LAST_UPDUSR_ID    = #lastUpdusrId#
+             WHERE  CODE_ID    = #codeId# 
+               AND  CODE_01    = #code1#
+               AND  CODE_02    = #code2#
+               AND  CODE_03    = #code3#
+               AND  CODE_04    = #code4#
+		]]>
+	</update>
+	
+	<select id="CmmCodeManageDAO.selectCmmDetailCodeDetail" parameterClass="CmmCodeVO" resultClass="CmmCodeVO">
+		<![CDATA[
+			SELECT  CODE_ID   codeId
+			     ,  CODE_01   code1
+			     ,  CODE_02   code2
+			     ,  CODE_03   code3
+			     ,  CODE_04   code4
+			     ,  CODE_NM  codeNm
+			     ,  USE_AT   useAt
+			  FROM  OE1TNCOMMDETAILCD
+			 WHERE  CODE_ID    = #codeId#
+			 AND    CODE_01    = #code1#
+		]]>
+	</select>
+
+	<select id="CmmCodeManageDAO.selectCmmDetailCodeDetailYeoBu" parameterClass="CmmCodeVO" resultClass="CmmCodeVO">
+		<![CDATA[
+			SELECT  CODE_ID   codeId
+			     ,  CODE_01   code1
+			     ,  CODE_02   code2
+			     ,  CODE_03   code3
+			     ,  CODE_04   code4
+			     ,  CODE_NM  codeNm
+			     ,  USE_AT   useAt
+			  FROM  OE1TNCOMMDETAILCD
+			 WHERE  CODE_ID    = #codeId#
+			 AND    CODE_01    = #code1#
+			 AND    CODE_02    = #code2#
+			 AND    CODE_03    = #code3#
+			 AND    CODE_04    = #code4#
+		]]>
+	</select>
+</sqlMap>            

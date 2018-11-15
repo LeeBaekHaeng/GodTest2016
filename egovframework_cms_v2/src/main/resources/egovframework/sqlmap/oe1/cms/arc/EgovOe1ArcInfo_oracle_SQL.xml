@@ -1,0 +1,954 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Arc">
+
+	<typeAlias alias="egovOe1ComDefaultVO" type="egovframework.oe1.cms.com.service.EgovOe1ComDefaultVO" />
+	<typeAlias alias="egovOe1ArcDefaultVO" type="egovframework.oe1.cms.arc.ams.service.EgovOe1ArcDefaultVO" />
+	<typeAlias alias="egovOe1ClassVO" type="egovframework.oe1.cms.arc.ams.service.EgovOe1ClassVO" />
+	<typeAlias alias="egovOe1MethodVO" type="egovframework.oe1.cms.arc.ams.service.EgovOe1MethodVO" />
+	<typeAlias alias="egovOe1ComponentVO" type="egovframework.oe1.cms.arc.ams.service.EgovOe1ComponentVO" />
+	<typeAlias alias="egovOe1MethodCallingVO" type="egovframework.oe1.cms.arc.ams.service.EgovOe1MethodCallingVO" />
+	<typeAlias alias="egovOe1ParameterVO" type="egovframework.oe1.cms.arc.ams.service.EgovOe1ParameterVO" />
+	<typeAlias alias="egovOe1QueryVO" type="egovframework.oe1.cms.arc.ams.service.EgovOe1QueryVO" />
+	<typeAlias alias="egovOe1ArcListItem" type="egovframework.oe1.cms.arc.ams.service.EgovOe1ArcListItemVO" />
+
+	<resultMap id="TreeItem" class="egovOe1ArcListItem">
+		<result property="classId" column="CLASS_ID" />
+		<result property="classNm" column="CLASS_NM" />
+		<result property="methdId" column="METHD_ID" />
+		<result property="methdNm" column="METHD_ALL_NM" />
+		<result property="paramtrId" column="PARAMTR_ID" />
+		<result property="paramtrNm" column="PARAMTR_NM" />
+		<result property="quryId" column="QERY_ID" />
+		<result property="quryNm" column="QERY_NM" />
+	</resultMap>
+
+	<resultMap id="TreeCompnItem" class="egovOe1ArcListItem">
+		<result property="compnId" column="COMPN_ID" />
+		<result property="compnNm" column="COMPN_NM" />
+		<result property="classId" column="CLASS_ID" />
+		<result property="classNm" column="CLASS_NM" />
+		<result property="methdId" column="METHD_ID" />
+		<result property="methdNm" column="METHD_ALL_NM" />
+		<result property="paramtrId" column="PARAMTR_ID" />
+		<result property="paramtrNm" column="PARAMTR_NM" />
+		<result property="quryId" column="QURY_ID" />
+		<result property="quryNm" column="QURY_NM" />
+	</resultMap>
+	
+	<resultMap id="Class" class="egovOe1ClassVO">
+		<result property="classId" column="CLASS_ID"/>
+		<result property="classPckage" column="CLASS_PCKAGE"/>
+		<result property="classTy" column="CLASS_TY"/>
+		<result property="classNm" column="CLASS_NM"/>
+		<result property="classDc" column="CLASS_DC"/>
+		<result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDUSR_PNTTM"/>
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+	</resultMap>
+	
+	<resultMap id="ClassList" class="egovOe1ClassVO">
+		<result property="classId" column="CLASS_ID"/>
+		<result property="classNm" column="CLASS_NM"/>
+	</resultMap>	
+	<resultMap id="MethodCalling" class="egovOe1MethodCallingVO">
+		<result property="callId" column="CALL_ID"/>
+		<result property="classId" column="CLASS_ID"/>
+		<result property="classNm" column="CLASS_NM"/>
+		<result property="methdId" column="METHD_ID"/>
+		<result property="methdNm" column="METHOD_NM"/>
+		<result property="callclassId" column="CALL_CLASS_ID"/>
+		<result property="callclassNm" column="CALL_CLASS_NM"/>
+		<result property="callmethdId" column="CALL_METHD_ID"/>
+		<result property="callmethdNm" column="CALL_METHD_NM"/>
+	</resultMap> 
+	
+	<resultMap id="Method" class="egovOe1MethodVO">
+		<result property="methdId" column="METHD_ID"/>
+		<result property="classId" column="CLASS_ID"/>
+		<result property="methdAnnot" column="METHD_ANNOT"/>
+		<result property="methdTy" column="METHD_TY"/>
+		<result property="methdNm" column="METHOD_NM"/>
+		<result property="methdFullnm" column="METHD_ALL_NM"/>
+		<result property="methdDc" column="METHD_DC"/>
+		<result property="methdCode" column="METHD_CODE"/>
+		<result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDUSR_PNTTM"/>
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+	</resultMap> 
+	
+	<resultMap id="Parameter" class="egovOe1ParameterVO">
+		<result property="paramtrId" column="PARAMTR_ID"/>
+		<result property="methdId" column="METHD_ID"/>
+		<result property="classId" column="CLASS_ID"/>
+		<result property="paramtrTy" column="PARAMTR_TY"/>
+		<result property="paramtrNm" column="PARAMTR_NM"/>
+		<result property="paramtrDc" column="PARAMTR_DC"/>
+		<result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDUSR_PNTTM"/>
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+	</resultMap> 
+	
+	<resultMap id="Query" class="egovOe1QueryVO">
+		<result property="quryId" column="QURY_ID"/>
+		<result property="methdId" column="METHD_ID"/>
+		<result property="classId" column="CLASS_ID"/>
+		<result property="quryNm" column="QURY_NM"/>
+		<result property="quryDc" column="QURY_DC"/>
+		<result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDUSR_PNTTM"/>
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+	</resultMap> 
+	
+	<resultMap id="Component" class="egovOe1ComponentVO">
+		<result property="compnId" column="COMPN_ID"/>
+		<result property="compnNm" column="COMPN_NM"/>
+		<result property="compnPckage" column="COMPN_PCKAGE"/>
+		<result property="compnDc" column="COMPN_DC"/>
+		<result property="etcDc" column="ETC_DC"/>
+		<result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+		<result property="lastUpdusrPnttm" column="LAST_UPDUSR_PNTTM"/>
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+	</resultMap>  
+	
+	<!-- Class  -->
+
+	<insert id="EgovOe1ClassDAO.insertClass" parameterClass="egovOe1ClassVO">
+		<![CDATA[
+			INSERT INTO OE1TNCLASS
+					(
+						CLASS_ID
+					,	CLASS_PCKAGE
+					,	CLASS_TY
+					,	CLASS_NM
+					,	CLASS_DC
+					,   FRST_REGISTER_PNTTM
+					,   FRST_REGISTER_ID
+					,   LAST_UPDUSR_PNTTM
+					,   LAST_UPDUSR_ID
+					) 
+					VALUES
+					(
+					 	#classId#
+					,   #classPckage#
+					,	#classTy#
+					,	#classNm#
+					,	#classDc#
+					,   sysdate
+					,   #frstRegisterId#
+					,   sysdate
+					,   #lastUpdusrId#
+					);
+		]]>
+	</insert>
+	
+	<update id="EgovOe1ClassDAO.updateClass" parameterClass="egovOe1ClassVO">
+		<![CDATA[
+			UPDATE OE1TNCLASS
+			SET 
+				 		CLASS_ID	= #classId#
+					,	CLASS_PCKAGE	= #classPckage#
+					,	CLASS_TY	= #classTy#
+					,	CLASS_NM	= #classNm#
+					,	CLASS_DC	= #classDc#
+					,   LAST_UPDUSR_PNTTM	= sysdate
+					,   LAST_UPDUSR_ID		= #lastUpdusrId#
+			WHERE
+				   CLASS_ID = #classId#
+		]]>
+	</update>
+	
+	
+	<delete id="EgovOe1ClassDAO.deleteClass" parameterClass="egovOe1ClassVO">
+		<![CDATA[
+			DELETE FROM OE1TNCLASS 
+			WHERE CLASS_ID = #classId#
+		]]>
+	</delete>
+	
+	<select id="EgovOe1ClassDAO.selectClass" parameterClass="egovOe1ClassVO" resultMap="Class">
+		<![CDATA[
+		SELECT 
+				CLASS_ID
+			,	CLASS_PCKAGE
+			,	CLASS_TY
+			,	CLASS_NM
+			,	CLASS_DC
+			,   FRST_REGISTER_PNTTM
+			,   FRST_REGISTER_ID
+			,   LAST_UPDUSR_PNTTM
+			,   LAST_UPDUSR_ID
+		FROM 
+				OE1TNCLASS
+		WHERE
+				CLASS_ID = #classId#
+		]]>
+	</select>
+	
+	<select id="EgovOe1ClassDAO.selectClassList" parameterClass="egovOe1ArcDefaultVO" resultMap="ClassList">
+<!-- 			SELECT 
+					CLASS_ID
+				,	CLASS_PCKAGE
+				,	COMPN_ID
+				,	CLASS_TY
+				,	CLASS_NM
+				,	CLASS_DC
+				,   FRST_REGISTER_PNTTM
+				,   FRST_REGISTER_ID
+				,   LAST_UPDUSR_PNTTM
+				,   LAST_UPDUSR_ID
+			FROM 
+					OE1TNCLASS
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						CLASS_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						COMPN_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+			ORDER BY CLASS_ID ASC
+			limit #firstIndex#, #recordCountPerPage#  -->
+			SELECT       CLASS_ID     , CLASS_NM
+			FROM       OE1TNCOMPNMP    WHERE 1=1  
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			COMPN_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+	</select>
+					
+	<select id="EgovOe1ClassDAO.countClassList" parameterClass="egovOe1ArcDefaultVO" resultClass="int">
+			SELECT COUNT(*) AS total
+			FROM OE1TNCLASS
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						CLASS_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+	</select>
+	
+	
+	<!-- Method Calling  -->
+	
+	<insert id="EgovOe1MethodCallingDAO.insertMethodCalling" parameterClass="egovOe1MethodCallingVO">
+		<![CDATA[
+			INSERT INTO OE1TNCALLMETHD
+					(
+						CALL_ID
+					,	CLASS_ID
+					,	METHD_ID
+					,	CALL_CLASS_ID
+					,	CALL_METHD_ID
+					) 
+					VALUES
+					(
+					 	#callId#
+					,   #classId#
+					,   #methdId#
+					,	#callclassId#
+					,	#callmethdId#
+					);
+		]]>
+	</insert>
+	
+	<update id="EgovOe1MethodCallingDAO.updateMethodCalling" parameterClass="egovOe1MethodCallingVO">
+		<![CDATA[
+			UPDATE OE1TNCALLMETHD
+			SET 
+						CALL_ID				= #callId#
+					,	CLASS_ID			= #classId#
+					,	METHD_ID			= #methdId#
+					,	CALL_CLASS_ID		= #callclassId#
+					,	CALL_METHD_ID		= #callmethdId#
+			WHERE
+				   CALL_ID = #callId#
+		]]>
+	</update>
+	
+	
+	<delete id="EgovOe1MethodCallingDAO.deleteMethodCalling" parameterClass="egovOe1MethodCallingVO">
+		<![CDATA[
+			DELETE FROM OE1TNCALLMETHD 
+			WHERE CALL_ID = #callId#
+		]]>
+	</delete>
+	
+	<select id="EgovOe1MethodCallingDAO.selectMethodCalling" parameterClass="egovOe1MethodCallingVO" resultMap="MethodCalling">
+		<![CDATA[
+		SELECT 
+				CALL_ID
+			,	CLASS_ID
+			,	METHD_ID
+			,	CALL_CLASS_ID
+			,	CALLMETHD_ID
+		FROM 
+				OE1TN_CALLMETHD
+		WHERE
+				CALL_ID = #callId#
+		]]>
+	</select>
+	
+	<select id="EgovOe1MethodCallingDAO.selectMethodCallingList" parameterClass="egovOe1ArcDefaultVO" resultMap="MethodCalling">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>	
+			SELECT 
+					A.CALL_ID				AS CALL_ID
+				,	A.CLASS_ID				AS CLASS_ID
+				,	C1.CLASS_NM				AS CLASS_NM
+				,	A.METHD_ID				AS METHD_ID
+				,	M1.METHD_ALL_NM		    AS METHOD_NM
+				,	A.CALL_CLASS_ID			AS CALL_CLASS_ID
+				,	A.CALL_METHD_ID			AS CALL_METHD_ID
+				,	C2.CLASS_NM				AS CALL_CLASS_NM
+				,	M2.METHD_ALL_NM		    AS CALL_METHD_NM
+			FROM 
+					OE1TNCALLMETHD A
+					LEFT JOIN OE1TNMETHD M1 ON A.METHD_ID = M1.METHD_ID
+					LEFT JOIN OE1TNMETHD M2 ON A.CALL_METHD_ID = M2.METHD_ID
+					LEFT JOIN OE1TNCLASS C1 ON A.CLASS_ID = C1.CLASS_ID
+					LEFT JOIN OE1TNCLASS C2 ON A.CALL_CLASS_ID = C2.CLASS_ID
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						A.CLASS_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						A.METHD_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="2">
+						A.CALL_CLASS_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="3">
+						A.CALL_METHD_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+			ORDER BY A.CALL_ID ASC
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>	
+	</select>
+					
+	<select id="EgovOe1MethodCallingDAO.countMethodCallingList" parameterClass="egovOe1ArcDefaultVO" resultClass="int">
+			SELECT COUNT(*) AS total
+			FROM OE1TNCALLMETHD
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						CLASS_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						METHD_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="2">
+						CALL_CLASS_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="3">
+						CALL_METHD_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+	</select>
+	
+	<!-- Method  -->
+	
+	<insert id="EgovOe1MethodDAO.insertMethod" parameterClass="egovOe1MethodVO">
+		<![CDATA[
+			INSERT INTO OE1TNMETHD
+					(
+						METHD_ID
+					,	CLASS_ID
+					,	METHD_ANNOT
+					,	METHD_TY
+					,	METHOD_NM
+					,	METHD_ALL_NM
+					,	METHD_DC
+					,	METHD_CODE
+					,   FRST_REGISTER_PNTTM
+					,   FRST_REGISTER_ID
+					,   LAST_UPDUSR_PNTTM
+					,   LAST_UPDUSR_ID
+					) 
+					VALUES
+					(
+					 	#methdId#
+					,   #classId#
+					,   #methdAnnot#
+					,	#methdTy#
+					,	#methdNm#
+					,	#methdFullnm#
+					,	#methdDc#
+					,	#methdCode#
+					,   sysdate
+					,   #frstRegisterId#
+					,   sysdate
+					,   #lastUpdusrId#
+					);
+		]]>
+	</insert>
+	
+	<update id="EgovOe1MethodDAO.updateMethod" parameterClass="egovOe1MethodVO">
+		<![CDATA[
+			UPDATE OE1TNMETHD
+			SET 
+				 		METHD_ID				= #methdId#
+					,	CLASS_ID				= #classId#
+					,	METHD_ANNOT			= #methdAnnot#
+					,	METHD_TY				= #methdTy#
+					,	METHOD_NM				= #methdNm#
+					,	METHD_ALL_NM			= #methdFullnm#
+					,	METHD_DC				= #methdDc#
+					,	METHD_CODE				= #methdCode#
+					,   LAST_UPDUSR_PNTTM		= #lastUpdusrPnttm#
+					,   LAST_UPDUSR_ID			= #lastUpdusrId#
+			WHERE
+				   METHD_ID = #methdId#
+		]]>
+	</update>
+	
+	
+	<delete id="EgovOe1MethodDAO.deleteMethod" parameterClass="egovOe1MethodVO">
+		<![CDATA[
+			DELETE FROM OE1TNMETHD 
+			WHERE METHD_ID = #methdId#
+		]]>
+	</delete>
+	
+	<select id="EgovOe1MethodDAO.selectMethod" parameterClass="egovOe1MethodVO" resultMap="Method">
+		<![CDATA[
+		SELECT 
+				METHD_ID
+			,	CLASS_ID
+			,	METHD_ANNOT
+			,	METHD_TY
+			,	METHOD_NM
+			,	METHD_ALL_NM
+			,	METHD_DC
+			,	METHD_CODE
+			,   FRST_REGISTER_PNTTM
+			,   FRST_REGISTER_ID
+			,   LAST_UPDUSR_PNTTM
+			,   LAST_UPDUSR_ID
+		FROM 
+				OE1TNMETHD
+		WHERE
+				METHD_ID = #methdId#
+		]]>
+	</select>
+	
+	<select id="EgovOe1MethodDAO.selectMethodList" parameterClass="egovOe1ArcDefaultVO" resultMap="Method">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>	
+			SELECT 
+					METHD_ID
+				,	CLASS_ID
+				,	METHD_ANNOT
+				,	METHD_TY
+				,	METHOD_NM
+				,	METHD_ALL_NM
+				,	METHD_DC
+				,	METHD_CODE
+				,   FRST_REGISTER_PNTTM
+				,   FRST_REGISTER_ID
+				,   LAST_UPDUSR_PNTTM
+				,   LAST_UPDUSR_ID
+			FROM 
+					OE1TNMETHD
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						METHOD_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						CLASS_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+			ORDER BY METHD_ID ASC
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+					
+	<select id="EgovOe1MethodDAO.countMethodList" parameterClass="egovOe1ArcDefaultVO" resultClass="int">
+			SELECT COUNT(*) AS total
+			FROM OE1TNMETHD
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						METHOD_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						CLASS_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+	</select>	
+	
+	
+	<!-- Parameter  -->
+	
+	<insert id="EgovOe1ParameterDAO.insertParameter" parameterClass="egovOe1ParameterVO">
+		<![CDATA[
+			INSERT INTO OE1TNPARAMTR
+					(
+						PARAMTR_ID
+					,	METHD_ID
+					,	CLASS_ID
+					,	PARAMTR_TY
+					,	PARAMTR_NM
+					,	PARAMTR_DC
+					,   FRST_REGISTER_PNTTM
+					,   FRST_REGISTER_ID
+					,   LAST_UPDUSR_PNTTM
+					,   LAST_UPDUSR_ID
+					) 
+					VALUES
+					(
+					 	#paramtrId#
+					,   #methdId#
+					,   #classId#
+					,	#paramtrTy#
+					,	#paramtrNm#
+					,	#paramtrDc#
+					,   sysdate
+					,   #frstRegisterId#
+					,   sysdate
+					,   #lastUpdusrId#
+					);
+		]]>
+	</insert>
+	
+	<update id="EgovOe1ParameterDAO.updateParameter" parameterClass="egovOe1ParameterVO">
+		<![CDATA[
+			UPDATE OE1TNPARAMTR
+			SET 
+		 		PARAMTR_ID		= #paramtrId#
+			,	METHD_ID		= #methdId#
+			,	CLASS_ID		= #classId#
+			,	PARAMTR_TY		= #paramtrTy#
+			,	PARAMTR_NM		= #paramtrNm#
+			,	PARAMTR_DC		= #paramtrDc#
+			,   LAST_UPDUSR_PNTTM		= #lastUpdusrPnttm#
+			,   LAST_UPDUSR_ID			= #lastUpdusrId#
+			WHERE
+				PARAMTR_ID = #paramtrId#
+		]]>
+	</update>
+	
+	
+	<delete id="EgovOe1ParameterDAO.deleteParameter" parameterClass="egovOe1ParameterVO">
+		<![CDATA[
+			DELETE FROM OE1TNPARAMTR 
+			WHERE PARAMTR_ID = #paramtrId#
+		]]>
+	</delete>
+	
+	<select id="EgovOe1ParameterDAO.selectParameter" parameterClass="egovOe1ParameterVO" resultMap="Parameter">
+		<![CDATA[
+		SELECT 
+				PARAMTR_ID
+			,	METHD_ID
+			,	CLASS_ID
+			,	PARAMTR_TY
+			,	PARAMTR_NM
+			,	PARAMTR_DC
+			,   FRST_REGISTER_PNTTM
+			,   FRST_REGISTER_ID
+			,   LAST_UPDUSR_PNTTM
+			,   LAST_UPDUSR_ID
+		FROM 
+				OE1TNPARAMTR
+		WHERE
+				PARAMTR_ID = #paramtrId#
+		]]>
+	</select>
+	
+	<select id="EgovOe1ParameterDAO.selectParameterList" parameterClass="egovOe1ArcDefaultVO" resultMap="Parameter">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>	
+			SELECT 
+					PARAMTR_ID
+				,	METHD_ID
+				,	CLASS_ID
+				,	PARAMTR_TY
+				,	PARAMTR_NM
+				,	PARAMTR_DC
+				,   FRST_REGISTER_PNTTM
+				,   FRST_REGISTER_ID
+				,   LAST_UPDUSR_PNTTM
+				,   LAST_UPDUSR_ID
+			FROM 
+					OE1TNPARAMTR
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						PARAMTR_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						METHD_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+			ORDER BY PARAMTR_ID ASC
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+					
+	<select id="EgovOe1ParameterDAO.countParameterList" parameterClass="egovOe1ArcDefaultVO" resultClass="int">
+			SELECT COUNT(*) AS total
+			FROM OE1TNPARAMTR
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						PARAMTR_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						METHD_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+	</select>
+
+	<!-- Query  -->
+	
+	<insert id="EgovOe1QueryDAO.insertQuery" parameterClass="egovOe1QueryVO">
+		<![CDATA[
+			INSERT INTO OE1TNQURY
+					(
+						QURY_ID
+					,	METHD_ID
+					,	CLASS_ID
+					,	QURY_NM
+					,	QURY_DC
+					,   FRST_REGISTER_PNTTM
+					,   FRST_REGISTER_ID
+					,   LAST_UPDUSR_PNTTM
+					,   LAST_UPDUSR_ID
+					) 
+					VALUES
+					(
+					 	#quryId#
+					,   #methdId#
+					,   #classId#
+					,	#quryNm#
+					,	#quryDc#
+					,   sysdate
+					,   #frstRegisterId#
+					,   sysdate
+					,   #lastUpdusrId#
+					);
+		]]>
+	</insert>
+	
+	<update id="EgovOe1QueryDAO.updateQuery" parameterClass="egovOe1QueryVO">
+		<![CDATA[
+			UPDATE OE1TNQURY
+			SET 
+		 		QURY_ID			= #quryId#
+			,	METHD_ID			= #methdId#
+			,	CLASS_ID			= #classId#
+			,	QURY_NM			= #quryNm#
+			,	QURY_DC			= #quryDc#
+			,   LAST_UPDUSR_PNTTM	= #lastUpdusrPnttm#
+			,   LAST_UPDUSR_ID		= #lastUpdusrId#
+			WHERE
+				QURY_ID = #quryId#
+		]]>
+	</update>
+	
+	
+	<delete id="EgovOe1QueryDAO.deleteQuery" parameterClass="egovOe1QueryVO">
+		<![CDATA[
+			DELETE FROM OE1TNQURY 
+			WHERE QURY_ID = #quryId#
+		]]>
+	</delete>
+	
+	<select id="EgovOe1QueryDAO.selectQuery" parameterClass="egovOe1QueryVO" resultMap="Query">
+		<![CDATA[
+		SELECT 
+				QURY_ID
+			,	METHD_ID
+			,	CLASS_ID
+			,	QURY_NM
+			,	QURY_DC
+			,   FRST_REGISTER_PNTTM
+			,   FRST_REGISTER_ID
+			,   LAST_UPDUSR_PNTTM
+			,   LAST_UPDUSR_ID
+		FROM 
+				OE1TNQURY
+		WHERE
+				QURY_ID = #quryId#
+		]]>
+	</select>
+	
+	<select id="EgovOe1QueryDAO.selectQueryList" parameterClass="egovOe1ArcDefaultVO" resultMap="Query">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>	
+			SELECT 
+					QURY_ID
+				,	METHD_ID
+				,	CLASS_ID
+				,	QURY_NM
+				,	QURY_DC
+				,   FRST_REGISTER_PNTTM
+				,   FRST_REGISTER_ID
+				,   LAST_UPDUSR_PNTTM
+				,   LAST_UPDUSR_ID
+			FROM 
+					OE1TNQURY
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						QURY_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						METHD_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+			ORDER BY QURY_ID ASC
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>	
+	</select>
+					
+	<select id="EgovOe1QueryDAO.countQueryList" parameterClass="egovOe1ArcDefaultVO" resultClass="int">
+			SELECT COUNT(*) AS total
+			FROM OE1TNQURY
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						QURY_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+					<isEqual prepend="AND" property="searchCondition" compareValue="1">
+						METHD_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+	</select>
+	
+
+	<!-- Component  -->
+	
+	<insert id="EgovOe1ComponentDAO.insertComponent" parameterClass="egovOe1ComponentVO">
+		<![CDATA[
+			INSERT INTO OE1TNCOMPN
+					(
+						COMPN_ID
+					,	COMPN_NM
+					,	COMPN_DC
+					,	ETC_DC
+					,   FRST_REGISTER_PNTTM
+					,   FRST_REGISTER_ID
+					,   LAST_UPDUSR_PNTTM
+					,   LAST_UPDUSR_ID
+					) 
+					VALUES
+					(
+					 	#compnId#
+					,   #compnNm#
+					,   #compnDc#
+					,	#etcDc#
+					,   sysdate
+					,   #frstRegisterId#
+					,   sysdate
+					,   #lastUpdusrId#
+					);
+		]]>
+	</insert>
+	
+	<update id="EgovOe1ComponentDAO.updateComponent" parameterClass="egovOe1ComponentVO">
+		<![CDATA[
+			UPDATE OE1TNCOMPN
+			SET 
+				COMPN_ID			= #compnId#
+			,	COMPN_NM			= #compnNm#
+			,	COMPN_DC			= #compnDc#
+			,	ETC_DC				= #etcDc#
+			,   LAST_UPDUSR_PNTTM	= #lastUpdusrPnttm#
+			,   LAST_UPDUSR_ID		= #lastUpdusrId#
+			WHERE
+				COMPN_ID = #compnId#
+		]]>
+	</update>
+	
+	
+	<delete id="EgovOe1ComponentDAO.deleteComponent" parameterClass="egovOe1ComponentVO">
+		<![CDATA[
+			DELETE FROM OE1TNCOMPN 
+			WHERE COMPN_ID = #compnId#
+		]]>
+	</delete>
+	
+	<select id="EgovOe1ComponentDAO.selectComponent" parameterClass="egovOe1ComponentVO" resultMap="Component">
+		<![CDATA[
+		SELECT 
+				COMPN_ID
+			,	COMPN_NM
+			,   COMPN_PCKAGE
+			,	COMPN_DC
+			,	ETC_DC
+			,   FRST_REGISTER_PNTTM
+			,   FRST_REGISTER_ID
+			,   LAST_UPDUSR_PNTTM
+			,   LAST_UPDUSR_ID
+		FROM 
+				OE1TNCOMPN
+		WHERE
+				COMPN_ID = #compnId#
+		]]>
+	</select>
+
+	<select id="EgovOe1ComponentDAO.selectComponentList" parameterClass="egovOe1ArcDefaultVO" resultMap="Component">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>	
+			SELECT 
+					COMPN_ID
+				,	COMPN_NM
+				,   COMPN_PCKAGE
+				,	COMPN_DC
+				,	ETC_DC
+				,   FRST_REGISTER_PNTTM
+				,   FRST_REGISTER_ID
+				,   LAST_UPDUSR_PNTTM
+				,   LAST_UPDUSR_ID
+			FROM 
+					OE1TNCOMPN
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						COMPN_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+			ORDER BY COMPN_ID ASC
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+	
+		<select id="EgovOe1ComponentDAO.selectComponentPkgList" parameterClass="egovOe1ArcDefaultVO" resultMap="Component">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>			
+			SELECT 
+				    A.COMPN_ID
+				,	A.COMPN_NM
+				,   B.CODE_NM AS COMPN_PCKAGE
+				,	A.COMPN_DC
+				,	A.ETC_DC
+				,   A.FRST_REGISTER_PNTTM
+				,   A.FRST_REGISTER_ID
+				,   A.LAST_UPDUSR_PNTTM
+				,   A.LAST_UPDUSR_ID
+			FROM 
+					OE1TNCOMPN A LEFT JOIN OE1TNOECOMMDETAILCD B ON B.CODE_ID = 'OE1030' AND A.COMPN_PCKAGE = B.CODE
+			WHERE 1=1
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>            
+	</select>
+			
+	<select id="EgovOe1ComponentDAO.selectComponentListAll" parameterClass="egovOe1ArcDefaultVO" resultMap="TreeCompnItem">
+		      
+		SELECT A.COMPN_ID, AA.COMPN_NM, B.CLASS_ID
+		      ,  B.CLASS_NM
+		      ,  C.METHD_ID
+		      ,  C.METHD_ALL_NM
+		      ,  D.PARAMTR_ID
+		      ,  D.PARAMTR_NM
+		      ,  E.QURY_ID
+		      ,  E.QURY_NM
+		FROM OE1TNCOMPN AA, OE1TNCOMPNMP A, OE1TNCLASS B
+		LEFT JOIN OE1TNMETHD C ON B.CLASS_ID = C.CLASS_ID
+		LEFT JOIN OE1TNPARAMTR D ON C.METHD_ID = D.METHD_ID
+		LEFT JOIN OE1TNQURY E ON C.METHD_ID = E.METHD_ID
+		WHERE AA.COMPN_ID = A.COMPN_ID AND A.CLASS_ID = B.CLASS_ID
+		<isNotEmpty prepend="AND" property="id">
+			AA.COMPN_ID = #id#
+		</isNotEmpty>
+			<isNotEmpty prepend="AND" property="searchKeyword">
+				1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					B.CLASS_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="4">
+					C.METHOD_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="8">
+					D.PARAMTR_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="16">
+					E.QURY_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+			</isNotEmpty>
+		ORDER BY A.COMPN_ID, B.CLASS_ID, C.METHD_ID
+	</select>
+			
+	<select id="EgovOe1ComponentDAO.countComponentList" parameterClass="egovOe1ArcDefaultVO" resultClass="int">
+			SELECT COUNT(*) AS total
+			FROM OE1TNCOMPN
+			WHERE 1=1
+					<isEqual prepend="AND" property="searchCondition" compareValue="0">
+						COMPN_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+					</isEqual>
+	</select>
+ 
+	<!-- for Tree  -->
+	<select id="EgovOe1ArcDefaultVO.getTreeMap" parameterClass="egovOe1ArcDefaultVO" resultMap="TreeItem">
+	      SELECT A.COMPN_ID, B.CLASS_ID
+			      ,  B.CLASS_NM
+			      ,  C.METHD_ID
+			      ,  C.METHD_ALL_NM
+			      ,  D.PARAMTR_ID
+			      ,  D.PARAMTR_NM
+			      ,  E.QURY_ID
+			      ,  E.QURY_NM
+			FROM OE1TNCOMPNMP A, OE1TNCLASS B
+			LEFT JOIN OE1TNMETHD C ON B.CLASS_ID = C.CLASS_ID
+			LEFT JOIN OE1TNPARAMTR D ON C.METHD_ID = D.METHD_ID
+			LEFT JOIN OE1TNQURY E ON C.METHD_ID = E.METHD_ID
+			WHERE A.CLASS_ID = B.CLASS_ID
+			<isNotEmpty prepend="AND" property="id">
+				A.COMPN_ID = #id#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="searchKeyword">
+				1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="2">
+					B.CLASS_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="4">
+					C.METHOD_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="8">
+					D.PARAMTR_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="16">
+					E.QURY_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+			</isNotEmpty>
+			
+	</select>
+	
+</sqlMap>

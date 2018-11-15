@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="LoginPolicy">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="comDefaultVO" type="egovframework.oe1.cms.com.service.EgovOe1ComDefaultVO"/>
+    <typeAlias  alias="loginPolicyVO" type="egovframework.oe1.cms.sys.service.EgovOe1LoginPolicyVO"/>
+
+	<resultMap id="loginPolicy" class="egovframework.oe1.cms.sys.service.EgovOe1LoginPolicyVO">
+        <result property="mberId" column="MBER_ID" />
+        <result property="mberNm" column="MBER_NM" />
+        <result property="ipInfo" column="IP_INFO" />
+        <result property="dplctPermAt" column="DPLCT_PERM_AT" />
+        <result property="lmttAt" column="LMTT_AT" />
+        <result property="regDate" column="LAST_UPDUSR_PNTTM" />
+        <result property="registYn" column="REGIST_YN" />
+	</resultMap>
+
+    <select id="loginPolicyDAO.selectLoginPolicyList" parameterClass="comDefaultVO" resultMap="loginPolicy">
+        <![CDATA[
+            SELECT  *
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.*
+              FROM  (
+        ]]>
+        
+        /* 구현 Sql */
+    	<![CDATA[
+            SELECT 
+            		A.MBER_ID, 
+                   A.MBER_NM, 
+                   B.IP_INFO, 
+                   DECODE(B.LMTT_AT, NULL, 'N', B.LMTT_AT) AS LMTT_AT, 
+                   DECODE(B.DPLCT_PERM_AT, NULL, 'N', B.DPLCT_PERM_AT) AS DPLCT_PERM_AT, 
+                   B.LAST_UPDUSR_PNTTM, 
+                   B.REGIST_YN AS REGIST_YN      
+              FROM OE1TNUSERINFO A LEFT OUTER JOIN OE1TNLOGINPOLICYINFO B
+                ON A.MBER_ID = B.MBER_ID   
+             WHERE 1 = 1
+      ]]>
+         <isEqual prepend="AND" property="searchCondition" compareValue="0">
+            A.MBER_ID LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+            A.MBER_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+        </isEqual>
+        	 ORDER BY A.SBSCRB_DE DESC 
+        /* 구현 Sql */
+        
+        <![CDATA[
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+    </select>
+
+    <select id="loginPolicyDAO.selectLoginPolicyListTotCnt" parameterClass="comDefaultVO" resultClass="int">
+    	<![CDATA[    
+            SELECT COUNT(*) AS totcnt                  
+              FROM OE1TNUSERINFO A LEFT OUTER JOIN OE1TNLOGINPOLICYINFO B
+                ON A.MBER_ID = B.MBER_ID   
+             WHERE 1 = 1
+           ]]>        
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				A.MBER_ID  LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				A.MBER_NM LIKE CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+    </select>
+     
+    <select id="loginPolicyDAO.selectLoginPolicy" parameterClass="loginPolicyVO" resultMap="loginPolicy">
+		SELECT  A.MBER_ID, 
+				A.MBER_NM, 
+				B.IP_INFO, 
+				DECODE(B.LMTT_AT, null, 'N', B.LMTT_AT) AS LMTT_AT, 
+				DECODE(B.DPLCT_PERM_AT, null, 'N', B.DPLCT_PERM_AT) AS DPLCT_PERM_AT, 
+				B.LAST_UPDUSR_PNTTM,
+				B.REGIST_YN AS REGIST_YN                  
+		  FROM  OE1TNUSERINFO A LEFT OUTER JOIN OE1TNLOGINPOLICYINFO B
+		    ON  A.MBER_ID = B.MBER_ID  
+         WHERE  A.MBER_ID = #mberId#
+    </select>
+    
+    <insert id="loginPolicyDAO.insertLoginPolicy" parameterClass="loginPolicyVO">
+        <![CDATA[
+            INSERT INTO OE1TNLOGINPOLICYINFO 
+                   (MBER_ID
+                   ,IP_INFO
+                   ,LMTT_AT
+                   ,DPLCT_PERM_AT
+                   ,FRST_REGISTER_PNTTM
+                   ,LAST_UPDUSR_PNTTM
+                   ,REGIST_YN)
+            VALUES 
+            		(#mberId#
+                   ,#ipInfo#
+                   ,#lmttAt#
+                   ,#dplctPermAt#
+                   ,sysdate
+                   ,sysdate
+                   ,'Y')
+        ]]>
+    </insert>
+
+    <update id="loginPolicyDAO.updateLoginPolicy" parameterClass="loginPolicyVO">
+        <![CDATA[
+            UPDATE OE1TNLOGINPOLICYINFO 
+               SET IP_INFO = #ipInfo#
+                  ,LMTT_AT = #lmttAt#
+                  ,DPLCT_PERM_AT = #dplctPermAt#
+                  ,LAST_UPDUSR_PNTTM = sysdate
+             WHERE MBER_ID = #mberId#
+        ]]>
+    </update>
+
+    <delete id="loginPolicyDAO.deleteLoginPolicy">
+        <![CDATA[
+            DELETE FROM OE1TNLOGINPOLICYINFO 
+             WHERE MBER_ID = #mberId#
+        ]]>
+    </delete>
+
+</sqlMap>

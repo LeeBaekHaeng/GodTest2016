@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovProgrmMng_altibase_SQL.xml" />	
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovMenuMng_altibase_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovMenuCreate_altibase_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovUserManage_altibase_SQL.xml" /> 
+
+	<!-- 권한 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovAuthorManage_altibase_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovGroupManage_altibase_SQL.xml" />
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovRoleManage_altibase_SQL.xml" /> 
+   	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovAuthorGroup_altibase_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovAuthorRoleManage_altibase_SQL.xml" /> 
+	
+	
+	<!-- 게시판 관리 -->
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovBBSMaster_altibase_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovBBSUse_altibase_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovBoard_altibase_SQL.xml" /> 
+	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovAttrBBSMaster_altibase_SQL.xml" /> 
+	
+   	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovLoginPolicyManage_altibase_SQL.xml" />
+   	
+
+	<!-- 운영환경 공통코드 -->
+   	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovCmmnCodeManage_altibase_SQL.xml" /> 
+   	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovCmmnDivCodeManage_altibase_SQL.xml" /> 
+   	<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovCmmnDetailCodeManage_altibase_SQL.xml" /> 
+   	
+   	 	 
+   	
+   		<sqlMap resource="egovframework/sqlmap/oe1/cms/sys/EgovConsent_altibase_SQL.xml" />  	
+</sqlMapConfig>

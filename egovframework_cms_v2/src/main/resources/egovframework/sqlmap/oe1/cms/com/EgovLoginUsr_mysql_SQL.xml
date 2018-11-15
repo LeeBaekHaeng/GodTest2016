@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="LoginUsr">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="loginVO" type="egovframework.oe1.cms.com.service.EgovOe1LoginVO"/>
+
+	<!-- 일반 로그인 -->
+	<select id="loginDAO.actionLogin" parameterClass="loginVO" resultClass="loginVO">
+		<![CDATA[
+			SELECT  A.MBER_ID          mberId 
+			     ,  A.PASSWORD               password 
+			     ,  A.UNIQ_ID          uniqId 
+			     ,  A.MBER_NM          mberNm  
+			     ,  A.MBER_EMAIL_ADRES mberEmailAdres
+			     ,  A.GROUP_ID         groupId
+			  FROM  OE1TNUSERINFO A
+			 WHERE  A.MBER_ID = #mberId# 
+               AND  A.PASSWORD = #password# 
+		]]>
+	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="loginDAO.searchId" parameterClass="loginVO" resultClass="loginVO">
+		<![CDATA[
+				SELECT	 MBER_ID mberId
+				FROM OE1TNUSERINFO
+				WHERE MBER_NM = #mberNm# AND MBER_EMAIL_ADRES = #mberEmailAdres#
+		]]>	
+	</select>
+	
+	<!-- 비밀번호 찾기 -->
+	<select id="loginDAO.searchPassword" parameterClass="loginVO" resultClass="loginVO">
+		<![CDATA[
+			  SELECT PASSWORD password
+			  FROM OE1TNUSERINFO
+			 WHERE MBER_NM = #mberNm#
+			 AND MBER_EMAIL_ADRES = #mberEmailAdres#
+			 AND PASSWORD_HINT = #passwordHint#
+			 AND PASSWORD_CNSR = #passwordCnsr#
+		]]>		
+	</select>
+	
+	<!-- 비밀번호 임시 변경 -->
+	<update id="loginDAO.updatePassword">
+		<![CDATA[
+			UPDATE OE1TNUSERINFO
+			SET PASSWORD = #password#
+			WHERE MBER_ID = #mberId#		
+		]]>	
+	</update>
+	
+</sqlMap>

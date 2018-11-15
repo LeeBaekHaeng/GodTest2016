@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RiskManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="riskManageVO" type="egovframework.oe1.cms.stn.service.EgovOe1RiskManageVO"/>
+
+	<resultMap id="riskManage"   class="egovframework.oe1.cms.stn.service.EgovOe1RiskManageVO">
+		<result property="riskId" 	         column="RISK_ID"/>
+		<result property="riskSj" 	         column="RISK_SJ"/>
+		<result property="riskTyCode" 	     column="RISK_TY_CODE"/>
+		<result property="riskCn" 	         column="RISK_CN"/>
+		<result property="charger" 	      	 column="CHARGER"/>
+		<result property="chargerId" 	     column="CHARGER_ID"/>
+		<result property="dgdgr" 	 		 column="DGDGR"/>
+		<result property="opertDrctCn" 	     column="OPERT_DRCT_CN"/>
+		<result property="atchFileId" 	     column="ATCH_FILE_ID"/>
+		<result property="prevntActResultSe" column="PREVNT_ACT_RESULT_SE"/>
+		<result property="prevntActBeginDe"  column="PREVNT_ACT_BEGIN_DE"/>
+		<result property="prevntActEndDe" 	 column="PREVNT_ACT_END_DE"/>
+		<result property="prevntActCn" 	     column="PREVNT_ACT_CN"/>
+		<result property="riskSttusCode" 	 column="RISK_STTUS_CODE"/>
+		<result property="riskSttusCodeNm" 	 column="RISK_STTUS_CODE_NM"/>
+		<result property="frstRegisterPnttm" column="FRST_REGISTER_PNTTM"/>
+		<result property="frstRegisterId" 	 column="FRST_REGISTER_ID"/>
+		<result property="frstRegisterNm" 	 column="FRST_REGISTER_NM"/>
+		<result property="lastUpdusrPnttm" 	 column="LAST_UPDUSR_PNTTM"/>
+		<result property="lastUpdusrId" 	 column="LAST_UPDUSR_ID"/>
+	</resultMap>
+
+	<resultMap id="riskManageStatus"   class="egovframework.oe1.cms.stn.service.EgovOe1RiskManageVO">
+		<result property="division" 	     column="division"/>
+		<result property="registCount" 	     column="registCount"/>
+		<result property="preventActCount" 	 column="preventActCount"/>
+		<result property="preventEndCount" 	 column="preventEndCount"/>
+		<result property="riskRemove" 	     column="riskRemove"/>
+		<result property="riskExtinction" 	 column="riskExtinction"/>
+	</resultMap>		
+
+	<resultMap id="riskOperList" class="egovframework.oe1.cms.stn.service.EgovOe1RiskManageVO">
+		<result property="operImprvmRequstId"  column="operImprvmRequstId"  />		   			
+		<result property="operImprvmRequstSj"  column="operImprvmRequstSj"  />
+		<result property="operJobSeCode"       column="operJobSeCode"       />
+		<result property="frstRegisterPnttm"   column="frstRegisterPnttm"    />
+		<result property="frstRegisterId"      column="frstRegisterId"       />
+	</resultMap>
+
+<!-- 위험등록관리 목록조회 -->	
+	<select id="riskManageDAO.selectRiskManageList" parameterClass="riskManageVO" resultClass="egovMap">			
+		SELECT * FROM
+		(
+		SELECT ROWNUM RNUM, LIST.* FROM
+			(
+		SELECT  RISK_ID
+		     ,  RISK_SJ
+		     ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE A.RISK_TY_CODE  = X.CODE AND X.CODE_ID = 'OE1025') RISK_TY_CODE
+		     ,  RISK_CN
+		     ,  CHARGER_ID
+		     ,  (SELECT MBER_NM FROM OE1TNUSERINFO X     WHERE A.CHARGER_ID      = X.MBER_ID                  ) CHARGER
+		     ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE A.DGDGR = X.CODE AND X.CODE_ID = 'OE1022') DGDGR
+		     ,  OPERT_DRCT_CN
+		     ,  ATCH_FILE_ID
+		     ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE A.PREVNT_ACT_RESULT_SE  = X.CODE AND X.CODE_ID = 'OE1001') PREVNT_ACT_RESULT_SE
+		     ,  PREVNT_ACT_BEGIN_DE
+		     ,  PREVNT_ACT_END_DE
+		     ,  PREVNT_ACT_CN
+		     ,  RISK_STTUS_CODE
+		     ,  (SELECT CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE A.RISK_STTUS_CODE = X.CODE AND X.CODE_ID = 'OE1024') RISK_STTUS_CODE_NM
+		     ,  TO_CHAR(A.FRST_REGISTER_PNTTM, 'YYYY-MM-DD') FRST_REGISTER_PNTTM
+		     ,  FRST_REGISTER_ID
+		     ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE X.MBER_ID = A.FRST_REGISTER_ID) FRST_REGISTER_NM
+		  FROM  OE1TNRISKMANAGE A
+		 WHERE  1 = 1
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                RISK_SJ     LIKE '%'||#searchKeyword#||'%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                RISK_CN      LIKE '%'||#searchKeyword#||'%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                CHARGER_ID IN ( SELECT MBER_ID FROM OE1TNUSERINFO WHERE MBER_NM LIKE '%'||#searchKeyword#||'%' )
+        </isEqual>
+        <isNotEmpty property="searchDgdgr">
+	        <isNotEqual property="searchDgdgr" compareValue="">
+	                AND DGDGR = #searchDgdgr#
+	        </isNotEqual>    
+        </isNotEmpty>
+        <isNotEmpty property="searchRiskTyCode">
+	        <isNotEqual property="searchRiskTyCode" compareValue="">
+	                AND RISK_TY_CODE = #searchRiskTyCode#
+	        </isNotEqual>    
+        </isNotEmpty>
+        <isNotEmpty property="searchRiskSttusCode">
+	        <isNotEqual property="searchRiskSttusCode" compareValue="">
+	                AND RISK_STTUS_CODE = #searchRiskSttusCode#
+	        </isNotEqual>    
+        </isNotEmpty>
+        ORDER BY FRST_REGISTER_PNTTM DESC
+			) LIST
+		)
+		<![CDATA[	
+         WHERE  RNUM  > #firstIndex#
+           AND  RNUM <= #firstIndex# + #recordCountPerPage#	
+        ]]>  	
+	</select>
+
+<!-- 위험등록관리 목록 총건수 -->
+	<select id="riskManageDAO.selectRiskManageListTotCnt" parameterClass="riskManageVO" resultClass="int">
+		SELECT  COUNT(*) totcnt
+		  FROM  OE1TNRISKMANAGE A
+		 WHERE  1 = 1
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                RISK_SJ      LIKE '%'||#searchKeyword#||'%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                RISK_CN      LIKE '%'||#searchKeyword#||'%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                CHARGER_ID IN ( SELECT MBER_ID FROM OE1TNUSERINFO WHERE MBER_NM LIKE '%'||#searchKeyword#||'%' )
+        </isEqual>
+        <isNotEmpty prepend="AND" property="searchDgdgr">
+        	<isNotEqual property="searchDgdgr" compareValue="">
+                	DGDGR = #searchDgdgr#
+	        </isNotEqual> 
+        </isNotEmpty>
+        <isNotEmpty property="searchRiskTyCode">
+	        <isNotEqual property="searchRiskTyCode" compareValue="">
+	                AND RISK_TY_CODE = #searchRiskTyCode#
+	        </isNotEqual> 
+        </isNotEmpty>
+        <isNotEmpty property="searchRiskSttusCode"> 
+	        <isNotEqual property="searchRiskSttusCode" compareValue="">
+	                AND RISK_STTUS_CODE = #searchRiskSttusCode#
+	        </isNotEqual> 
+        </isNotEmpty>         
+	</select>
+
+<!-- 위험등록관리 상세조회 -->
+	<select id="riskManageDAO.selectRiskManageDetail" parameterClass="riskManageVO" resultClass="riskManageVO">			
+		SELECT  RISK_ID                 riskId
+		     ,  RISK_SJ                 riskSj
+		     ,  RISK_TY_CODE            riskTyCode
+		     ,  RISK_CN                 riskCn
+		     ,  CHARGER_ID              chargerId
+		     ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X WHERE X.MBER_ID = A.CHARGER_ID) charger
+		     ,  DGDGR         dgdgr
+		     ,  OPERT_DRCT_CN           opertDrctCn
+		     ,  ATCH_FILE_ID            atchFileId
+		     ,  PREVNT_ACT_RESULT_SE   prevntActResultSe
+		     ,  PREVNT_ACT_BEGIN_DE    prevntActBeginDe
+		     ,  PREVNT_ACT_END_DE      prevntActEndDe
+		     ,  PREVNT_ACT_CN          prevntActCn
+		     ,  RISK_STTUS_CODE         riskSttusCode
+		     ,  FRST_REGISTER_PNTTM     frstRegisterPnttm
+		     ,  FRST_REGISTER_ID        frstRegisterId
+		  FROM  OE1TNRISKMANAGE A
+		 WHERE  RISK_ID = #riskId#
+	</select>	
+
+<!-- 위험등록 -->
+	<insert id="riskManageDAO.insertRiskManage">
+		<![CDATA[
+			INSERT
+			  INTO  OE1TNRISKMANAGE
+			     (  RISK_ID
+			     ,  RISK_SJ
+			     ,  RISK_TY_CODE
+			     ,  RISK_CN
+			     ,  CHARGER_ID
+			     ,  DGDGR
+			     ,  OPERT_DRCT_CN
+			     ,  ATCH_FILE_ID
+			     ,  PREVNT_ACT_RESULT_SE
+			     ,  PREVNT_ACT_BEGIN_DE
+			     ,  PREVNT_ACT_END_DE
+			     ,  PREVNT_ACT_CN
+			     ,  RISK_STTUS_CODE
+			     ,  FRST_REGISTER_PNTTM
+			     ,  FRST_REGISTER_ID
+			     ,  LAST_UPDUSR_PNTTM
+			     ,  LAST_UPDUSR_ID
+			     )
+			VALUES
+			     (  #riskId#
+			     ,  #riskSj#
+			     ,  #riskTyCode#
+			     ,  #riskCn#
+			     ,  #chargerId#
+			     ,  #dgdgr#
+			     ,  #opertDrctCn#
+			     ,  #atchFileId#
+			     ,  #prevntActResultSe#
+			     ,  #prevntActBeginDe#
+			     ,  #prevntActEndDe#
+			     ,  #prevntActCn#
+			     ,  '01'
+			     ,  SYSDATE
+			     ,  #frstRegisterId#
+			     ,  SYSDATE
+			     ,  #frstRegisterId#
+			     )
+		]]>
+	</insert>
+
+<!-- 위험수정 -->
+	<update id="riskManageDAO.updateRiskManage">
+		<![CDATA[
+			UPDATE  OE1TNRISKMANAGE
+			   SET  RISK_SJ               = #riskSj#
+			     ,  RISK_TY_CODE          = #riskTyCode#
+			     ,  RISK_CN               = #riskCn#
+			     ,  CHARGER_ID            = #chargerId#
+			     ,  DGDGR                 = #dgdgr#
+			     ,  OPERT_DRCT_CN         = #opertDrctCn#
+			     ,  ATCH_FILE_ID          = #atchFileId#
+			     ,  PREVNT_ACT_RESULT_SE = #prevntActResultSe#
+			     ,  PREVNT_ACT_BEGIN_DE  = #prevntActBeginDe#
+			     ,  PREVNT_ACT_END_DE    = #prevntActEndDe#
+			     ,  PREVNT_ACT_CN        = #prevntActCn#
+			     ,  RISK_STTUS_CODE       = #riskSttusCode#
+                 ,  LAST_UPDUSR_PNTTM     = SYSDATE
+                 ,  LAST_UPDUSR_ID        = #lastUpdusrId#
+			 WHERE  RISK_ID = #riskId#
+		]]>
+	</update>	
+
+<!-- 관련 개션요청 목록 조회-->	
+	<select id="riskManageDAO.selectRelOperImprovReqList" parameterClass="riskManageVO" resultMap="riskOperList">			
+		SELECT  A.OPER_IMPRVM_REQUST_ID                                                                            operImprvmRequstId            
+		     ,  A.OPER_IMPRVM_REQUST_SJ                                                                            operImprvmRequstSj            
+		     ,  (SELECT X.CODE_NM FROM OE1TNOECOMMDETAILCD X WHERE X.CODE = A.OPER_JOB_SE_CODE AND X.CODE_ID = 'OE1020') operJobSeCode        
+		     ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X       WHERE A.FRST_REGISTER_ID = X.MBER_ID             ) frstRegisterId
+		     ,  TO_CHAR(A.FRST_REGISTER_PNTTM, 'YYYY-MM-DD')                                                frstRegisterPnttm           
+		  FROM  OE1TNOPERIMPROVREQ A                                                                                      
+		<dynamic prepend="WHERE">
+			<iterate property="operImprvmRequstIdList" open="OPER_IMPRVM_REQUST_ID IN (" conjunction=", " close=")">
+			#operImprvmRequstIdList[]#
+			</iterate>
+		</dynamic> 	</select>
+	
+<!-- 관련 개션요청 목록 조회-->		
+	<select id="riskManageDAO.selectRelOperImprovReq2List" parameterClass="riskManageVO" resultMap="riskOperList">			
+		SELECT  A.OPER_IMPRVM_REQUST_ID                                                                            operImprvmRequstId            
+		     ,  A.OPER_IMPRVM_REQUST_SJ                                                                            operImprvmRequstSj            
+		     ,  (SELECT X.CODE_NM   FROM OE1TNOECOMMDETAILCD X WHERE X.CODE = A.OPER_JOB_SE_CODE AND X.CODE_ID = 'OE1020') operJobSeCode        
+		     ,  (SELECT X.MBER_NM FROM OE1TNUSERINFO X       WHERE A.FRST_REGISTER_ID = X.MBER_ID             ) frstRegisterId
+		     ,  TO_CHAR(A.FRST_REGISTER_PNTTM, 'YYYY-MM-DD')                                                   frstRegisterPnttm           
+		  FROM  OE1TNOPERIMPROVREQ     A        
+             ,  OE1TNOPERIMPROVREQRISK B
+         WHERE  B.OPER_IMPRVM_REQUST_ID = A.OPER_IMPRVM_REQUST_ID       
+           AND  B.RISK_ID            = #riskId#
+	</select>
+
+<!-- 관련 개션요청 등록-->	
+	<insert id="riskManageDAO.insertOperImprovReqRisk">
+		<![CDATA[
+			INSERT 
+			  INTO  OE1TNOPERIMPROVREQRISK
+			     (  RISK_ID
+			     ,  OPER_IMPRVM_REQUST_ID
+			     ,  FRST_REGISTER_PNTTM
+			     ,  FRST_REGISTER_ID
+			     ,  LAST_UPDUSR_PNTTM
+			     ,  LAST_UPDUSR_ID
+			     ) 
+			VALUES 
+			     (  #riskId#
+			     ,  #operImprvmRequstId#
+			     ,  SYSDATE
+			     ,  #frstRegisterId#
+			     ,  SYSDATE
+			     ,  #frstRegisterId#
+			     )
+		]]>
+	</insert>
+
+<!-- 관련개선요청 삭제 -->
+	<delete id="riskManageDAO.deleteOperImprovReqRisk">
+		<![CDATA[
+			DELETE 
+			  FROM  OE1TNOPERIMPROVREQRISK
+			 WHERE  RISK_ID            = #riskId# 
+			   AND  OPER_IMPRVM_REQUST_ID = #operImprvmRequstId#
+		]]>
+	</delete>
+
+<!-- 위험예방활동 저장 -->
+	<update id="riskManageDAO.updateRiskPrevent">
+		<![CDATA[
+			UPDATE  OE1TNRISKMANAGE
+			   SET  PREVNT_ACT_RESULT_SE = #prevntActResultSe#
+			     ,  PREVNT_ACT_BEGIN_DE  = #prevntActBeginDe#
+			     ,  PREVNT_ACT_END_DE    = #prevntActEndDe#
+			     ,  PREVNT_ACT_CN        = #prevntActCn#
+			     ,  RISK_STTUS_CODE       = #riskSttusCode#
+                 ,  LAST_UPDUSR_PNTTM     = SYSDATE
+                 ,  LAST_UPDUSR_ID        = #lastUpdusrId#
+			 WHERE  RISK_ID = #riskId#
+		]]>
+	</update>	
+
+<!-- 위험 통계 -->
+	<select id="riskManageDAO.selectRiskStatus" parameterClass="riskManageVO"  resultMap="riskManageStatus">	
+			select   sum(T4.registCount)  		as  registCount
+					,sum(T4.preventActCount) 	as  preventActCount
+					,sum(T4.preventEndCount) 	as  preventEndCount
+			 		,sum(T4.riskRemove) 		as  riskRemove
+					,sum(T4.riskExtinction) 	as  riskExtinction
+					,T4.division  				as  division
+					,T4.order_id  				as  order_id
+			from (
+						select (case  when a.RISK_STTUS_CODE >= '01' then 1
+						           else 0
+						             end) as registCount
+						         , (case a.RISK_STTUS_CODE when '02' then 1
+						           else 0
+						             end) as preventActCount
+						         , (case a.RISK_STTUS_CODE when '03' then 1
+						           else 0
+						             end) as preventEndCount
+						         , (case when a.RISK_STTUS_CODE = '03' and a.PREVNT_ACT_RESULT_SE = '01' then 1
+						             else 0
+						             end) as riskRemove
+						         , (case when a.RISK_STTUS_CODE = '03' and a.PREVNT_ACT_RESULT_SE = '02' then 1
+						             else 0
+						             end) as riskExtinction   
+						         ,  (case #statusCondition# when '1' then    TO_CHAR(a.FRST_REGISTER_PNTTM, 'YYYY-MM') 
+						            when '2' then				T1.code_nm
+						            when '3' then				T2.code_nm
+						            when '4' then				T3.mber_nm
+						            end )      as division
+						         ,  (case #statusCondition# when '1' then    TO_CHAR(a.FRST_REGISTER_PNTTM, 'YYYY-MM') 
+						            when '2' then				T1.code
+						            when '3' then				T2.code
+						            when '4' then				T3.mber_nm
+						            end )      as order_id
+						from OE1TNRISKMANAGE a
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T1 on T1.CODE_ID = 'OE1025' AND a.RISK_TY_CODE  = T1.CODE
+						LEFT OUTER JOIN OE1TNOECOMMDETAILCD T2 on T2.CODE_ID = 'OE1022' AND a.DGDGR         = T2.CODE  
+						LEFT OUTER JOIN OE1TNUSERINFO       T3 on T3.MBER_ID = a.CHARGER_ID
+						where 1=1
+							<isNotEmpty prepend="AND" property="fromDate">
+								TO_CHAR(a.FRST_REGISTER_PNTTM, 'YYYYMMDD') between REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','')	
+							</isNotEmpty>
+					) T4
+					group by T4.division, T4.order_id 
+					order by T4.order_id ASC
+	</select>	
+	
+<!-- 위험 통계- 총건수 -->	
+    <select id="riskManageDAO.selectRiskStatusTot" parameterClass="riskManageVO" resultClass="int">
+			SELECT COUNT(RISK_ID) totalRequstCount
+            FROM OE1TNRISKMANAGE
+             WHERE 1=1
+			<isNotEmpty prepend="AND" property="fromDate">
+	            TO_CHAR(FRST_REGISTER_PNTTM, 'YYYYMMDD') BETWEEN REPLACE(#fromDate#,'-','')  AND  REPLACE(#toDate#,'-','')	
+	        </isNotEmpty>
+    </select>	
+</sqlMap>

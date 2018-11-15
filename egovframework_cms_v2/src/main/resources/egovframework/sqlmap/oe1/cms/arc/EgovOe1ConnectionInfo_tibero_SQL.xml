@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ConnectionInfo">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="egovOe1ConnectionInfoVO" type="egovframework.oe1.cms.arc.service.EgovOe1ConnectionInfoVO"/>
+   
+    <resultMap id="connection" class="egovframework.oe1.cms.arc.service.EgovOe1ConnectionInfoVO">
+        <result property="cntcInfoId" column="CNTC_INFO_ID" columnIndex="1"/>
+        <result property="cntcNm" column="CNTC_NM" columnIndex="2"/>
+        <result property="provdInstt" column="PROVD_INSTT" columnIndex="3"/>
+        <result property="cttpc" column="CTTPC" columnIndex="4"/>
+        <result property="cntcBeginDe" column="CNTC_BEGIN_DE" columnIndex="5"/>
+        <result property="cntcEndDe" column="CNTC_END_DE" columnIndex="6"/>
+        <result property="cntcInfoDc" column="CNTC_INFO_DC" columnIndex="7"/>
+        <result property="useAt" column="USE_AT" columnIndex="8"/>      
+    </resultMap>
+    
+	<insert id="egovOe1ConnectionInfoDAO.insertConnectionInfo">
+		<![CDATA[
+			INSERT INTO OE1TNCNTCINFO 
+				( CNTC_INFO_ID
+				  ,CNTC_NM              
+				  ,PROVD_INSTT              
+				  ,CTTPC
+				  ,CNTC_BEGIN_DE
+				  ,CNTC_END_DE
+				  ,USE_AT
+				  ,CNTC_INFO_DC
+				  ,FRST_REGISTER_PNTTM  
+				  ,FRST_REGISTER_ID
+				  ,LAST_UPDUSR_PNTTM    
+				  ,LAST_UPDUSR_ID        )
+			VALUES ( #cntcInfoId#
+				  , #cntcNm#
+				  , #provdInstt#
+				  , #cttpc#
+				  ,REPLACE(#cntcBeginDe#,'-','')  
+				  ,REPLACE(#cntcEndDe#,'-','')  
+				  , #useAt#
+				  ,#cntcInfoDc#
+				  , SYSDATE
+				  , #frstRegisterId#
+				  , SYSDATE
+				  ,#frstRegisterId#)
+		]]>
+	</insert>
+	
+	<update id="egovOe1ConnectionInfoDAO.updateServiceConnectionInfo">
+		<![CDATA[
+			UPDATE OE1TNCNTCINFO 
+			SET CNTC_INFO_ID=#cntcInfoId#
+				,CNTC_NM=#cntcNm#
+				,PROVD_INSTT = #provdInstt#
+				,CTTPC = #cttpc#
+				,CNTC_BEGIN_DE =REPLACE(#cntcBeginDe#,'-','')  
+				,CNTC_END_DE = REPLACE(#cntcEndDe#,'-','')  
+				,CNTC_INFO_DC = #cntcInfoDc#
+				,USE_AT=#useAt#
+				,LAST_UPDUSR_PNTTM = SYSDATE
+				,LAST_UPDUSR_ID = #lastUpdusrId#
+			WHERE CNTC_INFO_ID=#cntcInfoId#
+		]]>
+	</update>
+	
+	<delete id="egovOe1ConnectionInfoDAO.deleteConnectionInfo">
+		<![CDATA[
+			DELETE FROM OE1TNCNTCINFO 
+			WHERE CNTC_INFO_ID=#cntcInfoId#
+		]]>
+	</delete>
+	
+	<select id="egovOe1ConnectionInfoDAO.selectConnectionInfo" resultClass="egovOe1ConnectionInfoVO">
+		<![CDATA[
+			SELECT CNTC_INFO_ID cntcInfoId
+				,CNTC_NM cntcNm
+				,PROVD_INSTT provdInstt
+				,CTTPC cttpc
+				,TO_CHAR(TO_DATE(CNTC_BEGIN_DE, 'yyyymmdd'), 'yyyy-mm-dd')  cntcBeginDe
+				,TO_CHAR(TO_DATE(CNTC_END_DE, 'yyyymmdd'),'yyyy-mm-dd')  cntcEndDe
+				,CNTC_INFO_DC cntcInfoDc
+				,USE_AT useAt
+			FROM OE1TNCNTCINFO 
+			WHERE CNTC_INFO_ID=#cntcInfoId#
+		]]>
+	</select>
+	
+	<select id="egovOe1ConnectionInfoDAO.selectConnectionInfoList" parameterClass="egovOe1ConnectionInfoVO" resultMap="connection">
+        <![CDATA[
+	SELECT * FROM (SELECT ROWNUM rn, TB.* FROM ( 	
+				SELECT
+					CNTC_INFO_ID
+					,CNTC_NM
+					,PROVD_INSTT
+					,CTTPC
+					,TO_CHAR(TO_DATE(CNTC_BEGIN_DE, 'yyyymmdd'), 'yyyy-mm-dd') as CNTC_BEGIN_DE
+					,TO_CHAR(TO_DATE(CNTC_END_DE, 'yyyymmdd'),'yyyy-mm-dd') as CNTC_END_DE
+					,CNTC_INFO_DC
+					,USE_AT 
+				FROM OE1TNCNTCINFO
+				WHERE 1=1
+				]]>
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					CNTC_NM LIKE  CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					PROVD_INSTT LIKE  CONCAT(CONCAT('%', #searchKeyword#), '%')
+				</isEqual>
+        <![CDATA[
+				ORDER BY CNTC_INFO_ID DESC
+				) TB ) WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+	
+	<select id="egovOe1ConnectionInfoDAO.selectConnectionInfoListTot" parameterClass="egovOe1ConnectionInfoVO" resultClass="int">
+	    <![CDATA[
+			SELECT COUNT(*) totcnt
+			FROM OE1TNCNTCINFO
+			WHERE 1=1
+			]]>
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				CNTC_NM LIKE  CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				PROVD_INSTT LIKE  CONCAT(CONCAT('%', #searchKeyword#), '%')
+			</isEqual>
+	</select>
+
+</sqlMap>
