@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SchdulResult">
+
+	<typeAlias alias="SchdulResultVO" type="egovframework.bopr.sim.service.SchdulResultVO"/>
+	
+	<resultMap id="SchdulResultList" class="egovframework.bopr.sim.service.SchdulResultVO">
+		<result property="schdulResultNo" column="SCHDUL_RESULT_NO" columnIndex="1" />
+		<result property="schdulNo"       column="SCHDUL_NO"        columnIndex="2" />
+		<result property="schdulNm"       column="SCHDUL_NM"        columnIndex="3" />
+		<result property="jobExecutionId" column="JOB_EXECUTION_ID" columnIndex="4" />
+		<result property="startTime"      column="START_TIME"       columnIndex="5" />
+		<result property="endTime"        column="END_TIME"         columnIndex="6" />
+		<result property="processResult"  column="PROCESS_RESULT"   columnIndex="7" />
+		<result property="errorCn"        column="ERROR_CN"         columnIndex="8" />
+		<result property="batchId"        column="BATCH_ID"         columnIndex="9" />
+		<result property="batchNm"        column="BATCH_NM"         columnIndex="10" />
+		<result property="jobSeCode"      column="JOB_SE_CODE"      columnIndex="11"/>
+		<result property="jobSeCodeNm"    column="JOB_SE_CODE_NM"   columnIndex="12"/>
+	</resultMap>
+
+	<select id="SchdulResultDAO.selectSchdulResultList" parameterClass="SchdulResultVO" resultMap="SchdulResultList">
+	<![CDATA[
+	    SELECT A.*
+	    FROM
+	        ( SELECT
+	              A.SCHDUL_RESULT_NO
+		        , A.SCHDUL_NO
+		        , B.SCHDUL_NM
+		        , A.JOB_EXECUTION_ID
+		        , CONCAT(SUBSTRING(A.START_TIME, 1, 4), '-', SUBSTRING(A.START_TIME, 5, 2), '-', SUBSTRING(A.START_TIME, 7, 2), ' '
+		                , SUBSTRING(A.START_TIME, 9, 2), ':', SUBSTRING(A.START_TIME, 11, 2), ':', SUBSTRING(A.START_TIME, 13, 2)) as START_TIME
+		        , CONCAT(SUBSTRING(A.END_TIME, 1, 4), '-', SUBSTRING(A.END_TIME, 5, 2), '-', SUBSTRING(A.END_TIME, 7, 2), ' '
+		                , SUBSTRING(A.END_TIME, 9, 2), ':', SUBSTRING(A.END_TIME, 11, 2), ':', SUBSTRING(A.END_TIME, 13, 2)) as END_TIME
+		        , A.PROCESS_RESULT
+		        , A.ERROR_CN
+		        , B.BATCH_ID
+		        , C.BATCH_NM
+		        , C.JOB_SE_CODE
+		        , ( SELECT S.CODE_NM
+                    FROM TC_CMMNDETAILCODE S
+                    WHERE S.CODE_ID = 'BO001'
+                      AND S.CODE = C.JOB_SE_CODE ) as JOB_SE_CODE_NM
+		      FROM
+		          TN_SCHDUL_RESULT A
+		        , TN_SCHDUL B
+		        , TN_BATCH C
+		      WHERE A.SCHDUL_NO = B.SCHDUL_NO
+		        AND B.BATCH_ID = C.BATCH_ID
+		        AND C.DELETE_AT = 'N'
+	]]>
+	          <isEqual prepend="AND" property="searchCondition" compareValue="A">
+	            B.BATCH_ID LIKE CONCAT('%', #searchKeyword#, '%')
+		      </isEqual>
+		      <isEqual prepend="AND" property="searchCondition" compareValue="B">
+	            A.SCHDUL_NO LIKE CONCAT('%', #searchKeyword#, '%')
+		      </isEqual>
+		      <isEqual prepend="AND" property="searchCondition" compareValue="C">
+	            B.SCHDUL_NM LIKE CONCAT('%', #searchKeyword#, '%')
+		      </isEqual>
+		      <isEqual prepend="AND" property="searchCondition" compareValue="D">
+	            A.SCHDUL_RESULT_NO LIKE CONCAT('%', #searchKeyword#, '%')
+		      </isEqual>
+		      <isEqual prepend="AND" property="searchCondition" compareValue="E">
+	            A.PROCESS_RESULT LIKE CONCAT('%', #searchKeyword#, '%')
+		      </isEqual>
+		      <isEqual prepend="AND" property="searchDe" compareValue="START_TIME">
+	            A.START_TIME BETWEEN CONCAT(#searchKeywordFrom#, '000000') AND CONCAT(#searchKeywordTo#, '235959')
+		      </isEqual>
+		      <isEqual prepend="AND" property="searchDe" compareValue="END_TIME">
+	            A.END_TIME BETWEEN CONCAT(#searchKeywordFrom#, '000000') AND CONCAT(#searchKeywordTo#, '235959')
+		      </isEqual>
+		      <isNotEmpty prepend="AND" property="jobSeCode">
+	            C.JOB_SE_CODE = #jobSeCode#
+	          </isNotEmpty>
+	<![CDATA[
+		      ORDER BY A.FRST_REGIST_PNTTM DESC, A.JOB_EXECUTION_ID DESC
+		    ) A
+		LIMIT #recordCountPerPage# OFFSET #firstIndex#
+	]]>
+	</select>
+	
+	<select id="SchdulResultDAO.selectSchdulResultListTotCnt" parameterClass="SchdulResultVO" resultClass="int">
+	<![CDATA[
+	    SELECT
+	        COUNT(1) as TOT_CNT
+	    FROM
+	        TN_SCHDUL_RESULT A
+	      , TN_SCHDUL B
+	      , TN_BATCH C
+	    WHERE A.SCHDUL_NO = B.SCHDUL_NO
+	      AND B.BATCH_ID = C.BATCH_ID
+	      AND C.DELETE_AT = 'N'
+	]]>
+	    <isEqual prepend="AND" property="searchCondition" compareValue="A">
+	      B.BATCH_ID LIKE CONCAT('%', #searchKeyword#, '%')
+	    </isEqual>
+	    <isEqual prepend="AND" property="searchCondition" compareValue="B">
+          A.SCHDUL_NO LIKE CONCAT('%', #searchKeyword#, '%')
+	    </isEqual>
+	    <isEqual prepend="AND" property="searchCondition" compareValue="C">
+          B.SCHDUL_NM LIKE CONCAT('%', #searchKeyword#, '%')
+	    </isEqual>
+	    <isEqual prepend="AND" property="searchCondition" compareValue="D">
+          A.SCHDUL_RESULT_NO LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="E">
+	      A.PROCESS_RESULT LIKE CONCAT('%', #searchKeyword#, '%')
+		</isEqual>
+	    <isEqual prepend="AND" property="searchDe" compareValue="START_TIME">
+          A.START_TIME BETWEEN CONCAT(#searchKeywordFrom#, '000000') AND CONCAT(#searchKeywordTo#, '235959')
+	    </isEqual>
+	    <isEqual prepend="AND" property="searchDe" compareValue="END_TIME">
+          A.END_TIME BETWEEN CONCAT(#searchKeywordFrom#, '000000') AND CONCAT(#searchKeywordTo#, '235959')
+	    </isEqual>
+	    <isNotEmpty prepend="AND" property="jobSeCode">
+	      C.JOB_SE_CODE = #jobSeCode#
+	    </isNotEmpty>
+	</select>
+	
+	<select id="SchdulResultDAO.selectSchdulResult" parameterClass="SchdulResultVO" resultMap="SchdulResultList">
+	<![CDATA[
+		SELECT
+		    A.SCHDUL_RESULT_NO
+		  , A.SCHDUL_NO
+		  , B.SCHDUL_NM
+		  , A.JOB_EXECUTION_ID
+		  , CONCAT(SUBSTRING(A.START_TIME, 1, 4), '-', SUBSTRING(A.START_TIME, 5, 2), '-', SUBSTRING(A.START_TIME, 7, 2), ' '
+		          , SUBSTRING(A.START_TIME, 9, 2), ':', SUBSTRING(A.START_TIME, 11, 2), ':', SUBSTRING(A.START_TIME, 13, 2)) as START_TIME
+		  , CONCAT(SUBSTRING(A.END_TIME, 1, 4), '-', SUBSTRING(A.END_TIME, 5, 2), '-', SUBSTRING(A.END_TIME, 7, 2), ' '
+		          , SUBSTRING(A.END_TIME, 9, 2), ':', SUBSTRING(A.END_TIME, 11, 2), ':', SUBSTRING(A.END_TIME, 13, 2)) as END_TIME
+		  , A.PROCESS_RESULT
+		  , A.ERROR_CN
+		  , B.BATCH_ID
+		  , C.BATCH_NM
+		  , C.JOB_SE_CODE
+		  , ( SELECT S.CODE_NM
+              FROM TC_CMMNDETAILCODE S
+              WHERE S.CODE_ID = 'BO001'
+                AND S.CODE = C.JOB_SE_CODE ) as JOB_SE_CODE_NM
+		FROM
+		    TN_SCHDUL_RESULT A
+		  , TN_SCHDUL B
+		  , TN_BATCH C
+		WHERE A.SCHDUL_NO = B.SCHDUL_NO
+		  AND B.BATCH_ID = C.BATCH_ID
+		  AND C.DELETE_AT = 'N'
+		  AND A.SCHDUL_RESULT_NO = #schdulResultNo#
+	]]>
+	</select>
+	
+	<insert id="SchdulResultDAO.insertSchdulResult" parameterClass="SchdulResultVO">
+	<![CDATA[
+		INSERT INTO TN_SCHDUL_RESULT
+		(
+		    SCHDUL_RESULT_NO
+		  , SCHDUL_NO
+		  , JOB_EXECUTION_ID
+		  , START_TIME
+		  , PROCESS_RESULT
+		  , ERROR_CN
+		  , FRST_REGISTER_ID
+		  , FRST_REGIST_PNTTM
+		  , LAST_UPDUSR_ID
+		  , LAST_UPDT_PNTTM
+		)
+		VALUES
+		(
+		    #schdulResultNo#
+		  , #schdulNo#
+		  , #jobExecutionId#
+		  , CONVERT(DATE_FORMAT(sysdate(), '%Y%m%d%H%i%s'), CHAR)
+		  , #processResult#
+		  , #errorCn#
+		  , #frstRegisterId#
+		  , SYSDATE()
+		  , #lastUpdusrId#
+		  , SYSDATE()
+		)
+	]]>
+	</insert>
+	
+	<update id="SchdulResultDAO.updateSchdulResult" parameterClass="SchdulResultVO">
+	<![CDATA[
+		UPDATE TN_SCHDUL_RESULT
+		SET
+		    JOB_EXECUTION_ID = #jobExecutionId#
+		  , END_TIME = CONVERT(DATE_FORMAT(sysdate(), '%Y%m%d%H%i%s'), CHAR)
+		  , PROCESS_RESULT = COALESCE(#processResult#, (SELECT S.STATUS FROM BATCH_JOB_EXECUTION S WHERE S.JOB_EXECUTION_ID = #jobExecutionId# ))
+		  , ERROR_CN = #errorCn#
+		  , LAST_UPDUSR_ID = #lastUpdusrId#
+		  , LAST_UPDT_PNTTM = SYSDATE()
+		WHERE SCHDUL_RESULT_NO = #schdulResultNo#
+	]]>
+	</update>
+	
+	<delete id="SchdulResultDAO.deleteSchdulResult" parameterClass="SchdulResultVO">
+	<![CDATA[
+		DELETE FROM TN_SCHDUL_RESULT
+		WHERE 1 = 1
+	]]>
+		<isNotEmpty prepend="AND" property="batchId">
+		  SCHDUL_NO IN ( SELECT S.SCHDUL_NO FROM TN_SCHDUL S WHERE S.BATCH_ID = #batchId# )
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="schdulNo">
+		  SCHDUL_NO = #schdulNo#
+		</isNotEmpty>
+	</delete>
+
+</sqlMap>

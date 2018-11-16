@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Customer">
+
+  <resultMap id="result" class="egovframework.sample.bat.domain.trade.CustomerCredit">
+    <result property="name" column="NAME" />
+    <result property="credit" column="CREDIT" />
+  </resultMap>
+
+  <select id="getCustomer_READ" resultMap="result">
+ 	select NAME, CREDIT from CUSTOMER_READ
+  </select>
+
+  <insert id="insertCredit">
+  	INSERT INTO customer(name,credit) VALUES(#name#,#credit#)
+  </insert>
+
+</sqlMap>

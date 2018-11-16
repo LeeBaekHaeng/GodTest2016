@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+    <formset>
+        <form name="jobKnwldgManage">
+            <field property="knwldgTyCode" depends="required">
+                <arg0 key="지식유형" resource="false"/>
+            </field>
+            <field property="knwldgNm" depends="required">
+                <arg0 key="지식명" resource="false"/>
+            </field>
+            <field property="othbcAt" depends="required">
+                <arg0 key="공개여부" resource="false"/>
+            </field>
+            <field property="knwldgCn" depends="required">
+                <arg0 key="지식내용" resource="false"/>
+            </field>
+			<field property="dsuseDe" depends="date">
+        		<arg0 key="폐기일" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+			</field> 
+        </form>
+	</formset>   
+</form-validation>

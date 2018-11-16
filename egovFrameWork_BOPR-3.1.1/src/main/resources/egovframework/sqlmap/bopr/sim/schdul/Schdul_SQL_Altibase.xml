@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BatchWdtb">
+
+    <typeAlias  alias="SchdulVO" type="egovframework.bopr.sim.service.SchdulVO"/>
+    <typeAlias  alias="BatchParamtrVO" type="egovframework.bopr.sim.service.BatchParamtrVO"/>
+
+    <resultMap id="schdulList" class="egovframework.bopr.sim.service.SchdulVO">
+        <result property="batchId"           column="BATCH_ID"            columnIndex="1"/>
+        <result property="batchNm"           column="BATCH_NM"            columnIndex="2"/>
+        <result property="jobSeCode"         column="JOB_SE_CODE"         columnIndex="3"/>
+        <result property="jobSeCodeNm"       column="JOB_SE_CODE_NM"      columnIndex="4"/>
+        <result property="schdulNo"          column="SCHDUL_NO"           columnIndex="5"/>
+        <result property="schdulNm"          column="SCHDUL_NM"           columnIndex="6"/>
+        <result property="executCycle"       column="EXECUT_CYCLE"        columnIndex="7"/>
+        <result property="executSchdulDe"    column="EXECUT_SCHDUL_DE"    columnIndex="8"/>
+        <result property="executSchdulHour"  column="EXECUT_SCHDUL_HOUR"  columnIndex="9"/>
+        <result property="executSchdulMnt"   column="EXECUT_SCHDUL_MNT"   columnIndex="10"/>
+        <result property="executSchdulSecnd" column="EXECUT_SCHDUL_SECND" columnIndex="11"/>
+        <result property="frstRegistPnttm"   column="FRST_REGIST_PNTTM"   columnIndex="12"/>
+    </resultMap>
+    
+    <resultMap id="schdul" class="egovframework.bopr.sim.service.SchdulVO">
+        <result property="batchId"           column="BATCH_ID"            columnIndex="1"/>
+        <result property="batchNm"           column="BATCH_NM"            columnIndex="2"/>
+        <result property="jobSeCode"         column="JOB_SE_CODE"         columnIndex="3"/>
+        <result property="jobSeCodeNm"       column="JOB_SE_CODE_NM"      columnIndex="4"/>
+        <result property="schdulNo"          column="SCHDUL_NO"           columnIndex="5"/>
+        <result property="schdulNm"          column="SCHDUL_NM"           columnIndex="6"/>
+        <result property="executCycle"       column="EXECUT_CYCLE"        columnIndex="7"/>
+        <result property="executSchdulDe"    column="EXECUT_SCHDUL_DE"    columnIndex="8"/>
+        <result property="executSchdulHour"  column="EXECUT_SCHDUL_HOUR"  columnIndex="9"/>
+        <result property="executSchdulMnt"   column="EXECUT_SCHDUL_MNT"   columnIndex="10"/>
+        <result property="executSchdulSecnd" column="EXECUT_SCHDUL_SECND" columnIndex="11"/>
+        <result property="frstRegistPnttm"   column="FRST_REGIST_PNTTM"   columnIndex="12"/>
+    </resultMap>
+    
+    <resultMap id="schdulParamtr" class="egovframework.bopr.sim.service.BatchParamtrVO">
+    	<result property="batchId"         column="BATCH_ID"          columnIndex="1"/>
+    	<result property="schdulNo"        column="SCHDUL_NO"         columnIndex="2"/>
+    	<result property="paramtrNm"       column="PARAMTR_NM"        columnIndex="3"/>
+    	<result property="paramtr"         column="PARAMTR"           columnIndex="4"/>
+    </resultMap>
+    
+    <select id="SchdulDAO.selectSchdulList" parameterClass="SchdulVO" resultMap="schdulList">
+    <![CDATA[
+        SELECT A.*
+        FROM
+            ( SELECT A.*, ROWNUM as RN
+              FROM
+                  ( SELECT
+                        A.BATCH_ID
+                      , B.BATCH_NM
+                      , B.JOB_SE_CODE
+                      , ( SELECT S.CODE_NM
+                          FROM TC_CMMNDETAILCODE S
+                          WHERE S.CODE_ID = 'BO001'
+                            AND S.CODE = B.JOB_SE_CODE ) as JOB_SE_CODE_NM
+                      , A.SCHDUL_NO
+                      , A.SCHDUL_NM
+                      , A.EXECUT_CYCLE
+                      , A.EXECUT_SCHDUL_DE
+                      , A.EXECUT_SCHDUL_HOUR
+                      , A.EXECUT_SCHDUL_MNT
+                      , A.EXECUT_SCHDUL_SECND
+                      , TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') AS FRST_REGIST_PNTTM
+                    FROM
+                        TN_SCHDUL A
+                      , TN_BATCH B
+                    WHERE A.BATCH_ID = B.BATCH_ID
+                      AND B.DELETE_AT = 'N'
+    ]]>              
+                  <isEqual prepend="AND" property="searchCondition" compareValue="A">
+                      A.BATCH_ID LIKE '%' || #searchKeyword# || '%'
+                  </isEqual>
+                  <isEqual prepend="AND" property="searchCondition" compareValue="B">
+                      B.BATCH_NM LIKE '%' || #searchKeyword# || '%'
+                  </isEqual>
+                  <isEqual prepend="AND" property="searchCondition" compareValue="C">
+                      A.SCHDUL_NO LIKE '%' || #searchKeyword# || '%'
+                  </isEqual>
+                  <isEqual prepend="AND" property="searchCondition" compareValue="D">
+                      A.SCHDUL_NM LIKE '%' || #searchKeyword# || '%'
+                  </isEqual>
+                  <isNotEmpty prepend="AND" property="executSchdulDe">
+                      (   A.EXECUT_CYCLE = 'A'
+                       OR ( A.EXECUT_CYCLE = 'B' AND SUBSTR(A.EXECUT_SCHDUL_DE, DATEPART(TO_DATE(#executSchdulDe#, 'YYYY-MM-DD'), 'DAYOFWEEK'), 1) = '1' )
+                       OR ( A.EXECUT_CYCLE = 'C' AND SUBSTR(A.EXECUT_SCHDUL_DE, 7, 2) = TO_CHAR(TO_DATE(#executSchdulDe#, 'YYYY-MM-DD'), 'DD') )
+                       OR ( A.EXECUT_CYCLE = 'D' AND SUBSTR(A.EXECUT_SCHDUL_DE, 5, 4) = TO_CHAR(TO_DATE(#executSchdulDe#, 'YYYY-MM-DD'), 'MMDD') )
+                       OR ( A.EXECUT_CYCLE = 'E' AND A.EXECUT_SCHDUL_DE = TO_CHAR(TO_DATE(#executSchdulDe#, 'YYYY-MM-DD'), 'YYYYMMDD')  ) )
+                  </isNotEmpty>
+                  <isNotEmpty prepend="AND" property="jobSeCode">
+                      B.JOB_SE_CODE = #jobSeCode#
+                  </isNotEmpty>
+    <![CDATA[
+                    ORDER BY A.FRST_REGIST_PNTTM DESC, A.LAST_UPDT_PNTTM DESC, A.SCHDUL_NO DESC
+                  ) A
+              WHERE ROWNUM <= #firstIndex# + #recordCountPerPage#
+            ) A
+        WHERE RN BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+    ]]>                 
+    </select>
+    
+    <select id="SchdulDAO.selectSchdulListTotCnt" parameterClass="SchdulVO" resultClass="int">
+        <![CDATA[
+        SELECT
+            COUNT(1) as TOT_CNT
+        FROM
+            TN_SCHDUL A
+          , TN_BATCH B
+        WHERE A.BATCH_ID = B.BATCH_ID
+          AND B.DELETE_AT = 'N'
+        ]]>              
+        <isEqual prepend="AND" property="searchCondition" compareValue="A">
+          A.BATCH_ID LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="B">
+          B.BATCH_NM LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="C">
+          A.SCHDUL_NO LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="D">
+          A.SCHDUL_NM LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isNotEmpty prepend="AND" property="executSchdulDe">
+            (   A.EXECUT_CYCLE = 'A'
+             OR ( A.EXECUT_CYCLE = 'B' AND SUBSTR(A.EXECUT_SCHDUL_DE, DATEPART(TO_DATE(#executSchdulDe#, 'YYYY-MM-DD'), 'DAYOFWEEK'), 1) = '1' )
+             OR ( A.EXECUT_CYCLE = 'C' AND SUBSTR(A.EXECUT_SCHDUL_DE, 7, 2) = TO_CHAR(TO_DATE(#executSchdulDe#, 'YYYY-MM-DD'), 'DD') )
+             OR ( A.EXECUT_CYCLE = 'D' AND SUBSTR(A.EXECUT_SCHDUL_DE, 5, 4) = TO_CHAR(TO_DATE(#executSchdulDe#, 'YYYY-MM-DD'), 'MMDD') )
+             OR ( A.EXECUT_CYCLE = 'E' AND A.EXECUT_SCHDUL_DE = TO_CHAR(TO_DATE(#executSchdulDe#, 'YYYY-MM-DD'), 'YYYYMMDD')  ) )
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+          B.JOB_SE_CODE = #jobSeCode#
+        </isNotEmpty>
+    </select>
+    
+    <select id="SchdulDAO.selectSchdul" parameterClass="SchdulVO" resultMap="schdul">
+    	<![CDATA[
+    	SELECT
+            A.BATCH_ID
+          , B.BATCH_NM
+          , B.JOB_SE_CODE
+          , ( SELECT S.CODE_NM
+              FROM TC_CMMNDETAILCODE S
+              WHERE S.CODE_ID = 'BO001'
+                AND S.CODE = B.JOB_SE_CODE ) as JOB_SE_CODE_NM
+          , A.SCHDUL_NO
+          , A.SCHDUL_NM
+          , A.EXECUT_CYCLE
+          , A.EXECUT_SCHDUL_DE
+          , A.EXECUT_SCHDUL_HOUR
+          , A.EXECUT_SCHDUL_MNT
+          , A.EXECUT_SCHDUL_SECND
+          , TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') AS FRST_REGIST_PNTTM
+        FROM
+            TN_SCHDUL A
+          , TN_BATCH B
+        WHERE A.BATCH_ID = B.BATCH_ID
+          AND B.DELETE_AT = 'N'
+          AND A.BATCH_ID = #batchId#
+          AND A.SCHDUL_NO = #schdulNo#
+    	]]>
+    </select>
+    
+    <insert id="SchdulDAO.insertSchdul" parameterClass="SchdulVO">
+	    <![CDATA[
+	    INSERT INTO TN_SCHDUL
+	    (
+	        BATCH_ID
+	      , SCHDUL_NO
+	      , SCHDUL_NM
+	      , EXECUT_CYCLE
+	      , EXECUT_SCHDUL_DE
+	      , EXECUT_SCHDUL_HOUR
+	      , EXECUT_SCHDUL_MNT
+	      , EXECUT_SCHDUL_SECND
+	      , FRST_REGISTER_ID
+	      , FRST_REGIST_PNTTM
+	      , LAST_UPDUSR_ID
+	      , LAST_UPDT_PNTTM
+	    )
+	    VALUES
+	    (
+	        #batchId#
+	      , #schdulNo#
+	      , #schdulNm#
+	      , #executCycle#
+	      , #executSchdulDe#
+	      , #executSchdulHour#
+	      , #executSchdulMnt#
+	      , #executSchdulSecnd#
+	      , #frstRegisterId#
+	      , SYSDATE
+	      , #lastUpdusrId#
+	      , SYSDATE
+	    )
+	    ]]>
+    </insert>
+    
+    <delete id="SchdulDAO.deleteSchdul" parameterClass="SchdulVO">
+        <![CDATA[
+        DELETE FROM TN_SCHDUL
+        WHERE BATCH_ID = #batchId#
+          AND SCHDUL_NO = #schdulNo#
+        ]]>
+    </delete>
+    
+    <update id="SchdulDAO.updateSchdul" parameterClass="SchdulVO">
+        <![CDATA[
+        UPDATE TN_SCHDUL
+        SET
+	        SCHDUL_NM = #schdulNm#
+	      , EXECUT_CYCLE = #executCycle#
+	      , EXECUT_SCHDUL_DE = #executSchdulDe#
+	      , EXECUT_SCHDUL_HOUR = #executSchdulHour#
+	      , EXECUT_SCHDUL_MNT = #executSchdulMnt#
+	      , EXECUT_SCHDUL_SECND = #executSchdulSecnd#
+	      , LAST_UPDUSR_ID = #lastUpdusrId#
+	      , LAST_UPDT_PNTTM = SYSDATE
+	    WHERE BATCH_ID = #batchId#
+	      AND SCHDUL_NO = #schdulNo#
+        ]]>
+    </update>
+    
+    <select id="SchdulDAO.selectSchdulParamtr" parameterClass="SchdulVO" resultMap="schdulParamtr">
+    <![CDATA[
+    	SELECT
+    		BATCH_ID
+    	  , SCHDUL_NO
+    	  , PARAMTR_NM
+    	  , PARAMTR
+    	FROM
+    		TN_SCHDUL_PARAMTR
+    	WHERE 1 = 1
+    ]]>
+    	<isNotEmpty prepend="AND" property="batchId">
+    <![CDATA[
+    	  BATCH_ID = #batchId#
+    ]]>
+    	</isNotEmpty>
+    	<isNotEmpty prepend="AND" property="schdulNo">
+    <![CDATA[
+    	  SCHDUL_NO = #schdulNo#
+    ]]>
+    	</isNotEmpty>
+    </select>
+    
+    <insert id="SchdulDAO.insertSchdulParamtr" parameterClass="BatchParamtrVO">
+    <![CDATA[
+    	INSERT INTO TN_SCHDUL_PARAMTR
+    	(
+    	    BATCH_ID
+    	  , SCHDUL_NO
+    	  , PARAMTR_NM
+    	  , PARAMTR
+    	)
+    	VALUES
+    	(
+    	    #batchId#
+    	  , #schdulNo#
+    	  , #paramtrNm#
+    	  , #paramtr#
+    	)
+    ]]>
+    </insert>
+    
+    <delete id="SchdulDAO.deleteSchdulParamtr" parameterClass="SchdulVO">
+    <![CDATA[
+    	DELETE FROM TN_SCHDUL_PARAMTR
+    	WHERE SCHDUL_NO = #schdulNo#
+    ]]>
+    </delete>
+</sqlMap>

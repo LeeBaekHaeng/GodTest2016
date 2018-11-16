@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Main">
+
+<typeAlias alias="mainVO" type="egovframework.bopr.uam.service.MainVO"/>
+<typeAlias alias="main" type="egovframework.bopr.uam.service.Main"/>
+
+<resultMap id="main" class="egovframework.bopr.uam.service.MainVO">
+<result property="batchId" column="BATCH_ID"/>
+<result property="batchNm" column="BATCH_NM"/>
+<result property="jobSeCode" column="JOB_SE_CODE"/>
+<result property="jobExecutionId" column="JOB_EXECUTION_ID"/>
+<result property="jobVersion" column="JOB_VERSION"/>
+<result property="jobInstanceId" column="JOB_INSTANCE_ID"/>
+<result property="jobCreateTime" column="JOB_CREATE_TIME"/>
+<result property="jobStartTime" column="JOB_START_TIME"/>
+<result property="jobEndTime" column="JOB_END_TIME"/>
+<result property="jobStatus" column="JOB_STATUS"/>
+<result property="jobExitCode" column="JOB_EXIT_CODE"/>
+<result property="jobLastUpdated" column="JOB_LAST_UPDATED"/>
+<result property="stepJobExecution" column="STEP_JOB_EXECUTION"/>
+<result property="stepName" column="STEP_NAME"/>
+<result property="stepVersion" column="STEP_VERSION"/>
+<result property="stepStartTime" column="STEP_START_TIME"/>
+<result property="stepEndTime" column="STEP_END_TIME"/>
+<result property="stepStatus" column="STEP_STATUS"/>
+<result property="stepCommitCount" column="STEP_COMMIT_COUNT"/>
+<result property="stepReadCount" column="SETP_READ_COUNT"/>
+<result property="stepFilterCount" column="STEP_FILTER_COUNT"/>
+<result property="stepWriteCount" column="STEP_WRITE_COUNT"/>
+<result property="stepReadSkipCount" column="STEP_READ_SKIP_COUNT"/>
+<result property="stepWriteSkipCount" column="STEP_WRITE_SKIP_COUNT"/>
+<result property="stepProcessSkipCount" column="STEP_PROCESS_SKIP_COUNT"/>
+<result property="stepRollbackCount" column="STEP_ROLLBACK_COUNT"/>
+<result property="stepExitCode" column="STEP_EXIT_CODE"/>
+<result property="stepLastUpdated" column="STEP_LAST_UPDATED"/>
+</resultMap>
+
+<resultMap id="mainTodo" class="egovframework.bopr.uam.service.MainVO">
+<result property="jobSeCode" column="JOB_SE_CODE"/>
+<result property="jobDlbrtNo" column="JOB_DLBRT_NO"/>
+<result property="jobDlbrtNm" column="JOB_DLBRT_NM"/>
+<result property="jobUpdtPnttm" column="LAST_UPDT_PNTTM"/>
+</resultMap>
+
+<resultMap id="mainBat" class="egovframework.bopr.uam.service.MainVO">
+<result property="jobSeCode" column="JOB_SE_CODE"/>
+<result property="batchNm" column="BATCH_NM"/>
+<result property="batExecutTime" column="BAT_EXECUT_TIME"/>
+</resultMap>
+
+<resultMap id="mainReg" class="egovframework.bopr.uam.service.MainVO">
+<result property="jobSeCode" column="JOB_SE_CODE"/>
+<result property="jobCnCnt" column="JOB_CN_CNT"/>
+<result property="batCnCnt" column="BAT_CN_CNT"/>
+<result property="batWdtbCnt" column="BAT_WDTB_CNT"/>
+<result property="batRegCnt" column="BAT_REG_CNT"/>
+</resultMap>
+
+<resultMap id="mainExe" class="egovframework.bopr.uam.service.MainVO">
+<result property="jobStartTime" column="JOB_START_TIME"/>
+<result property="completed" column="COMPLETED"/>
+<result property="failed" column="FAILED"/>
+<result property="rehndn" column="REHNDN"/>
+</resultMap>
+
+<resultMap id="setupInfo" class="egovframework.bopr.uam.service.MainVO">
+	<result property="executCycle" column="EXECUT_CYCLE" columnIndex="1" />
+	<result property="jobSeCode" column="JOB_SE_CODE" columnIndex="2" />
+	<result property="listCount" column="LIST_COUNT" columnIndex="3" />
+	<result property="batchSttus" column="BATCH_STTUS" columnIndex="4" />
+	<result property="userId" column="USER_ID" columnIndex="5" />
+</resultMap>
+
+<resultMap id="menuSetupInfo" class="egovframework.bopr.uam.service.MainVO">
+	<result property="executCycle" column="EXECUT_CYCLE" columnIndex="1" />
+	<result property="jobSeCode" column="JOB_SE_CODE" columnIndex="2" />
+</resultMap>
+
+<delete id="mainDAO.deleteMainSetupInfo" parameterClass="main">
+<![CDATA[
+            delete from TN_SETUP
+			where user_id = #userId# 
+        ]]>
+</delete>
+	
+<update id="mainDAO.updateMainSetupInfo" parameterClass="main">
+<![CDATA[
+           update TN_SETUP
+              set EXECUT_CYCLE = #executCycle#
+            	  , JOB_SE_CODE = #jobSeCode#
+            	  , LIST_COUNT = #listCount#
+             	  , BATCH_STTUS = #batchSttus#
+				  , LAST_UPDUSR_ID = #lastUpdusrId#
+				  , LAST_UPDT_PNTTM = SYSDATE()
+			where user_id = #userId# 
+        ]]>
+</update>
+
+<insert id="mainDAO.insertMainSetupInfo" parameterClass="main">
+<![CDATA[
+            INSERT INTO TN_SETUP
+                  ( USER_ID
+                  , EXECUT_CYCLE
+            	  , JOB_SE_CODE
+            	  , LIST_COUNT
+             	  , BATCH_STTUS
+				  , FRST_REGISTER_ID
+				  , FRST_REGIST_PNTTM)
+           VALUES ( #userId#
+                  , #executCycle#
+                  , #jobSeCode#
+                  , #listCount#
+                  , #batchSttus#
+                  , #frstRegisterId#
+                  , SYSDATE())
+        ]]>
+</insert>
+	
+	<select id="mainDAO.selectSetupInfo" parameterClass="MainVO"
+		resultMap="setupInfo">
+        <![CDATA[
+            SELECT EXECUT_CYCLE
+            	 , JOB_SE_CODE
+            	 , LIST_COUNT
+            	 , BATCH_STTUS
+            	 , USER_ID
+              FROM TN_SETUP
+             WHERE USER_ID=#userId#
+        ]]>
+	</select>
+	
+<update id="mainDAO.updateMenuSetupInfo" parameterClass="main">
+<![CDATA[
+           UPDATE TN_SETUP
+              SET EXECUT_CYCLE = #executCycle#
+            	  , JOB_SE_CODE = #jobSeCode#
+			WHERE user_id = #userId# 
+        ]]>
+</update>
+
+<select id="mainDAO.selectMenuSetupInfo" parameterClass="MainVO" resultMap="menuSetupInfo">
+        <![CDATA[
+            SELECT EXECUT_CYCLE
+            	 , JOB_SE_CODE
+              FROM TN_SETUP
+             WHERE USER_ID=#userId#
+        ]]>
+</select>
+	
+<select id="mainDAO.selectMainExeList" parameterClass="egovframework.bopr.uam.service.MainVO" resultMap="mainExe">
+<![CDATA[
+			SELECT  A.* 
+              FROM  (
+            SELECT ALL_LIST.* 
+              FROM  (
+SELECT substring(AA.START_TIME,1,10) JOB_START_TIME, sum(AA.COMPLETED) COMPLETED, sum(AA.FAILED) FAILED, sum(AA.REHNDN) REHNDN 
+FROM (
+SELECT '' job_instance_id, '' START_TIME, '' AS COMPLETED, '' AS FAILED, '' as REHNDN
+from dual
+union all
+SELECT a.job_instance_id, A.START_TIME AS START_TIME, '' AS COMPLETED, '' AS FAILED, 
+(case when a.job_execution_id is not null then 1 else 0 end) as REHNDN
+from batch_job_execution a
+where a.exit_code = 'FAILED'
+and a.job_execution_id in (select b.job_execution_id 
+                       from batch_job_execution b
+                       where b.JOB_INSTANCE_ID = a.JOB_INSTANCE_ID
+                       AND b.job_execution_id = (select max(JOB_EXECUTION_ID) 
+                                              from batch_job_execution 
+                                              where JOB_INSTANCE_ID = b.JOB_INSTANCE_ID)
+                       and b.exit_code <> 'COMPLETED')
+UNION ALL
+SELECT a.job_instance_id, A.START_TIME AS START_TIME, 
+(case when a.EXIT_CODE = "COMPLETED" then 1 else 0 end) as COMPLETED,
+'' as FAILED,
+'' AS REHNDN
+FROM BATCH_JOB_EXECUTION A
+WHERE A.EXIT_CODE = "COMPLETED"
+UNION ALL
+SELECT a.job_instance_id, A.START_TIME AS START_TIME, 
+'' as COMPLETED,
+(case when a.EXIT_CODE = "FAILED" then 1 else 0 end) as FAILED,
+'' AS REHNDN
+FROM BATCH_JOB_EXECUTION A
+WHERE A.EXIT_CODE = "FAILED"
+) AA, batch_job_instance BB
+left join tn_batch CC on bb.job_name = cc.batch_id
+left join tn_job_dlbrt DD on CC.JOB_DLBRT_NO = DD.JOB_DLBRT_NO
+where aa.job_instance_id = bb.job_instance_id
+]]>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+        	DD.JOB_SE_CODE 
+        	 <iterate prepend="IN" property="inWhe" open="(" close=")" conjunction=","> 
+		       #inWhe[]# 
+		     </iterate>  
+        </isNotEmpty>
+<![CDATA[
+GROUP BY substring(AA.START_TIME,1,10)
+order by aa.start_time desc
+
+                    ) ALL_LIST
+                    ) A
+            
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#      
+        ]]>
+</select>
+
+<select id="mainDAO.selectMainRegList" parameterClass="egovframework.bopr.uam.service.MainVO" resultMap="mainReg">
+<![CDATA[
+			SELECT  A.* 
+              FROM  (
+            SELECT ALL_LIST.* 
+              FROM  (
+
+select (select code_nm from tc_cmmndetailcode where code_id='BO001' and code = AA.job_se_code) as job_se_code,  
+sum(AA.job_cn_cnt) job_cn_cnt, sum(AA.bat_cn_cnt) bat_cn_cnt,
+sum(AA.bat_wdtb_cnt) bat_wdtb_cnt, sum(AA.bat_reg_cnt) bat_reg_cnt
+from (
+select a.job_se_code,    
+sum(case when b.job_dlbrt_result_code = "CN" then 1 else 0 end) as job_cn_cnt,   
+'' as bat_cn_cnt,   
+'' as bat_wdtb_cnt,   
+'' as bat_reg_cnt 
+from tn_job_dlbrt a 
+, tn_job_dlbrt_result b
+where a.JOB_DLBRT_NO = b.JOB_DLBRT_NO             
+group by a.job_se_code 
+union all
+select a.job_se_code,    
+'' as job_cn_cnt,   
+sum(case when d.batch_dlbrt_result_code = "CN" then 1 else 0 end) as bat_cn_cnt,   
+sum(case when (d.batch_dlbrt_result_code = "CN" and c.wdtb_at = "N") then 1 else 0 end) as bat_wdtb_cnt,   
+'' as bat_reg_cnt 
+from tn_job_dlbrt a 
+, tn_batch_dlbrt c
+, tn_batch_dlbrt_result d 
+where a.job_dlbrt_no = c.JOB_DLBRT_NO 
+and a.JOB_DLBRT_NO = d.JOB_DLBRT_NO 
+and c.batch_DLBRT_NO = d.BATCH_DLBRT_NO
+]]>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+        	a.JOB_SE_CODE 
+        	 <iterate prepend="IN" property="inWhe" open="(" close=")" conjunction=","> 
+		       #inWhe[]# 
+		     </iterate>  
+        </isNotEmpty>
+<![CDATA[
+group by a.job_se_code
+union all
+select a.job_se_code,
+'' as job_cn_cnt, '' as bat_cn_cnt, '' as bat_wdtb_cnt,
+count(a.batch_id) as bat_reg_cnt
+from tn_batch a
+where a.delete_at = 'N'
+
+]]>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+        	a.JOB_SE_CODE
+        	<iterate prepend="IN" property="inWhe" open="(" close=")" conjunction=","> 
+		       #inWhe[]# 
+		     </iterate>  
+        </isNotEmpty>
+<![CDATA[
+group by a.job_se_code
+
+) AA
+group by AA.job_se_code
+order by AA.JOB_SE_CODE
+
+                    ) ALL_LIST
+                    ) A
+             
+        ]]>
+</select>
+
+<select id="mainDAO.selectMainBatList" parameterClass="egovframework.bopr.uam.service.MainVO" resultMap="mainBat">
+<![CDATA[
+			SELECT  A.* 
+              FROM  (
+            SELECT ALL_LIST.* 
+              FROM  (
+select (select code_nm from tc_cmmndetailcode where code_id='BO001' and code = a.job_se_code) as job_se_code, 
+a.batch_nm, 
+concat(b.execut_schdul_hour, concat(':', (concat(b.execut_schdul_mnt, (concat(':', b.execut_schdul_secnd)))))) as bat_execut_time
+from tn_batch a, tn_schdul b
+where a.batch_id = b.BATCH_ID
+AND a.DELETE_AT = 'N'
+AND                 (   B.EXECUT_CYCLE = 'A'                  
+OR ( B.EXECUT_CYCLE = 'B' AND SUBSTRING(B.EXECUT_SCHDUL_DE, DAYOFWEEK(SYSDATE()), 1) = '1' )                  
+OR ( B.EXECUT_CYCLE = 'C' AND SUBSTRING(B.EXECUT_SCHDUL_DE, 7, 2) = CONVERT(DATE_FORMAT(SYSDATE(), '%d'), CHAR) )                  
+OR ( B.EXECUT_CYCLE = 'D' AND SUBSTRING(B.EXECUT_SCHDUL_DE, 5, 4) = CONVERT(DATE_FORMAT(SYSDATE(), '%m%d'), CHAR) )                  
+OR ( B.EXECUT_CYCLE = 'E' AND B.EXECUT_SCHDUL_DE = CONVERT(DATE_FORMAT(SYSDATE(), '%Y%m%d'), CHAR)  ) )
+]]>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+        	a.JOB_SE_CODE 
+        	 <iterate prepend="IN" property="inWhe" open="(" close=")" conjunction=","> 
+		       #inWhe[]# 
+		     </iterate>  
+        </isNotEmpty>
+<![CDATA[
+                    ) ALL_LIST 
+                    ) A
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+</select>
+
+<select id="mainDAO.selectMainTodoList" parameterClass="egovframework.bopr.uam.service.MainVO" resultMap="mainTodo">
+<![CDATA[
+			SELECT  A.* 
+              FROM  (
+            SELECT ALL_LIST.* 
+              FROM  (
+					select '업무심의' job_se_code, A.JOB_DLBRT_NO, A.JOB_DLBRT_NM, A.LAST_UPDT_PNTTM
+					from tn_job_dlbrt A left join tn_job_dlbrt_result B on A.JOB_DLBRT_NO = b.job_dlbrt_no
+					where (b.job_dlbrt_result_code = '' or B.JOB_DLBRT_RESULT_CODE is null)
+]]>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+        	a.JOB_SE_CODE 
+        	 <iterate prepend="IN" property="inWhe" open="(" close=")" conjunction=","> 
+		       #inWhe[]# 
+		     </iterate>  
+        </isNotEmpty>
+<![CDATA[
+					union all
+					select '배치심의' job_se_code, A.BATCH_DLBRT_NO as job_dlbrt_no, A.batch_nm, A.LAST_UPDT_PNTTM
+					from tn_job_dlbrt K, tn_batch_dlbrt A 
+					left join tn_batch_dlbrt_result B on A.batch_DLBRT_NO = b.batch_dlbrt_no and a.job_dlbrt_no = b.job_dlbrt_no
+					where k.job_dlbrt_no = a.job_dlbrt_no
+					and (b.batch_dlbrt_result_code = '' or B.batch_DLBRT_RESULT_CODE is null)
+]]>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+        	k.JOB_SE_CODE 
+        	 <iterate prepend="IN" property="inWhe" open="(" close=")" conjunction=","> 
+		       #inWhe[]# 
+		     </iterate>  
+        </isNotEmpty>
+<![CDATA[   
+                    ) ALL_LIST
+                    ) A
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+</select>
+
+<select id="mainDAO.selectMainList" parameterClass="egovframework.bopr.uam.service.MainVO" resultMap="main">
+<![CDATA[
+SELECT  A.* 
+              FROM  (
+            SELECT ALL_LIST.* 
+              FROM  (
+					SELECT
+				          d.batch_id,
+				          d.batch_nm,
+				          d.job_se_code,
+				          A.VERSION JOB_VERSION,
+				          A.JOB_INSTANCE_ID,
+				          A.CREATE_TIME JOB_CREATE_TIME,
+				          substring(A.START_TIME,1,16) JOB_START_TIME,
+				          substring(A.END_TIME,1,16) JOB_END_TIME,
+				          A.STATUS JOB_STATUS,
+				          A.EXIT_CODE JOB_EXIT_CODE,
+				          A.LAST_UPDATED JOB_LAST_UPDATED,
+				          B.JOB_EXECUTION_ID,
+				          B.JOB_EXECUTION_ID STEP_JOB_EXECUTION,
+				          B.STEP_NAME, 
+				          B.VERSION AS STEP_VERSION,
+				          B.START_TIME STEP_START_TIME, 
+				          B.END_TIME STEP_END_TIME, 
+				          B.STATUS STEP_STATUS, 
+				          B.COMMIT_COUNT STEP_COMMIT_COUNT, 
+				          B.READ_COUNT SETP_READ_COUNT, 
+				          B.FILTER_COUNT STEP_FILTER_COUNT, 
+				          B.WRITE_COUNT STEP_WRITE_COUNT, 
+				          B.READ_SKIP_COUNT STEP_READ_SKIP_COUNT, 
+				          B.WRITE_SKIP_COUNT STEP_WRITE_SKIP_COUNT, 
+				          B.PROCESS_SKIP_COUNT STEP_PROCESS_SKIP_COUNT, 
+				          B.ROLLBACK_COUNT STEP_ROLLBACK_COUNT, 
+				          B.EXIT_CODE STEP_EXIT_CODE, 
+				          B.LAST_UPDATED STEP_LAST_UPDATED
+						FROM           
+							BATCH_JOB_EXECUTION A
+							, batch_STEP_execution B
+							, batch_job_instance C
+							, tn_batch_bean E
+							, tn_batch D left join tn_schdul F on D.BATCH_ID = F.BATCH_ID        
+							WHERE A.JOB_EXECUTION_ID =B.JOB_EXECUTION_ID              
+							and a.JOB_INSTANCE_ID = C.JOB_INSTANCE_ID              
+							and c.job_name = e.bean_id
+								and E.BATCH_ID = D.BATCH_ID
+        ]]>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                A.JOB_INSTANCE_ID LIKE concat('%',#searchKeyword#,'%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+        	D.JOB_SE_CODE 
+        	 <iterate prepend="IN" property="inWhe" open="(" close=")" conjunction=","> 
+		       #inWhe[]# 
+		     </iterate>  
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="executCycle">
+        	f.EXECUT_CYCLE = #executCycle#
+        </isNotEmpty>
+        <isEqual prepend="AND" property="batchSttus" compareValue="COMPLETED">
+        	A.EXIT_CODE IN ("FAILED", "COMPLETED")
+        </isEqual>
+        <![CDATA[            
+            ORDER BY A.START_TIME desc
+
+                    ) ALL_LIST
+                    ) A
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+</select>
+
+<select id="mainDAO.selectMainListTotCnt" parameterClass="mainVO" resultClass="int">
+SELECT COUNT(*) totcnt
+            FROM BATCH_JOB_EXECUTION A, batch_STEP_execution B 
+					WHERE A.JOB_EXECUTION_ID =B.JOB_EXECUTION_ID
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                AND A.JOB_INSTANCE_ID LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+</select>
+
+</sqlMap>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BatchExecut">
+
+    <typeAlias alias="BatchExecutVO"      type="egovframework.bopr.mom.service.BatchExecutVO"/>
+    <typeAlias alias="BatchExecutParamtrVO" type="egovframework.bopr.mom.service.BatchExecutParamtrVO"/>
+    
+    <resultMap id="batchExecutList" class="egovframework.bopr.mom.service.BatchExecutVO">
+        <result property="batchExecutNo"   column="BATCH_EXECUT_NO"   columnIndex="1"/>
+        <result property="batchId"         column="BATCH_ID"          columnIndex="2"/>
+        <result property="batchNm"         column="BATCH_NM"          columnIndex="3"/>
+        <result property="jobExecutionId"  column="JOB_EXECUTION_ID"  columnIndex="4"/>
+        <result property="executTime"      column="EXECUT_TIME"       columnIndex="5"/>
+        <result property="executDate"      column="EXECUT_DATE"       columnIndex="6"/>
+        <result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="7"/>
+        <result property="lastUpdtPnttm"   column="LAST_UPDT_PNTTM"   columnIndex="8"/>
+    </resultMap>
+    
+    <resultMap id="batchExecut" class="egovframework.bopr.mom.service.BatchExecutVO">
+    	<result property="batchExecutNo"   column="BATCH_EXECUT_NO"   columnIndex="1"/>
+    	<result property="batchId"         column="BATCH_ID"          columnIndex="2"/>
+    	<result property="batchNm"         column="BATCH_NM"          columnIndex="3"/>
+    	<result property="jobInstanceId"   column="JOB_INSTANCE_ID"   columnIndex="4"/>
+    	<result property="jobExecutionId"  column="JOB_EXECUTION_ID"  columnIndex="5"/>
+    	<result property="jobStartTime"    column="JOB_START_TIME"    columnIndex="6"/>
+    	<result property="jobEndTime"      column="JOB_END_TIME"      columnIndex="7"/>
+    	<result property="status"          column="STATUS"            columnIndex="8"/>
+    	<result property="executTime"      column="EXECUT_TIME"       columnIndex="9"/>
+    	<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="10"/>
+    	<result property="lastUpdtPnttm"   column="LAST_UPDT_PNTTM"   columnIndex="11"/>
+    </resultMap>
+
+	<select id="BatchExecutDAO.selectBatchExecutList" parameterClass="BatchExecutVO" resultMap="batchExecutList">
+	<![CDATA[
+		SELECT A.*
+		FROM
+		    ( SELECT A.*, ROWNUM as RN
+		      FROM
+			      ( SELECT
+			      	    A.BATCH_EXECUT_NO
+      		  		  , A.BATCH_ID
+		        	  , B.BATCH_NM
+		  		      , A.JOB_EXECUTION_ID
+      		  		  , SUBSTR(A.EXECUT_TIME, 9, 2) || ':' || SUBSTR(A.EXECUT_TIME, 11, 2) || ':' || SUBSTR(A.EXECUT_TIME, 13, 2) as EXECUT_TIME
+		        	  , SUBSTR(A.EXECUT_TIME, 1, 4) || '-' || SUBSTR(A.EXECUT_TIME, 5, 2) || '-' || SUBSTR(A.EXECUT_TIME, 7, 2) as EXECUT_DATE
+		  		      , TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') AS FRST_REGIST_PNTTM
+                	  , TO_CHAR(A.LAST_UPDT_PNTTM, 'YYYY-MM-DD') AS LAST_UPDT_PNTTM
+		      	    FROM
+		    	        TN_BATCH_EXECUT A
+		  		      , TN_BATCH B
+			        WHERE A.BATCH_ID = B.BATCH_ID
+			          AND B.DELETE_AT = 'N'
+	]]>
+			      <isEqual prepend="AND" property="searchCondition" compareValue="A">
+			        A.BATCH_EXECUT_NO LIKE '%' || #searchKeyword# || '%'
+			      </isEqual>
+			      <isEqual prepend="AND" property="searchCondition" compareValue="B">
+			        A.BATCH_ID LIKE '%' || #searchKeyword# || '%'
+			      </isEqual>
+			      <isEqual prepend="AND" property="searchCondition" compareValue="C">
+			        B.BATCH_NM LIKE '%' || #searchKeyword# || '%'
+			      </isEqual>
+			      <isEqual prepend="AND" property="searchCondition" compareValue="D">
+			        B.JOB_EXECUTION_ID LIKE '%' || #searchKeyword# || '%'
+			      </isEqual>
+			      <isEqual prepend="AND" property="searchCondition" compareValue="E">	
+			        A.EXECUT_TIME BETWEEN #searchKeywordFrom# || '000000' AND #searchKeywordTo# || '235959'
+			      </isEqual>
+	<![CDATA[
+			        ORDER BY A.BATCH_EXECUT_NO DESC
+		          ) A
+		      WHERE ROWNUM <= #firstIndex# + #recordCountPerPage#
+		    ) A
+		WHERE RN BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+	]]>
+	</select>
+	
+	<select id="BatchExecutDAO.selectBatchExecuListTotCnt" parameterClass="BatchExecutVO" resultClass="int">
+	<![CDATA[
+		SELECT
+		    COUNT(1) AS TOT_CNT
+		FROM
+		    TN_BATCH_EXECUT A
+		  , TN_BATCH B
+		WHERE A.BATCH_ID = B.BATCH_ID
+		  AND B.DELETE_AT = 'N'
+	]]>
+		<isEqual prepend="AND" property="searchCondition" compareValue="A">
+		  A.BATCH_EXECUT_NO LIKE '%' || #searchKeyword# || '%'
+		</isEqual>
+		<isEqual prepend="AND" property="searchCondition" compareValue="B">
+		  A.BATCH_ID LIKE '%' || #searchKeyword# || '%'
+		</isEqual>
+		<isEqual prepend="AND" property="searchCondition" compareValue="C">
+		  B.BATCH_NM LIKE '%' || #searchKeyword# || '%'
+		</isEqual>
+		<isEqual prepend="AND" property="searchCondition" compareValue="D">
+		  B.JOB_EXECUTION_ID LIKE '%' || #searchKeyword# || '%'
+		</isEqual>
+		<isEqual prepend="AND" property="searchCondition" compareValue="E">
+		  A.EXECUT_TIME BETWEEN #searchKeywordFrom# || '000000' AND #searchKeywordTo# || '235959'
+		</isEqual>
+	</select>
+	
+	<select id="BatchExecutDAO.selectBatchExecut" parameterClass="BatchExecutVO" resultMap="batchExecut">
+	<![CDATA[
+	    SELECT
+  		    A.BATCH_EXECUT_NO
+  		  , A.BATCH_ID
+  		  , B.BATCH_NM
+  		  , D.JOB_INSTANCE_ID
+		  , A.JOB_EXECUTION_ID
+		  , TO_CHAR(C.START_TIME, 'YYYY-MM-DD HH24:MI:SS') as JOB_START_TIME
+		  , TO_CHAR(C.END_TIME, 'YYYY-MM-DD HH24:MI:SS') as JOB_END_TIME
+		  , C.STATUS
+		  , SUBSTR(A.EXECUT_TIME, 1, 4) || '-' || SUBSTR(A.EXECUT_TIME, 5, 2) || '-' || SUBSTR(A.EXECUT_TIME, 7, 2)
+		          || ' ' || SUBSTR(A.EXECUT_TIME, 9, 2) || ':' || SUBSTR(A.EXECUT_TIME, 11, 2) || ':' || SUBSTR(A.EXECUT_TIME, 13, 2) as EXECUT_TIME
+		  , TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') AS FRST_REGIST_PNTTM
+		  , TO_CHAR(A.LAST_UPDT_PNTTM, 'YYYY-MM-DD') AS LAST_UPDT_PNTTM
+		FROM
+		    TN_BATCH_EXECUT A
+		  , TN_BATCH B
+		  , BATCH_JOB_EXECUTION C
+		  , BATCH_JOB_INSTANCE D
+		WHERE A.BATCH_ID = B.BATCH_ID
+		  AND B.DELETE_AT = 'N'
+		  AND A.JOB_EXECUTION_ID = C.JOB_EXECUTION_ID
+		  AND C.JOB_INSTANCE_ID = D.JOB_INSTANCE_ID
+		  AND A.BATCH_EXECUT_NO = #batchExecutNo#
+	]]>
+	</select>
+	
+	<insert id="BatchExecutDAO.insertBatchExecut" parameterClass="BatchExecutVO">
+    <![CDATA[
+		INSERT INTO TN_BATCH_EXECUT
+		(
+		    BATCH_EXECUT_NO
+		  , BATCH_ID
+		  , JOB_EXECUTION_ID
+		  , EXECUT_TIME
+		  , FRST_REGISTER_ID
+		  , FRST_REGIST_PNTTM
+		  , LAST_UPDUSR_ID
+		  , LAST_UPDT_PNTTM
+		)
+		VALUES
+		(
+		    #batchExecutNo#
+		  , #batchId#
+		  , #jobExecutionId#
+		  , TO_CHAR(SYSDATETIME, 'YYYYMMDDHH24MISS')
+		  , #frstRegisterId#
+		  , SYSDATETIME
+		  , #lastUpdusrId#
+		  , SYSDATETIME
+		)
+	]]>
+    </insert>
+    
+    <update id="BatchExecutDAO.updateBatchExecut" parameterClass="BatchExecutVO">
+    <![CDATA[
+    	UPDATE TN_BATCH_EXECUT
+    	SET
+    		JOB_EXECUTION_ID = #jobExecutionId#
+    	  , LAST_UPDUSR_ID = #lastUpdusrId#
+    	  , LAST_UPDT_PNTTM = SYSDATETIME
+    	WHERE BATCH_EXECUT_NO = #batchExecutNo#
+    	  AND BATCH_ID = #batchId#
+    ]]>
+    </update>
+    
+    <delete id="BatchExecutDAO.deleteBatchExecut" parameterClass="BatchExecutVO">
+    <![CDATA[
+    	DELETE FROM TN_BATCH_EXECUT
+    	WHERE 1=1
+    ]]>
+    	<isNotEmpty prepend="AND" property="batchExecutNo">
+    	  BATCH_EXECUT_NO = #batchExecutNo#
+    	</isNotEmpty>
+    	<isNotEmpty prepend="AND" property="batchId">
+    	  BATCH_EXECUT_NO = #batchId#
+    	</isNotEmpty>
+    </delete>
+    
+    <insert id="BatchExecutDAO.insertBatchExecutParamtr" parameterClass="BatchExecutParamtrVO">
+    <![CDATA[
+    	INSERT INTO TN_BATCH_EXECUT_PARAMTR
+    	(
+    		BATCH_EXECUT_NO
+    	  , BATCH_ID
+    	  , PARAMTR_NM
+    	  , PARAMTR
+    	)
+    	VALUES
+    	(
+    		#batchExecutNo#
+    	  , #batchId#
+    	  , #paramtrNm#
+    	  , #paramtr#
+    	)
+    ]]>
+    </insert>
+    
+    <delete id="BatchExecutDAO.deleteBatchExecutParamtr" parameterClass="BatchExecutVO">
+    <![CDATA[
+    	DELETE FROM TN_BATCH_EXECUT_PARAMTR
+    	WHERE 1=1
+    ]]>
+    	<isNotEmpty prepend="AND" property="batchExecutNo">
+    	  BATCH_EXECUT_NO = #batchExecutNo#
+    	</isNotEmpty>
+    	<isNotEmpty prepend="AND" property="batchId">
+    	  BATCH_EXECUT_NO = #batchId#
+    	</isNotEmpty>
+    </delete>
+</sqlMap>

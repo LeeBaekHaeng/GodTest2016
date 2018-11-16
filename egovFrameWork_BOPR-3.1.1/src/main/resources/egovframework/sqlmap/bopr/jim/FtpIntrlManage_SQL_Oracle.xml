@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FtpIntrlManage">
+
+	<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap" />
+	<typeAlias alias="FtpIntrlManageVO" type="egovframework.bopr.jim.service.FtpIntrlManageVO" />
+	<typeAlias alias="FtpIntrlManage" type="egovframework.bopr.jim.service.FtpIntrlManage" />
+
+	<resultMap id="ftpIntrl" class="egovframework.bopr.jim.service.FtpIntrlManageVO">
+		<result property="ftpIntrlckNo" column="FTP_INTRLCK_NO" />
+		<result property="ftpIntrlckNm" column="FTP_INTRLCK_NM" />
+		<result property="ftpAdres" column="FTP_ADRES" />
+		<result property="userId" column="USER_ID" />
+		<result property="password" column="PASSWORD" />
+		<result property="cfgWdtbPath" column="CFG_WDTB_PATH" />
+		<result property="batchWdtbPath" column="BATCH_WDTB_PATH" />
+		<result property="frstRegisterId" column="FRST_REGISTER_ID" />
+		<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" />
+		<result property="lastUpdusrId" column="LAST_UPDUSR_ID" />
+		<result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM" />
+	</resultMap>
+
+	<select id="ftpIntrlManageDAO.selectFtpIntrlList"
+		parameterClass="FtpIntrlManageVO" resultMap="ftpIntrl">
+        <![CDATA[
+            SELECT  * 
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.* 
+              FROM  (
+
+            SELECT
+                   FTP_INTRLCK_NO
+            	 , FTP_INTRLCK_NM
+            	 , FTP_ADRES
+            	 , USER_ID
+            	 , PASSWORD
+            	 , BATCH_WDTB_PATH
+            	 , CFG_WDTB_PATH
+            	 , FRST_REGISTER_ID
+            	 , TO_CHAR(FRST_REGIST_PNTTM, 'YYYY-MM-DD HH24:MI:SS') AS FRST_REGIST_PNTTM  
+                 , LAST_UPDUSR_ID
+            	 , TO_CHAR(LAST_UPDT_PNTTM, 'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM  
+              FROM TN_FTP_INTRLCK
+             WHERE 1=1
+        ]]>
+		<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			<![CDATA[FTP_INTRLCK_NM LIKE '%' || #searchKeyword# || '%']]>
+            </isEqual>
+        <![CDATA[            
+            ORDER BY LAST_UPDT_PNTTM DESC
+
+                    ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>
+	</select>
+
+	<insert id="ftpIntrlManageDAO.insertFtpIntrl" parameterClass="FtpIntrlManage">
+        <![CDATA[
+            INSERT INTO TN_FTP_INTRLCK
+                  ( FTP_INTRLCK_NO
+            	  , FTP_INTRLCK_NM
+            	  , FTP_ADRES
+            	  , USER_ID
+              	  , PASSWORD
+              	  , BATCH_WDTB_PATH
+            	  , CFG_WDTB_PATH
+             	  , FRST_REGISTER_ID
+            	  , FRST_REGIST_PNTTM
+            	  , LAST_UPDUSR_ID
+            	  , LAST_UPDT_PNTTM)
+           VALUES ( #ftpIntrlckNo#
+                  , #ftpIntrlckNm#
+                  , #ftpAdres#
+                  , #userId#
+                  , #password#
+                  , #batchWdtbPath#
+                  , #cfgWdtbPath#
+                  , #frstRegisterId#
+                  , SYSDATE
+                  , #lastUpdusrId#
+                  , SYSDATE)
+        ]]>
+	</insert>
+
+	<update id="ftpIntrlManageDAO.updateFtpIntrl" parameterClass="FtpIntrlManage">
+        <![CDATA[
+            UPDATE TN_FTP_INTRLCK 
+               SET FTP_INTRLCK_NO=#ftpIntrlckNo#
+            	 , FTP_INTRLCK_NM=#ftpIntrlckNm#
+            	 , FTP_ADRES=#ftpAdres#
+            	 , USER_ID=#userId#
+            	 , PASSWORD=#password#
+            	 , BATCH_WDTB_PATH=#batchWdtbPath#
+            	 , CFG_WDTB_PATH=#cfgWdtbPath#
+            	 , FRST_REGISTER_ID=#frstRegisterId#
+            	 , FRST_REGIST_PNTTM=SYSDATE
+            	 , LAST_UPDUSR_ID=#lastUpdusrId#
+            	 , LAST_UPDT_PNTTM=SYSDATE
+             WHERE FTP_INTRLCK_NO=#ftpIntrlckNo#
+        ]]>
+	</update>
+
+	<delete id="ftpIntrlManageDAO.deleteFtpIntrl">
+        <![CDATA[
+            DELETE FROM TN_FTP_INTRLCK 
+             WHERE FTP_INTRLCK_NO=#ftpIntrlckNo#
+        ]]>
+	</delete>
+
+	<select id="ftpIntrlManageDAO.selectFtpIntrlListTotCnt"
+		parameterClass="FtpIntrlManageVO" resultClass="int">
+		SELECT COUNT(*) totcnt
+		FROM TN_FTP_INTRLCK
+		WHERE 1=1
+		<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			<![CDATA[FTP_INTRLCK_NM LIKE '%' || #searchKeyword# || '%']]>
+        </isEqual>
+	</select>
+
+	<select id="ftpIntrlManageDAO.selectFtpIntrl" parameterClass="FtpIntrlManageVO"
+		resultMap="ftpIntrl">
+        <![CDATA[
+            SELECT FTP_INTRLCK_NO
+            	 , FTP_INTRLCK_NM
+            	 , FTP_ADRES
+            	 , USER_ID
+            	 , PASSWORD
+            	 , BATCH_WDTB_PATH
+            	 , CFG_WDTB_PATH
+            	 , FRST_REGISTER_ID
+            	 , TO_CHAR(FRST_REGIST_PNTTM, 'YYYY-MM-DD HH24:MI:SS') AS FRST_REGIST_PNTTM  
+                 , LAST_UPDUSR_ID
+            	 , TO_CHAR(LAST_UPDT_PNTTM, 'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM  
+              FROM TN_FTP_INTRLCK
+             WHERE FTP_INTRLCK_NO=#ftpIntrlckNo#
+        ]]>
+		<isEqual prepend="AND" property="searchCondition" compareValue="1">
+			<![CDATA[FTP_INTRLCK_NM LIKE '%' || #searchKeyword# || '%']]>
+        </isEqual>
+	</select>
+</sqlMap>

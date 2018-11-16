@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+    <formset>
+        <form name="jobIssueManage">
+            <field property="issueTyCode" depends="required">
+                <arg0 key="이슈유형" resource="false"/>
+            </field>
+            <field property="issueLvCode" depends="required">
+                <arg0 key="이슈수준" resource="false"/>
+            </field>
+            <field property="issueOccrrncDe" depends="required, date">
+        		<arg0 key="이슈발생일" resource="false"/>
+				<var>
+				<var-name>datePatternStrict</var-name>
+				<var-value>yyyy-MM-dd</var-value> 
+				</var>
+			</field> 
+            <field property="issueSj" depends="required">
+                <arg0 key="이슈제목" resource="false"/>
+            </field>
+            <field property="issueCn" depends="required">
+                <arg0 key="이슈내용" resource="false"/>
+            </field>
+        </form>
+	</formset>   
+</form-validation>

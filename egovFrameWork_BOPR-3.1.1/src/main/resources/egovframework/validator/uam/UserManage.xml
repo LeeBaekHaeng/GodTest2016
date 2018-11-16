@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+    <formset>
+        <form name="userInsert">
+            <field property="userId" depends="required">
+                <arg0 key="사용자 ID" resource="false"/>
+            </field>
+            <field property="userNm" depends="required">
+                <arg0 key="사용자 명" resource="false"/>
+            </field>
+            <field property="password" depends="required, password1, password2, password3, password4">
+                <arg0 key="비밀번호" resource="false"/>
+            </field>
+            <field property="password2" depends="required">
+                <arg0 key="비밀번호확인" resource="false"/>
+            </field>
+            <field property="deptId" depends="required">
+                <arg0 key="소속부서" resource="false"/>
+            </field>
+            <field property="moblphonNo" depends="required">
+                <arg0 key="전화번호" resource="false"/>
+            </field>
+            <field property="emails" depends="required, email">
+                <arg0 key="E-mail" resource="false"/>
+            </field>
+        </form>
+	</formset>
+	 <formset>
+        <form name="userUpdate">
+            <field property="userId" depends="required">
+                <arg0 key="사용자 ID" resource="false"/>
+            </field>
+            <field property="userNm" depends="required">
+                <arg0 key="사용자 명" resource="false"/>
+            </field>
+            <field property="deptId" depends="required">
+                <arg0 key="소속부서" resource="false"/>
+            </field>
+            <field property="moblphonNo" depends="required">
+                <arg0 key="전화번호" resource="false"/>
+            </field>
+            <field property="emails" depends="required, email">
+                <arg0 key="E-mail" resource="false"/>
+            </field>
+        </form>
+    </formset>   
+    <formset>
+        <form name="userPasswordUpdate">
+        	<field property="searchKeyword" depends="required, password1, password2, password3, password4">
+                <arg0 key="기존비밀번호" resource="false"/>
+            </field>
+            <field property="password" depends="required, password1, password2, password3, password4">
+                <arg0 key="새비밀번호" resource="false"/>
+            </field>
+            <field property="password2" depends="required">
+                <arg0 key="비밀번호확인" resource="false"/>
+            </field>
+        </form>
+    </formset>  
+</form-validation>

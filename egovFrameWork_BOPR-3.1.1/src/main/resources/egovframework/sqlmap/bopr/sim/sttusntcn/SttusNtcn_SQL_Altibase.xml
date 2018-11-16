@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BatchWdtb">
+
+    <typeAlias  alias="sttusNtcnVO" type="egovframework.bopr.sim.service.SttusNtcnVO"/>
+    <typeAlias  alias="sttusNtcnRecptnVO" type="egovframework.bopr.sim.service.SttusNtcnRecptnVO"/>
+
+    <resultMap id="sttusNtcnList" class="egovframework.bopr.sim.service.SttusNtcnVO">
+        <result property="batchId"         column="BATCH_ID"          columnIndex="1"/>
+        <result property="batchNm"         column="BATCH_NM"          columnIndex="2"/>
+        <result property="jobSeCode"       column="JOB_SE_CODE"       columnIndex="3"/>
+        <result property="jobSeCodeNm"     column="JOB_SE_CODE_NM"    columnIndex="4"/>
+        <result property="schdulNo"        column="SCHDUL_NO"         columnIndex="5"/>
+        <result property="schdulNm"        column="SCHDUL_NM"         columnIndex="6"/>
+        <result property="ntcnNo"          column="NTCN_NO"           columnIndex="7"/>
+        <result property="ntcnSj"          column="NTCN_SJ"           columnIndex="8"/>
+        <result property="eventCode"       column="EVENT_CODE"        columnIndex="9"/>
+        <result property="eventCodeNm"     column="EVENT_CODE_NM"     columnIndex="10"/>
+        <result property="ntcnCode"        column="NTCN_CODE"         columnIndex="11"/>
+        <result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="12"/>
+    </resultMap>
+    
+    <resultMap id="sttusNtcn" class="egovframework.bopr.sim.service.SttusNtcnVO">
+        <result property="batchId"         column="BATCH_ID"          columnIndex="1"/>
+        <result property="batchNm"         column="BATCH_NM"          columnIndex="2"/>
+        <result property="jobSeCode"       column="JOB_SE_CODE"       columnIndex="3"/>
+        <result property="jobSeCodeNm"     column="JOB_SE_CODE_NM"    columnIndex="4"/>
+        <result property="ntcnNo"          column="NTCN_NO"           columnIndex="5"/>
+        <result property="ntcnSj"          column="NTCN_SJ"           columnIndex="6"/>
+        <result property="schdulNo"        column="SCHDUL_NO"         columnIndex="7"/>
+        <result property="schdulNm"        column="SCHDUL_NM"         columnIndex="8"/>
+        <result property="eventCode"       column="EVENT_CODE"        columnIndex="9"/>
+        <result property="ntcnCode"        column="NTCN_CODE"         columnIndex="10"/>
+        <result property="mssageNm"        column="MSSAGE_NM"         columnIndex="11"/>
+        <result property="mssageDc"        column="MSSAGE_DC"         columnIndex="12"/>
+        <result property="remark"          column="REMARK"            columnIndex="13"/>
+        <result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="14"/>
+    </resultMap>
+    
+    <resultMap id="sttusNtcnRecptn" class="egovframework.bopr.sim.service.SttusNtcnRecptnVO">
+    	<result property="ntcnNo" column="NTCN_NO" columnIndex="1"/>
+    	<result property="recptnUserId" column="RECPTN_USER_ID" columnIndex="2"/>
+    	<result property="recptnUserNm" column="RECPTN_USER_NM" columnIndex="3"/>
+    	<result property="moblphonNo" column="MOBLPHON_NO" columnIndex="4"/>
+    	<result property="emails" column="EMAILS" columnIndex="5"/>
+    </resultMap>
+    
+    <select id="SttusNtcnDAO.selectSttusNtcnList" parameterClass="SttusNtcnVO" resultMap="sttusNtcnList">
+    <![CDATA[
+        SELECT A.*
+        FROM
+            ( SELECT A.*, ROWNUM as RN
+              FROM
+                  ( SELECT
+                        A.BATCH_ID
+                      , B.BATCH_NM
+                      , B.JOB_SE_CODE
+                      , ( SELECT S.CODE_NM
+                          FROM TC_CMMNDETAILCODE S
+                          WHERE S.CODE_ID = 'BO001'
+                            AND S.CODE = B.JOB_SE_CODE ) as JOB_SE_CODE_NM
+                      , A.SCHDUL_NO
+                      , C.SCHDUL_NM
+                      , A.NTCN_NO
+                      , A.NTCN_SJ
+                      , A.EVENT_CODE
+                      , ( SELECT S2.CODE_NM
+                          FROM TC_CMMNCODE S1, TC_CMMNDETAILCODE S2
+                          WHERE S1.CODE_ID = S2.CODE_ID
+                            AND S1.CODE_ID = 'BO008'
+                            AND S2.CODE = A.EVENT_CODE ) as EVENT_CODE_NM
+		      		  , A.NTCN_CODE
+                      , TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') as FRST_REGIST_PNTTM
+                    FROM
+                        TN_NTCN A
+                      , TN_BATCH B
+                      , TN_SCHDUL C
+                    WHERE A.BATCH_ID = B.BATCH_ID
+                      AND B.DELETE_AT = 'N'
+                      AND A.SCHDUL_NO = C.SCHDUL_NO
+    ]]>
+    		  <isEqual prepend="AND" property="searchCondition" compareValue="A">
+                      A.BATCH_ID LIKE '%' || #searchKeyword# || '%'
+              </isEqual>
+              <isEqual prepend="AND" property="searchCondition" compareValue="B">
+                      A.SCHDUL_NO LIKE '%' || #searchKeyword# || '%'
+              </isEqual>
+              <isEqual prepend="AND" property="searchCondition" compareValue="C">
+                      A.NTCN_NO LIKE '%' || #searchKeyword# || '%'
+              </isEqual>
+              <isEqual prepend="AND" property="searchCondition" compareValue="D">
+                      A.NTCN_SJ LIKE '%' || #searchKeyword# || '%'
+              </isEqual>
+              <isNotEmpty prepend="AND" property="eventCode">
+                      A.EVENT_CODE = #eventCode#
+              </isNotEmpty>
+              <isNotEmpty prepend="AND" property="jobSeCode">
+                      B.JOB_SE_CODE = #jobSeCode#
+              </isNotEmpty>
+    <![CDATA[
+                    ORDER BY A.FRST_REGIST_PNTTM DESC, A.LAST_UPDT_PNTTM DESC, A.NTCN_NO DESC
+                  ) A
+              WHERE ROWNUM <= #firstIndex# + #recordCountPerPage#
+            ) A
+    ]]>
+    	<isEmpty property="eventCode">
+    	WHERE RN BETWEEN #firstIndex# + 1 AND #recordCountPerPage# + #firstIndex#
+    	</isEmpty>
+    </select>
+    
+    <select id="SttusNtcnDAO.selectSttusNtcnListTotCnt" parameterClass="SttusNtcnVO" resultClass="int">
+    <![CDATA[
+        SELECT
+            COUNT(1) as TOT_CNT
+        FROM
+            TN_NTCN A
+          , TN_BATCH B
+        WHERE A.BATCH_ID = B.BATCH_ID
+          AND B.DELETE_AT = 'N'
+    ]]>
+    	<isEqual prepend="AND" property="searchCondition" compareValue="A">
+          A.BATCH_ID LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="B">
+          A.SCHDUL_NO LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="C">
+          A.NTCN_NO LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="D">
+          A.NTCN_SJ LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isNotEmpty prepend="AND" property="eventCode">
+          A.EVENT_CODE = #eventCode#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+          B.JOB_SE_CODE = #jobSeCode#
+        </isNotEmpty>
+    </select>
+    
+    <select id="SttusNtcnDAO.selectSttusNtcn" parameterClass="SttusNtcnVO" resultMap="sttusNtcn">
+    <![CDATA[
+		SELECT
+		    A.BATCH_ID
+		  , B.BATCH_NM
+		  , B.JOB_SE_CODE
+		  , ( SELECT S.CODE_NM
+              FROM TC_CMMNDETAILCODE S
+              WHERE S.CODE_ID = 'BO001'
+                AND S.CODE = B.JOB_SE_CODE ) as JOB_SE_CODE_NM
+          , A.SCHDUL_NO
+          , C.SCHDUL_NM
+		  , A.NTCN_NO
+		  , A.NTCN_SJ
+		  , A.EVENT_CODE
+		  , A.NTCN_CODE
+		  , A.MSSAGE_NM
+		  , A.MSSAGE_DC
+		  , A.REMARK
+		  , TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') as FRST_REGIST_PNTTM
+		FROM
+		    TN_NTCN A
+		  , TN_BATCH B
+		  , TN_SCHDUL C
+		WHERE A.BATCH_ID = B.BATCH_ID
+		  AND B.DELETE_AT = 'N'
+		  AND A.SCHDUL_NO = C.SCHDUL_NO
+	]]>
+	    <isNotEmpty prepend="AND" property="batchId">
+		  A.BATCH_ID = #batchId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="schdulNo">
+		  A.SCHDUL_NO = #schdulNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="ntcnNo">
+		  A.NTCN_NO = #ntcnNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="eventCode">
+		  A.EVENT_CODE = #eventCode#
+		</isNotEmpty>
+    </select>
+    
+    <insert id="SttusNtcnDAO.insertSttusNtcn" parameterClass="SttusNtcnVO">
+    <![CDATA[
+		INSERT INTO TN_NTCN
+		(
+		    BATCH_ID
+		  , SCHDUL_NO
+		  , NTCN_NO
+		  , NTCN_SJ
+		  , EVENT_CODE
+		  , NTCN_CODE
+		  , MSSAGE_NM
+		  , MSSAGE_DC
+		  , REMARK
+		  , FRST_REGISTER_ID
+		  , FRST_REGIST_PNTTM
+		  , LAST_UPDUSR_ID
+		  , LAST_UPDT_PNTTM
+		)
+		VALUES
+		(
+		    #batchId#
+		  , #schdulNo#
+		  , #ntcnNo#
+		  , #ntcnSj#
+		  , #eventCode#
+		  , #ntcnCode#
+		  , #mssageNm#
+		  , #mssageDc#
+		  , #remark#
+		  , #frstRegisterId#
+		  , SYSDATE
+		  , #lastUpdusrId#
+		  , SYSDATE
+		)
+    ]]>
+    </insert>
+    
+    <update id="SttusNtcnDAO.updateSttusNtcn" parameterClass="SttusNtcnVO">
+    <![CDATA[
+		UPDATE TN_NTCN A
+		SET
+		    A.NTCN_SJ = #ntcnSj#
+		  , A.EVENT_CODE = #eventCode#
+		  , A.NTCN_CODE = #ntcnCode#
+		  , A.MSSAGE_NM = #mssageNm#
+		  , A.MSSAGE_DC = #mssageDc#
+		  , A.REMARK = #remark#
+		  , A.LAST_UPDUSR_ID = #lastUpdusrId#
+		  , A.LAST_UPDT_PNTTM = SYSDATE
+		WHERE A.NTCN_NO = #ntcnNo#
+	]]>
+    </update>
+    
+    <delete id="SttusNtcnDAO.deleteSttusNtcn" parameterClass="SttusNtcnVO">
+    <![CDATA[
+		DELETE FROM TN_NTCN
+		WHERE 1 =1
+	]]>
+		<isNotEmpty prepend="AND" property="ntcnNo">
+		<![CDATA[
+		  NTCN_NO = #ntcnNo#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="schdulNo">
+		<![CDATA[
+		  SCHDUL_NO = #schdulNo#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="batchId">
+		<![CDATA[
+		  BATCH_ID = #batchId#
+		]]>
+		</isNotEmpty>
+    </delete>
+    
+    <insert id="SttusNtcnDAO.insertSttusNtcnRecptn" parameterClass="SttusNtcnRecptnVO">
+    <![CDATA[
+    	INSERT INTO TN_NTCN_RECPTN
+    	(
+    	    NTCN_NO
+    	  , RECPTN_USER_ID
+    	)
+    	VALUES
+    	(
+    	    #ntcnNo#
+    	  , #recptnUserId#
+    	)
+    ]]>
+    </insert>
+    
+    <delete id="SttusNtcnDAO.deleteSttusNtcnRecptn" parameterClass="SttusNtcnRecptnVO">
+    <![CDATA[
+    	DELETE FROM TN_NTCN_RECPTN
+    	WHERE 1 = 1
+    ]]>
+    	<isNotEmpty prepend="AND" property="ntcnNo">
+    	  NTCN_NO = #ntcnNo#
+    	</isNotEmpty>
+    	<isNotEmpty prepend="AND" property="recptnUserId">
+    	  RECPTN_USER_ID = #recptnUserId#
+    	</isNotEmpty>
+    </delete>
+
+	<select id="SttusNtcnDAO.selectSttusNtcnRecptnList" parameterClass="SttusNtcnRecptnVO" resultMap="sttusNtcnRecptn">
+	<![CDATA[
+		SELECT
+		    A.NTCN_NO
+		  , A.RECPTN_USER_ID
+		  , B.USER_NM as RECPTN_USER_NM
+		  , B.MOBLPHON_NO
+		  , B.EMAILS
+		FROM
+		    TN_NTCN_RECPTN A
+		  , TN_USERS B
+		WHERE A.RECPTN_USER_ID = B.USER_ID
+	]]>
+		<isNotEmpty prepend="AND" property="ntcnNo">
+		  NTCN_NO = #ntcnNo#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="recptnUserId">
+			RECPTN_USER_ID = #recptnUserId#
+		</isNotEmpty>
+	</select>
+
+</sqlMap>

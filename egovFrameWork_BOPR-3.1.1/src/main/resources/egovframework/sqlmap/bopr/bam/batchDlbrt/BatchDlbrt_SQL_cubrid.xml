@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="EgovBatchDlbrt">
+
+<typeAlias alias="batchDlbrtVO" type="egovframework.bopr.bam.service.BatchDlbrtVO"/>
+<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+<typeAlias alias="batchDlbrt" type="egovframework.bopr.bam.service.BatchDlbrt"/>
+
+<resultMap id="batchDlbrt" class="egovframework.bopr.bam.service.BatchDlbrtVO">
+<result property="jobDlbrtNo" column="JOB_DLBRT_NO"/>
+<result property="jobDlbrtNm" column="JOB_DLBRT_NM"/>
+<result property="batchDlbrtNo" column="BATCH_DLBRT_NO"/>
+<result property="batchId" column="BATCH_ID"/>
+<result property="batchNm" column="BATCH_NM"/>
+<result property="batchDc" column="BATCH_DC"/>
+<result property="testAt" column="TEST_AT"/>
+<result property="wdtbAt" column="WDTB_AT"/>
+<result property="processSeCode" column="PROCESS_SE_CODE"/>
+<result property="batchDlbrtResultCode" column="BATCH_DLBRT_RESULT_CODE"/>
+<result property="batchDlbrtResultCodeNm" column="BATCH_DLBRT_RESULT_CODE_NM"/>
+<result property="batchDlbrtCn" column="BATCH_DLBRT_CN"/>
+<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM"/>
+<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+<result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM"/>
+</resultMap>
+
+<resultMap id="batchDlbrtAtch" class="egovframework.bopr.bam.service.BatchDlbrtVO">
+<result property="jobDlbrtNo" column="JOB_DLBRT_NO"/>
+<result property="batchDlbrtNo" column="BATCH_DLBRT_NO"/>
+<result property="atchFileId" column="ATCH_FILE_ID"/>
+<result property="atchSeCode" column="ATCH_SE_CODE"/>
+<result property="batchPath" column="BATCH_PATH"/>
+<result property="atchProcessSeCode" column="ATCH_PROCESS_SE_CODE"/>
+<result property="frstRegisterId" column="FRST_REGISTER_ID"/>
+<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM"/>
+<result property="lastUpdusrId" column="LAST_UPDUSR_ID"/>
+<result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM"/>
+</resultMap>
+
+<resultMap id="batchDlbrtPopup" class="egovframework.bopr.bam.service.BatchDlbrtVO">
+<result property="jobDlbrtNo" column="JOB_DLBRT_NO"/>
+<result property="jobDlbrtNm" column="JOB_DLBRT_NM"/>
+<result property="batchId" column="BATCH_ID"/>
+<result property="batchNm" column="BATCH_NM"/>
+</resultMap>
+
+<resultMap id="batchPopup" class="egovframework.bopr.bam.service.BatchDlbrtVO">
+<result property="jobDlbrtNo" column="JOB_DLBRT_NO"/>
+<result property="jobDlbrtNm" column="JOB_DLBRT_NM"/>
+<result property="batchId" column="BATCH_ID"/>
+<result property="batchNm" column="BATCH_NM"/>
+</resultMap>
+
+<select id="batchDlbrtDAO.selectBatchDlbrtList" parameterClass="egovframework.bopr.bam.service.BatchDlbrtVO" resultMap="batchDlbrt">
+<![CDATA[
+SELECT  C.* 
+              FROM  (
+            SELECT ALL_LIST.* , rownum rn
+              FROM  (
+			SELECT
+				    A.JOB_DLBRT_NO         
+				  , D.JOB_DLBRT_NM    
+		          , A.BATCH_DLBRT_NO
+		          , A.BATCH_ID
+		          , A.BATCH_NM
+		          , A.BATCH_DC
+		          , A.TEST_AT
+		          , A.WDTB_AT
+		          , A.PROCESS_SE_CODE
+		          , B.BATCH_DLBRT_RESULT_CODE
+                  , C.CODE_NM AS BATCH_DLBRT_RESULT_CODE_NM
+		          , B.BATCH_DLBRT_CN
+		          , A.FRST_REGISTER_ID
+		          , TO_CHAR(A.FRST_REGIST_PNTTM,'YYYY-MM-DD HH24:MI:SS') AS FRST_REGIST_PNTTM
+		          , A.LAST_UPDUSR_ID
+		          , TO_CHAR(A.LAST_UPDT_PNTTM,'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM
+				FROM
+				    TN_BATCH_DLBRT A
+				  LEFT OUTER JOIN (SELECT BATCH_DLBRT_NO
+				                        , BATCH_DLBRT_RESULT_CODE
+				                        , BATCH_DLBRT_CN
+				                     FROM TN_BATCH_DLBRT_RESULT
+				                    WHERE BATCH_DLBRT_RESULT_NO IN (SELECT MAX(A.BATCH_DLBRT_RESULT_NO) 
+				                                                   FROM TN_BATCH_DLBRT_RESULT A
+				                                                      , TN_BATCH_DLBRT B
+				                                                  WHERE B.BATCH_DLBRT_NO = A.BATCH_DLBRT_NO
+				                                                  GROUP BY A.BATCH_DLBRT_NO)) B
+				   ON A.BATCH_DLBRT_NO = B.BATCH_DLBRT_NO
+		          LEFT OUTER JOIN (SELECT CODE_ID,
+		                                  CODE_NM,
+		                                  CODE
+		                             FROM TC_CMMNDETAILCODE
+		                            WHERE CODE_ID = 'BO003') C
+		           ON B.BATCH_DLBRT_RESULT_CODE = C.CODE
+		         , TN_JOB_DLBRT D
+				WHERE 1=1
+				  AND A.JOB_DLBRT_NO = D.JOB_DLBRT_NO
+        ]]>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                A.BATCH_DLBRT_NO LIKE ('%'||#searchKeyword#||'%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                A.BATCH_NM LIKE ('%'||#searchKeyword#||'%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="searchResultCode">
+        	<isEqual property="searchResultCode" compareValue="NU">
+        		B.BATCH_DLBRT_RESULT_CODE is null
+        	</isEqual>
+        	<isNotEqual property="searchResultCode" compareValue="NU">
+        		B.BATCH_DLBRT_RESULT_CODE = #searchResultCode#
+        	</isNotEqual>
+        </isNotEmpty>
+        <isNotEqual prepend="AND" property="searchKeywordFrom" compareValue="">
+        <![CDATA[  
+        		A.FRST_REGIST_PNTTM >= TO_DATE(#searchKeywordFrom#,'YYYY-MM-DD HH24:MI:SS')
+        		]]>
+        </isNotEqual>
+        <isNotEqual prepend="AND" property="searchKeywordTo" compareValue="">
+        <![CDATA[  
+        		A.FRST_REGIST_PNTTM <= TO_DATE(concat(#searchKeywordTo#,' 23:59:59'),'YYYY-MM-DD HH24:MI:SS')
+        ]]>
+        </isNotEqual>
+        <![CDATA[            
+            ORDER BY A.BATCH_DLBRT_NO DESC
+
+                    ) ALL_LIST
+                    ) C
+             WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]>
+</select>
+
+<select id="batchDlbrtDAO.selectBatchDlbrtPopupList" parameterClass="egovframework.bopr.bam.service.BatchDlbrtVO" resultMap="batchDlbrtPopup">
+<![CDATA[
+SELECT  C.* 
+              FROM  (
+            SELECT ALL_LIST.* , rownum rn
+              FROM  (
+				SELECT A.JOB_DLBRT_NO
+					 , B.JOB_DLBRT_NM
+				     , A.BATCH_NM
+                     , A.BATCH_ID
+				  FROM TN_BATCH A
+				     , TN_JOB_DLBRT B     
+				 WHERE A.JOB_DLBRT_NO = #jobDlbrtNo#
+				   AND A.JOB_DLBRT_NO = B.JOB_DLBRT_NO
+				   AND A.DELETE_AT = 'N'
+        ]]>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                A.BATCH_ID LIKE ('%'||#searchKeyword#||'%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                A.BATCH_NM LIKE ('%'||#searchKeyword#||'%')
+        </isEqual>
+        <![CDATA[            
+            ORDER BY A.FRST_REGIST_PNTTM DESC
+
+                    ) ALL_LIST
+                    ) C
+             WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]>
+</select>
+
+<select id="batchDlbrtDAO.selectBatchPopupList" parameterClass="egovframework.bopr.bam.service.BatchDlbrtVO" resultMap="batchPopup">
+<![CDATA[
+SELECT  C.* 
+              FROM  (
+            SELECT ALL_LIST.* , rownum rn
+              FROM  (
+				SELECT A.JOB_DLBRT_NO
+				     , B.CODE_NM AS JOB_DLBRT_NM
+				     , A.BATCH_NM
+                     , A.BATCH_ID
+				  FROM TN_BATCH A
+				     LEFT OUTER JOIN (SELECT CODE_ID,
+		                                  CODE_NM,
+		                                  CODE
+		                             FROM TC_CMMNDETAILCODE
+		                            WHERE CODE_ID = 'BO001') B
+		            ON A.JOB_SE_CODE = B.CODE   
+				 WHERE 1=1
+        ]]>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                A.BATCH_ID LIKE ('%'||#searchKeyword#||'%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                A.BATCH_NM LIKE ('%'||#searchKeyword#||'%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="searchSeCode">
+       			A.JOB_SE_CODE = #searchSeCode#
+        </isNotEmpty>
+        <![CDATA[            
+            ORDER BY A.BATCH_ID DESC
+
+                    ) ALL_LIST
+                    ) C
+             WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]>
+</select>
+
+<insert id="batchDlbrtDAO.insertBatchDlbrt" parameterClass="batchDlbrt">
+<![CDATA[
+            INSERT INTO TN_BATCH_DLBRT
+                  ( JOB_DLBRT_NO
+                  , BATCH_DLBRT_NO
+				  , BATCH_ID
+				  , BATCH_NM
+				  , BATCH_DC
+				  , TEST_AT
+				  , WDTB_AT
+				  , PROCESS_SE_CODE
+				  , FRST_REGISTER_ID
+				  , FRST_REGIST_PNTTM
+				  , LAST_UPDUSR_ID
+				  , LAST_UPDT_PNTTM)
+           VALUES ( #jobDlbrtNo#
+                  , #batchDlbrtNo#
+                  , #batchId#
+                  , #batchNm#
+                  , #batchDc#
+                  , 'N'
+                  , 'N'
+                  , #processSeCode#
+                  , #frstRegisterId#
+                  , SYSDATETIME
+                  , #lastUpdusrId#
+                  , SYSDATETIME)
+        ]]>
+</insert>
+
+<insert id="batchDlbrtDAO.insertBatchDlbrtAtch" parameterClass="batchDlbrt">
+<![CDATA[
+            INSERT INTO TN_BATCH_DLBRT_ATCH_FILE
+                  ( JOB_DLBRT_NO
+                  , BATCH_DLBRT_NO
+				  , ATCH_FILE_ID
+				  , ATCH_SE_CODE
+				  , WDTB_PATH
+				  , PROCESS_SE_CODE
+				  , FRST_REGISTER_ID
+				  , FRST_REGIST_PNTTM
+				  , LAST_UPDUSR_ID
+				  , LAST_UPDT_PNTTM)
+           VALUES ( #jobDlbrtNo#
+                  , #batchDlbrtNo#
+                  , #atchFileId#
+                  , #atchSeCode#
+                  , #batchPath#
+                  , #atchProcessSeCode#
+                  , #frstRegisterId#
+                  , SYSDATETIME
+                  , #lastUpdusrId#
+                  , SYSDATETIME)
+        ]]>
+</insert>
+<insert id="batchDlbrtDAO.insertBatchBean" parameterClass="batchDlbrt">
+<![CDATA[
+            INSERT INTO TN_BATCH_BEAN
+                  ( BEAN_ID
+                  , BATCH_ID )
+           VALUES ( #beanId#
+                  , #batchId# )
+        ]]>
+</insert>
+<delete id="batchDlbrtDAO.deleteBatchBean" parameterClass="batchDlbrt">
+<![CDATA[
+            DELETE FROM TN_BATCH_BEAN
+             WHERE BEAN_ID = #beanId#
+        ]]>
+</delete>
+<update id="batchDlbrtDAO.updateBatchDlbrt" parameterClass="batchDlbrt">
+<![CDATA[
+            UPDATE TN_BATCH_DLBRT
+               SET   JOB_DLBRT_NO = #jobDlbrtNo#
+                   , BATCH_ID = #batchId#
+                   , BATCH_NM = #batchNm#
+                   , BATCH_DC = #batchDc#
+                   , LAST_UPDUSR_ID = #lastUpdusrId#
+                   , LAST_UPDT_PNTTM = SYSDATETIME
+              WHERE BATCH_DLBRT_NO = #batchDlbrtNo#
+        ]]>
+</update>
+
+<update id="batchDlbrtDAO.updateBatchDlbrtAtch" parameterClass="batchDlbrt">
+<![CDATA[
+            UPDATE TN_BATCH_DLBRT_ATCH_FILE
+               SET ATCH_SE_CODE = #atchSeCode#
+                   , WDTB_PATH = #batchPath#
+                   , PROCESS_SE_CODE = #atchProcessSeCode#
+                   , LAST_UPDUSR_ID = #lastUpdusrId#
+                   , LAST_UPDT_PNTTM = SYSDATETIME
+              WHERE ATCH_FILE_ID = #atchFileId#
+        ]]>
+</update>
+
+<delete id="batchDlbrtDAO.deleteBatchDlbrt">
+<![CDATA[
+            DELETE FROM TN_BATCH_DLBRT
+             WHERE BATCH_DLBRT_NO = #batchDlbrtNo#
+        ]]>
+</delete>
+
+<delete id="batchDlbrtDAO.deleteBatchDlbrtAtch">
+<![CDATA[
+            DELETE FROM TN_BATCH_DLBRT_ATCH_FILE
+             WHERE ATCH_FILE_ID = #atchFileId#
+        ]]>
+</delete>
+
+<delete id="batchDlbrtDAO.deleteBatchDlbrtAtchByNo">
+<![CDATA[
+            DELETE FROM TN_BATCH_DLBRT_ATCH_FILE
+             WHERE BATCH_DLBRT_NO = #batchDlbrtNo#
+        ]]>
+</delete>
+
+<select id="batchDlbrtDAO.selectBatchDlbrt" resultMap="batchDlbrt">
+<![CDATA[
+SELECT
+    A.JOB_DLBRT_NO
+  , D.JOB_DLBRT_NM
+  , A.BATCH_DLBRT_NO
+  , A.BATCH_ID
+  , A.BATCH_NM
+  , A.BATCH_DC
+  , A.TEST_AT
+  , A.WDTB_AT
+  , A.PROCESS_SE_CODE
+  , B.BATCH_DLBRT_RESULT_CODE
+  , C.CODE_NM AS BATCH_DLBRT_RESULT_CODE_NM
+  , B.BATCH_DLBRT_CN
+  , A.FRST_REGISTER_ID
+  , TO_CHAR(A.FRST_REGIST_PNTTM,'YYYY-MM-DD HH24:MI:SS') AS FRST_REGIST_PNTTM
+  , A.LAST_UPDUSR_ID
+  , TO_CHAR(A.LAST_UPDT_PNTTM,'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM
+  FROM
+TN_BATCH_DLBRT A
+  LEFT OUTER JOIN (SELECT BATCH_DLBRT_NO
+                        , BATCH_DLBRT_RESULT_CODE
+                        , BATCH_DLBRT_CN
+                     FROM TN_BATCH_DLBRT_RESULT
+                    WHERE BATCH_DLBRT_RESULT_NO = (SELECT MAX(BATCH_DLBRT_RESULT_NO) 
+                                                   FROM TN_BATCH_DLBRT_RESULT 
+                                                  WHERE BATCH_DLBRT_NO = #batchDlbrtNo#)) B
+   ON A.BATCH_DLBRT_NO = B.BATCH_DLBRT_NO
+  LEFT OUTER JOIN (SELECT CODE_ID
+                        , CODE_NM
+                        , CODE
+                     FROM TC_CMMNDETAILCODE
+                    WHERE CODE_ID = 'BO003') C
+  ON B.BATCH_DLBRT_RESULT_CODE = C.CODE
+  , TN_JOB_DLBRT D
+WHERE A.JOB_DLBRT_NO = D.JOB_DLBRT_NO
+  AND A.BATCH_DLBRT_NO = #batchDlbrtNo#
+        ]]>
+</select>
+
+<select id="batchDlbrtDAO.selectBatchDlbrtAtch" parameterClass="egovframework.bopr.bam.service.BatchDlbrtVO" resultMap="batchDlbrtAtch">
+<![CDATA[
+SELECT
+    JOB_DLBRT_NO
+  , BATCH_DLBRT_NO
+  , ATCH_FILE_ID
+  , ATCH_SE_CODE
+  , WDTB_PATH AS BATCH_PATH
+  , PROCESS_SE_CODE AS ATCH_PROCESS_SE_CODE
+  , FRST_REGISTER_ID
+  , FRST_REGIST_PNTTM
+  , LAST_UPDUSR_ID
+  , LAST_UPDT_PNTTM
+FROM
+    TN_BATCH_DLBRT_ATCH_FILE
+WHERE BATCH_DLBRT_NO = #batchDlbrtNo#
+        ]]>
+</select>
+
+<select id="batchDlbrtDAO.selectBatchDlbrtListTotCnt" parameterClass="batchDlbrtVO" resultClass="int">
+SELECT COUNT(*) totcnt
+            FROM TN_BATCH_DLBRT A
+            	 LEFT OUTER JOIN (SELECT BATCH_DLBRT_NO
+				                        , BATCH_DLBRT_RESULT_CODE
+				                        , BATCH_DLBRT_CN
+				                     FROM TN_BATCH_DLBRT_RESULT
+				                    WHERE BATCH_DLBRT_RESULT_NO IN (SELECT MAX(A.BATCH_DLBRT_RESULT_NO) 
+				                                                   FROM TN_BATCH_DLBRT_RESULT A
+				                                                      , TN_BATCH_DLBRT B
+				                                                  WHERE B.BATCH_DLBRT_NO = A.BATCH_DLBRT_NO
+				                                                  GROUP BY A.BATCH_DLBRT_NO)) B
+				   ON A.BATCH_DLBRT_NO = B.BATCH_DLBRT_NO
+            WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                A.BATCH_DLBRT_NO LIKE ('%'||#searchKeyword#||'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                A.BATCH_NM LIKE ('%'||#searchKeyword#||'%')
+            </isEqual>
+            <isNotEmpty prepend="AND" property="searchResultCode">
+	        	<isEqual property="searchResultCode" compareValue="NU">
+	        		B.BATCH_DLBRT_RESULT_CODE is null
+	        	</isEqual>
+	        	<isNotEqual property="searchResultCode" compareValue="NU">
+	        		B.BATCH_DLBRT_RESULT_CODE = #searchResultCode#
+	        	</isNotEqual>
+	        </isNotEmpty>
+             <isNotEqual prepend="AND" property="searchKeywordFrom" compareValue="">
+	        <![CDATA[  
+	        	A.FRST_REGIST_PNTTM >= TO_DATE(#searchKeywordFrom#,'YYYY-MM-DD HH24:MI:SS')
+	        ]]>
+	        </isNotEqual>
+	        <isNotEqual prepend="AND" property="searchKeywordTo" compareValue="">
+	        <![CDATA[  
+	        	A.FRST_REGIST_PNTTM <= TO_DATE(concat(#searchKeywordTo#,' 23:59:59'),'YYYY-MM-DD HH24:MI:SS')
+	        ]]>
+	        </isNotEqual>
+</select>
+<select id="batchDlbrtDAO.selectBatchDlbrtPopupListTotCnt" parameterClass="batchDlbrtVO" resultClass="int">
+SELECT COUNT(*) totcnt
+				  FROM TN_BATCH A     
+				 WHERE A.JOB_DLBRT_NO = #jobDlbrtNo#
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                A.BATCH_ID LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                A.BATCH_NM LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+</select>
+<select id="batchDlbrtDAO.selectBatchPopupListTotCnt" parameterClass="batchDlbrtVO" resultClass="int">
+SELECT COUNT(*) totcnt
+				  FROM TN_BATCH A     
+				 WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                A.BATCH_ID LIKE ('%'||#searchKeyword#||'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                A.BATCH_NM LIKE ('%'||#searchKeyword#||'%')
+            </isEqual>
+            <isNotEmpty prepend="AND" property="searchSeCode">
+       			A.JOB_SE_CODE = #searchSeCode#
+        </isNotEmpty>
+</select>
+<select id="batchDlbrtDAO.selectBatchBeanTotCnt" parameterClass="batchDlbrtVO" resultClass="int">
+SELECT COUNT(*) totcnt
+				  FROM TN_BATCH_BEAN     
+				 WHERE BEAN_ID = #beanId#
+</select>
+<select id="batchDlbrtDAO.selectBatchDlbrtAllList" parameterClass="batchDlbrtVO" resultMap="batchDlbrt">
+<![CDATA[
+SELECT
+    JOB_DLBRT_NO
+  , BATCH_DLBRT_NO
+  , BATCH_ID
+  , BATCH_NM
+  , BATCH_DC
+  , TEST_AT
+  , WDTB_AT
+  , PROCESS_SE_CODE
+  , FRST_REGISTER_ID
+  , FRST_REGIST_PNTTM
+  , LAST_UPDUSR_ID
+  , LAST_UPDT_PNTTM
+FROM
+    TN_BATCH_DLBRT
+WHERE 1 = 1
+        ]]>
+</select>
+</sqlMap>

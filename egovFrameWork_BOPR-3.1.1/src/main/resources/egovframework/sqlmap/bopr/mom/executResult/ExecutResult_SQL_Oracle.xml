@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ExecutResult">
+
+<typeAlias alias="executResultVO" type="egovframework.bopr.mom.service.ExecutResultVO"/>
+<typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+<typeAlias alias="executResult" type="egovframework.bopr.mom.service.ExecutResult"/>
+
+<resultMap id="executResult" class="egovframework.bopr.mom.service.ExecutResultVO">
+<result property="jobExecutionId" column="JOB_EXECUTION_ID"/>
+<result property="jobInstanceId" column="JOB_INSTANCE_ID"/>
+<result property="jobName" column="JOB_NAME"/>
+<result property="version" column="VERSION"/>
+<result property="createTime" column="CREATE_TIME"/>
+<result property="startTime" column="START_TIME"/>
+<result property="endTm" column="END_TM"/>
+<result property="sttus" column="STTUS"/>
+<result property="exitCode" column="EXIT_CODE"/>
+<result property="exitMessage" column="EXIT_MESSAGE"/>
+<result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM"/>
+
+</resultMap>
+
+<select id="executResultDAO.selectExecutResultList" parameterClass="egovframework.bopr.mom.service.ExecutResultVO" resultMap="executResult">
+<![CDATA[
+SELECT  C.* 
+              FROM  (
+            SELECT ALL_LIST.* , rownum rn
+              FROM  (
+			SELECT
+			    A.JOB_EXECUTION_ID             
+			  , A.JOB_INSTANCE_ID
+			  , B.JOB_NAME
+			  , A.VERSION
+			  , TO_CHAR(A.CREATE_TIME,'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+			  , TO_CHAR(A.START_TIME,'YYYY-MM-DD HH24:MI:SS') AS START_TIME
+			  , TO_CHAR(A.END_TIME,'YYYY-MM-DD HH24:MI:SS') AS END_TM
+			  , A.STATUS AS STTUS
+			  , A.EXIT_CODE
+			  , A.EXIT_MESSAGE
+			  , TO_CHAR(A.LAST_UPDATED,'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM
+			FROM
+			    BATCH_JOB_EXECUTION A
+			  , BATCH_JOB_INSTANCE B
+			WHERE A.JOB_INSTANCE_ID = B.JOB_INSTANCE_ID
+        ]]>
+        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                B.JOB_NAME LIKE ('%'||#searchKeyword#||'%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                A.JOB_EXECUTION_ID LIKE ('%'||#searchKeyword#||'%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="searchResultCode">
+        	A.STATUS = #searchResultCode#
+        </isNotEmpty>
+        <isNotEqual prepend="AND" property="searchKeywordFrom" compareValue="">
+        <![CDATA[  
+        		END_TIME >= #searchKeywordFrom#
+        		]]>
+        </isNotEqual>
+        <isNotEqual prepend="AND" property="searchKeywordTo" compareValue="">
+        <![CDATA[  
+        		END_TIME <= concat(#searchKeywordTo#,' 23:59:59')
+        ]]>
+        </isNotEqual>
+        <![CDATA[            
+            ORDER BY END_TM DESC
+
+                    ) ALL_LIST
+                    ) C
+             WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]>
+</select>
+
+<update id="executResultDAO.updateExecutResult" parameterClass="executResult">
+<![CDATA[
+            UPDATE BATCH_JOB_EXECUTION
+               SET VERSION = #version#
+                   , STATUS = #sttus#
+                   , EXIT_CODE = #exitCode#
+                   , EXIT_MESSAGE = #exitMessage#
+                   , LAST_UPDATED = SYSDATE
+              WHERE JOB_EXECUTION_ID = #jobExecutionId#
+        ]]>
+</update>
+<delete id="executResultDAO.deleteExecutResult">
+<![CDATA[
+            DELETE FROM BATCH_JOB_EXECUTION
+             WHERE JOB_EXECUTION_ID = #jobExecutionId#
+        ]]>
+</delete>
+<delete id="executResultDAO.deleteExecutResultContext">
+<![CDATA[
+            DELETE FROM BATCH_JOB_EXECUTION_CONTEXT
+             WHERE JOB_EXECUTION_ID = #jobExecutionId#
+        ]]>
+</delete>
+<delete id="executResultDAO.deleteExecutStepResult">
+<![CDATA[
+            DELETE FROM BATCH_STEP_EXECUTION
+             WHERE JOB_EXECUTION_ID = #jobExecutionId#
+        ]]>
+</delete>
+<delete id="executResultDAO.deleteExecutStepResultContext">
+<![CDATA[
+            DELETE FROM BATCH_STEP_EXECUTION_CONTEXT
+             WHERE STEP_EXECUTION_ID IN (SELECT STEP_EXECUTION_ID
+                                           FROM BATCH_STEP_EXECUTION
+                                          WHERE JOB_EXECUTION_ID = #jobExecutionId#)
+        ]]>
+</delete>
+<select id="executResultDAO.selectExecutResult" resultMap="executResult">
+<![CDATA[
+SELECT
+    A.JOB_EXECUTION_ID             
+  , A.JOB_INSTANCE_ID
+  , B.JOB_NAME
+  , A.VERSION
+  , TO_CHAR(A.CREATE_TIME,'YYYY-MM-DD HH24:MI:SS') AS CREATE_TIME
+  , TO_CHAR(A.START_TIME,'YYYY-MM-DD HH24:MI:SS') AS START_TIME
+  , TO_CHAR(A.END_TIME,'YYYY-MM-DD HH24:MI:SS') AS END_TM
+  , A.STATUS AS STTUS
+  , A.EXIT_CODE
+  , A.EXIT_MESSAGE
+  , TO_CHAR(A.LAST_UPDATED,'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM
+FROM
+    BATCH_JOB_EXECUTION A
+  , BATCH_JOB_INSTANCE B
+WHERE A.JOB_EXECUTION_ID = #jobExecutionId#
+  AND A.JOB_INSTANCE_ID = B.JOB_INSTANCE_ID
+        ]]>
+
+</select>
+<select id="executResultDAO.selectExecutResultListTotCnt" parameterClass="executResultVO" resultClass="int">
+SELECT COUNT(*) totcnt
+            FROM BATCH_JOB_EXECUTION A
+               , BATCH_JOB_INSTANCE B
+			WHERE A.JOB_INSTANCE_ID = B.JOB_INSTANCE_ID
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+	                B.JOB_NAME LIKE ('%'||#searchKeyword#||'%')
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="2">
+	                A.JOB_EXECUTION_ID LIKE ('%'||#searchKeyword#||'%')
+	        </isEqual>
+	        <isNotEmpty prepend="AND" property="searchResultCode">
+	        	A.STATUS = #searchResultCode#
+	        </isNotEmpty>
+	        <isNotEqual prepend="AND" property="searchKeywordFrom" compareValue="">
+	        <![CDATA[  
+	        		END_TIME >= #searchKeywordFrom#
+	        		]]>
+	        </isNotEqual>
+	        <isNotEqual prepend="AND" property="searchKeywordTo" compareValue="">
+	        <![CDATA[  
+	        		END_TIME <= concat(#searchKeywordTo#,' 23:59:59')
+	        ]]>
+	        </isNotEqual>
+</select>
+<select id="executResultDAO.selectExecutResultAllList" parameterClass="executResultVO" resultMap="executResult">
+<![CDATA[
+SELECT
+    JOB_EXECUTION_ID             
+  , JOB_INSTANCE_ID
+  , VERSION
+  , CREATE_TIME
+  , START_TIME
+  , END_TIME AS END_TM
+  , STATUS AS STTUS
+  , EXIT_CODE
+  , EXIT_MESSAGE
+  , LAST_UPDATED AS LAST_UPDT_PNTTM
+FROM
+    BATCH_JOB_EXECUTION
+WHERE 1 = 1
+        ]]>
+</select>
+</sqlMap>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<!-- Job지식 메뉴정의 -->
+<tiles-definitions>
+
+<!-- Job이슈관리 -->
+	<!-- Job이슈관리목록 -->
+	<definition name="egovframework/bopr/ikm/EgovJobIssueList" extends="template">
+		<put-attribute name="title" value="Job이슈목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/ikm/EgovJobIssueList.jsp" />
+	</definition>
+	
+	<!-- Job이슈관리상세정보 -->
+	<definition name="egovframework/bopr/ikm/EgovJobIssueDetail" extends="template">
+		<put-attribute name="title" value="Job이슈상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/ikm/EgovJobIssueDetail.jsp" />
+	</definition>
+	
+	<!-- Job이슈관리등록 -->
+	<definition name="egovframework/bopr/ikm/EgovJobIssueInsert" extends="template">
+		<put-attribute name="title" value="Job이슈등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/ikm/EgovJobIssueInsert.jsp" />
+	</definition>
+	
+	<!-- Job이슈관리수정 -->
+	<definition name="egovframework/bopr/ikm/EgovJobIssueUpdt" extends="template">
+		<put-attribute name="title" value="Job이슈수정" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/ikm/EgovJobIssueUpdt.jsp" />
+	</definition>
+	
+<!-- Job지식관리 -->
+	<!-- Job지식관리목록 -->
+	<definition name="egovframework/bopr/ikm/EgovJobKnwldgList" extends="template">
+		<put-attribute name="title" value="Job지식목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/ikm/EgovJobKnwldgList.jsp" />
+	</definition>
+	
+	<!-- Job지식관리상세정보 -->
+	<definition name="egovframework/bopr/ikm/EgovJobKnwldgDetail" extends="template">
+		<put-attribute name="title" value="Job지식상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/ikm/EgovJobKnwldgDetail.jsp" />
+	</definition>
+	
+	<!-- Job지식관리등록 -->
+	<definition name="egovframework/bopr/ikm/EgovJobKnwldgInsert" extends="template">
+		<put-attribute name="title" value="Job지식등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/ikm/EgovJobKnwldgInsert.jsp" />
+	</definition>
+	
+	<!-- Job지식관리수정 -->
+	<definition name="egovframework/bopr/ikm/EgovJobKnwldgUpdt" extends="template">
+		<put-attribute name="title" value="Job지식수정" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/ikm/EgovJobKnwldgUpdt.jsp" />
+	</definition>
+		
+</tiles-definitions>

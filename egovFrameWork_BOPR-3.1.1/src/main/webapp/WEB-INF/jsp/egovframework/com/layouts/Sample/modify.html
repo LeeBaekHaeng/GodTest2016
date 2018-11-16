@@ -1,0 +1,70 @@
+<div class="contsBody">
+	<h2>사용자 관리</h2>
+	<div class="location">사용자 관리 > <strong>수정</strong></div>
+
+	<div class="Btn">
+		<span class="bbsBtn"><a href="list.html">목록</a></span>
+		<span class="bbsBtn"><a href="#">수정</a></span>
+		<span class="bbsBtn"><a href="#">삭제</a></span>
+	</div>
+
+	<div class="bbsDetail">
+		<table  summary="사용자관리 수정입니다.">
+		<caption>사용자관리 수정</caption>
+		<colgroup>
+			<col style="width:20%" />
+			<col style="width:auto" />
+		</colgroup>
+		<tbody>
+		
+		<!-- 기존 테이블 내용 입력 START -->
+		<tr>
+			<th><img src="/images/egovframework/bopr/blt4.gif" alt="중요표시" />사용자ID</th>
+			<td>testtest</td>
+		</tr>
+		<tr>
+			<th><img src="/images/egovframework/bopr/blt4.gif" alt="중요표시" />사용자명</th>
+			<td><input name="userNm" id="userNm" type="text" value="asdf" required="true" fieldTitle="사용자 명" maxLength="50" char="s" size="40" /></td>
+		</tr>
+		<tr>
+			<th><img src="/images/egovframework/bopr/blt4.gif" alt="중요표시" />사용여부</th>
+			<td><select id="useAt" name="useAt" title="사용여부">
+					<option value="Y" selected="selected">사용가능</option>
+					<option value="N">사용불가</option>											
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>소속부서</th>
+			<td><select id="deptId" name="deptId" title="소속부서">
+					<option value="">선택하세요</option>
+					<option title="소속부서" value="01" selected="selected">인사부</option><option title="소속부서" value="02">총무부</option><option title="소속부서" value="03">경리부</option><option title="소속부서" value="04">홍보부</option><option title="소속부서" value="05">영업부</option><option title="소속부서" value="06">감사부</option><option title="소속부서" value="07">기획실</option><option title="소속부서" value="08">비서실</option><option title="소속부서" value="09">출장소</option>													
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>전화번호</th>
+			<td><input name="moblphonNo" id="moblphonNo" type="text" value="" required="true" fieldTitle="전화번호" maxLength="50" char="s" size="20" /></td>
+		</tr>
+		<tr>
+			<th>주소</th>
+			<td><input name="adres" id="adres" type="text" value="" required="true" fieldTitle="주소" maxLength="50" char="s" size="20" /></td>
+		</tr>
+		<tr>
+			<th>ImageFile</th>
+			<td><input name="imageFile" id="imageFile" type="text" value="" required="true" fieldTitle="이미지파일" maxLength="50" char="s" size="20" /></td>
+		</tr>
+		<tr>
+			<th>E-mail</th>
+			<td><input name="emails" id="emails" type="text" value="" required="true" fieldTitle="이메일" maxLength="50" char="s" size="20" /></td>
+		</tr>
+		<tr>
+			<th>등록일자</th>
+			<td>2012-09-04 10:40:39.0</td>
+		</tr>
+		<!-- 기존 테이블 내용 입력 END  -->
+		
+		</tbody>
+		</table>
+	</div>
+</div>

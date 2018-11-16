@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+	<!-- 메인화면 -->
+	<definition name="egovframework/com/main/EgovMainView" extends="main">
+		<put-attribute name="title" value="배치운영환경" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/main/EgovMainView.jsp" />
+	</definition>
+	<!-- 메인설정화면 -->
+	<definition name="egovframework/com/main/EgovMainSetupInfoDetail" extends="main">
+		<put-attribute name="title" value="배치운영환경" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/main/EgovMainSetupInfoDetail.jsp" />
+	</definition>
+	<!-- 로그인화면 -->
+<!-- 	<definition name="egovframework/com/uat/uia/EgovLoginUsr" extends="template">
+		<put-attribute name="title" value="로그인" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/uat/uia/EgovLoginUsr.jsp" />
+	</definition> -->
+	
+<!-- 공통 메뉴정의 -->
+
+<!-- 사용자관리 -->
+	<!-- 사용자목록 -->	
+	<definition name="egovframework/bopr/uam/EgovUserList" extends="template">
+		<put-attribute name="title" value="사용자목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/uam/EgovUserList.jsp" />
+	</definition>
+
+	<!-- 사용자등록 -->	
+	<definition name="egovframework/bopr/uam/EgovUserInsert" extends="template">
+		<put-attribute name="title" value="사용자등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/uam/EgovUserInsert.jsp" />
+	</definition>
+	
+	<!-- 사용자수정 -->	
+	<definition name="egovframework/bopr/uam/EgovUserUpdt" extends="template">
+		<put-attribute name="title" value="사용자수정" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/uam/EgovUserUpdt.jsp" />
+	</definition>
+	
+	<!-- 사용자상세정보 -->	
+	<definition name="egovframework/bopr/uam/EgovUserDetail" extends="template">
+		<put-attribute name="title" value="사용자상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/uam/EgovUserDetail.jsp" />
+	</definition>
+	
+	<!-- 사용자비밀번호수정 -->	
+	<definition name="egovframework/bopr/uam/EgovUserPasswordUpdt" extends="template">
+		<put-attribute name="title" value="사용자비밀번호수정" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/uam/EgovUserPasswordUpdt.jsp" />
+	</definition>
+	
+	
+<!-- 회원가입약관관리 -->	
+	<definition name="egovframework/bopr/uam/EgovStplatCnfirmManage" extends="template">
+		<put-attribute name="title" value="회원가입약관관리" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/uam/EgovStplatCnfirmManage.jsp" />
+	</definition>
+	<!-- 회원가입약관 -->	
+	<definition name="egovframework/bopr/uam/EgovStplatCnfirm" extends="template">
+		<put-attribute name="title" value="회원가입약관" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/uam/EgovStplatCnfirm.jsp" />
+	</definition>
+	
+<!-- 로그인정책관리 -->
+	<!-- 로그인목록 -->
+	<definition name="egovframework/bopr/uam/EgovLoginPolicyList" extends="template">
+		<put-attribute name="title" value="공 통" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/uam/EgovLoginPolicyList.jsp" />
+	</definition>
+
+<!-- 롤관리 -->
+	<!-- 롤목록 -->
+	<definition name="egovframework/com/sec/rmt/EgovRoleManage" extends="template">
+		<put-attribute name="title" value="롤목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/rmt/EgovRoleManage.jsp" />
+	</definition>
+	
+	<!-- 롤등록 -->
+	<definition name="egovframework/com/sec/rmt/EgovRoleInsert" extends="template">
+		<put-attribute name="title" value="롤등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/rmt/EgovRoleInsert.jsp" />
+	</definition>
+	
+	<!-- 롤상세정보 -->
+	<definition name="egovframework/com/sec/rmt/EgovRoleUpdate" extends="template">
+		<put-attribute name="title" value="롤상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/rmt/EgovRoleUpdate.jsp" />
+	</definition>
+
+<!-- 롤 상하관계 관리 -->
+	<definition name="egovframework/com/sec/rmt/EgovRoleHierarchyManage" extends="template">
+		<put-attribute name="title" value="롤상하관계관리" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/rmt/EgovRoleHierarchyManage.jsp" />
+	</definition>
+	
+<!-- 권한관리 -->
+	<!-- 권한목록 -->
+	<definition name="egovframework/com/sec/ram/EgovAuthorManage" extends="template">
+		<put-attribute name="title" value="권한목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/ram/EgovAuthorManage.jsp" />
+	</definition>
+	
+	<!-- 권한등록 -->
+	<definition name="egovframework/com/sec/ram/EgovAuthorInsert" extends="template">
+		<put-attribute name="title" value="권한등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/ram/EgovAuthorInsert.jsp" />
+	</definition>
+	
+	<!-- 권한수정 -->
+	<definition name="egovframework/com/sec/ram/EgovAuthorUpdate" extends="template">
+		<put-attribute name="title" value="권한수정" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/ram/EgovAuthorUpdate.jsp" />
+	</definition>
+
+<!-- 권한별롤관리 -->
+	<!-- 권한별롤목록 -->
+	<definition name="egovframework/com/sec/ram/EgovAuthorRoleManage" extends="template">
+		<put-attribute name="title" value="권한별롤목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/ram/EgovAuthorRoleManage.jsp" />
+	</definition>
+	
+<!-- 권한부여관리 -->
+	<definition name="egovframework/com/sec/rgm/EgovAuthorGroupManage" extends="template">
+		<put-attribute name="title" value="권한부여관리" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sec/rgm/EgovAuthorGroupManage.jsp" />
+	</definition>
+
+<!-- Mail연동관리 -->
+	<!-- Mail연동목록 -->
+	<definition name="egovframework/bopr/jim/EgovMailIntrlList" extends="template">
+		<put-attribute name="title" value="공 통" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jim/EgovMailIntrlList.jsp" />
+	</definition>
+	
+	<!-- Mail연동등록 -->
+	<definition name="egovframework/bopr/jim/EgovMailIntrlInsert" extends="template">
+		<put-attribute name="title" value="공 통" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jim/EgovMailIntrlInsert.jsp" />
+	</definition>
+	
+	<!-- Mail연동수정 -->
+	<definition name="egovframework/bopr/jim/EgovMailIntrlUpdt" extends="template">
+		<put-attribute name="title" value="공 통" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jim/EgovMailIntrlUpdt.jsp" />
+	</definition>
+	
+	<!-- Mail연동조회 -->
+	<definition name="egovframework/bopr/jim/EgovMailIntrlDetail" extends="template">
+		<put-attribute name="title" value="공 통" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jim/EgovMailIntrlDetail.jsp" />
+	</definition>
+	
+<!-- FTP연동관리 -->
+	<!-- FTP연동목록 -->
+	<definition name="egovframework/bopr/jim/EgovFtpIntrlList" extends="template">
+		<put-attribute name="title" value="FTP연동목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jim/EgovFtpIntrlList.jsp" />
+	</definition>
+	
+	<!-- FTP연동등록 -->
+	<definition name="egovframework/bopr/jim/EgovFtpIntrlInsert" extends="template">
+		<put-attribute name="title" value="FTP연동등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jim/EgovFtpIntrlInsert.jsp" />
+	</definition>
+	
+	<!-- FTP연동수정 -->
+	<definition name="egovframework/bopr/jim/EgovFtpIntrlUpdt" extends="template">
+		<put-attribute name="title" value="FTP연동수정" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jim/EgovFtpIntrlUpdt.jsp" />
+	</definition>
+	
+	<!-- FTP연동상세정보 -->
+	<definition name="egovframework/bopr/jim/EgovFtpIntrlDetail" extends="template">
+		<put-attribute name="title" value="FTP연동상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jim/EgovFtpIntrlDetail.jsp" />
+	</definition>
+
+<!-- 공통코드관리 -->
+	<!-- 공통코드목록 -->
+	<definition name="egovframework/com/sym/ccm/cca/EgovCcmCmmnCodeList" extends="template">
+		<put-attribute name="title" value="공통코드목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sym/ccm/cca/EgovCcmCmmnCodeList.jsp" />
+	</definition>
+	
+	<!-- 공통코드등록 -->
+	<definition name="egovframework/com/sym/ccm/cca/EgovCcmCmmnCodeRegist" extends="template">
+		<put-attribute name="title" value="공통코드등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sym/ccm/cca/EgovCcmCmmnCodeRegist.jsp" />
+	</definition>
+	
+	<!-- 공통코드수정 -->
+	<definition name="egovframework/com/sym/ccm/cca/EgovCcmCmmnCodeModify" extends="template">
+		<put-attribute name="title" value="공통코드수정" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sym/ccm/cca/EgovCcmCmmnCodeModify.jsp" />
+	</definition>
+	
+	<!-- 공통코드상세정보 -->
+	<definition name="egovframework/com/sym/ccm/cca/EgovCcmCmmnCodeDetail" extends="template">
+		<put-attribute name="title" value="공통코드상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sym/ccm/cca/EgovCcmCmmnCodeDetail.jsp" />
+	</definition>
+	
+<!-- 공통상세코드관리 -->
+	<!-- 공통상세코드목록 -->
+	<definition name="egovframework/com/sym/ccm/cde/EgovCcmCmmnDetailCodeList" extends="template">
+		<put-attribute name="title" value="공통상세코드목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sym/ccm/cde/EgovCcmCmmnDetailCodeList.jsp" />
+	</definition>
+	
+	<!-- 공통상세코드등록 -->
+	<definition name="egovframework/com/sym/ccm/cde/EgovCcmCmmnDetailCodeRegist" extends="template">
+		<put-attribute name="title" value="공통상세코드등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sym/ccm/cde/EgovCcmCmmnDetailCodeRegist.jsp" />
+	</definition>
+	
+	<!-- 공통상세코드수정 -->
+	<definition name="egovframework/com/sym/ccm/cde/EgovCcmCmmnDetailCodeModify" extends="template">
+		<put-attribute name="title" value="공통상세코드수정" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sym/ccm/cde/EgovCcmCmmnDetailCodeModify.jsp" />
+	</definition>
+	
+	<!-- 공통상세코드상세정보 -->
+	<definition name="egovframework/com/sym/ccm/cde/EgovCcmCmmnDetailCodeDetail" extends="template">
+		<put-attribute name="title" value="공통상세코드상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/sym/ccm/cde/EgovCcmCmmnDetailCodeDetail.jsp" />
+	</definition>
+	
+<!-- 메뉴관리 -->
+	<definition name="egovframework/com/main/EgovMenuSetupInfoDetail" extends="template">
+		<put-attribute name="title" value="메뉴 상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/main/EgovMenuSetupInfoDetail.jsp" />
+	</definition>
+	
+</tiles-definitions>

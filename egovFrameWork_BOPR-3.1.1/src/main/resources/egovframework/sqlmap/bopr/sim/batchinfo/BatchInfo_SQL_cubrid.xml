@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BatchWdtb">
+
+    <typeAlias alias="BatchInfoVO"     type="egovframework.bopr.sim.service.BatchInfoVO"/>
+    <typeAlias alias="BatchAtchFileVO" type="egovframework.bopr.sim.service.BatchAtchFileVO"/>
+    <typeAlias alias="BatchParamtrVO"  type="egovframework.bopr.sim.service.BatchParamtrVO"/>
+    <typeAlias alias="BatchBeanVO"     type="egovframework.bopr.sim.service.BatchBeanVO"/>
+
+    <resultMap id="batchInfoList" class="egovframework.bopr.sim.service.BatchInfoVO">
+        <result property="batchId"         column="BATCH_ID"          columnIndex="1" />
+        <result property="batchNm"         column="BATCH_NM"          columnIndex="2" />
+        <result property="batchDc"         column="BATCH_DC"          columnIndex="3" />
+        <result property="jobDlbrtNo"      column="JOB_DLBRT_NO"      columnIndex="4" />
+        <result property="jobSeCode"       column="JOB_SE_CODE"       columnIndex="5" />
+        <result property="jobSeCodeNm"     column="JOB_SE_CODE_NM"    columnIndex="6" />
+        <result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="7" />
+        <result property="lastUpdtPnttm"   column="FRST_REGIST_PNTTM" columnIndex="8" />
+        <result property="onlineExecutAt"  column="ONLINE_EXECUT_AT"  columnIndex="9" />
+    </resultMap>
+    
+    <resultMap id="atchFile" class="egovframework.bopr.sim.service.BatchAtchFileVO">
+        <result property="atchFileId"    column="ATCH_FILE_ID"    columnIndex="1"/>
+        <result property="atchSeCode"    column="ATCH_SE_CODE"    columnIndex="2"/>
+        <result property="wdtbPath"      column="WDTB_PATH"       columnIndex="3"/>
+        <result property="batchFileNm"   column="BATCH_FILE_NM"   columnIndex="4"/>
+    </resultMap>
+    
+    <resultMap id="batchParamtr" class="egovframework.bopr.sim.service.BatchParamtrVO">
+    	<result property="batchId"         column="BATCH_ID"          columnIndex="1"/>
+    	<result property="paramtrNm"       column="PARAMTR_NM"        columnIndex="2"/>
+    </resultMap>
+    
+    <resultMap id="batchBean" class="egovframework.bopr.sim.service.BatchBeanVO">
+    	<result property="batchId" column="BATCH_ID" columnIndex="1"/>
+    	<result property="beanId"  column="BEAN_ID"  columnIndex="2"/>
+    </resultMap>
+    
+    <select id="BatchInfoDAO.selectBatchInfoList" parameterClass="BatchInfoVO" resultMap="batchInfoList">
+	<![CDATA[
+        SELECT A.*
+        FROM
+            ( SELECT A.*, ROWNUM as RN
+              FROM
+                  ( SELECT
+                        A.BATCH_ID
+                      , A.BATCH_NM
+                      , CASE WHEN LENGTH(A.BATCH_DC) > 20 THEN CONCAT(SUBSTRING(A.BATCH_DC, 1, 20), '..')
+                             ELSE A.BATCH_DC
+                        END as BATCH_DC
+                      , A.JOB_DLBRT_NO
+                      , A.JOB_SE_CODE
+                      , ( SELECT S.CODE_NM FROM TC_CMMNDETAILCODE S WHERE S.CODE_ID = 'BO001' AND S.CODE = A.JOB_SE_CODE ) as JOB_SE_CODE_NM
+                      , TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') AS FRST_REGIST_PNTTM
+                      , TO_CHAR(A.LAST_UPDT_PNTTM, 'YYYY-MM-DD') AS LAST_UPDT_PNTTM
+                      , ( SELECT S.CODE_NM FROM TC_CMMNDETAILCODE S WHERE S.CODE_ID = 'BO013' AND S.CODE = NVL(A.ONLINE_EXECUT_AT, 'N') ) as ONLINE_EXECUT_AT
+                    FROM
+                        TN_BATCH A
+                    WHERE 1 = 1
+                      AND A.DELETE_AT = 'N'
+	]]>              
+                  <isEqual prepend="AND" property="searchCondition" compareValue="A">
+                      A.BATCH_ID LIKE '%' || #searchKeyword# || '%'
+                  </isEqual>    
+                  <isEqual prepend="AND" property="searchCondition" compareValue="B">
+                      A.BATCH_NM LIKE '%' || #searchKeyword# || '%'
+                  </isEqual>
+                  <isEqual prepend="AND" property="onlineExecutAt" compareValue="SEARCH">
+                      A.ONLINE_EXECUT_AT = 'Y'
+                  </isEqual>
+                  <isNotEmpty prepend="AND" property="jobSeCode">
+                      A.JOB_SE_CODE = #jobSeCode#
+                  </isNotEmpty>
+	<![CDATA[
+                    ORDER BY A.FRST_REGIST_PNTTM DESC, A.LAST_UPDT_PNTTM DESC,  A.BATCH_ID DESC
+                  ) A
+              WHERE ROWNUM <= #recordCountPerPage# + #firstIndex#
+            ) A
+        WHERE RN BETWEEN #firstIndex#+1 AND #firstIndex# + #recordCountPerPage#
+	]]>
+	</select>
+
+    <select id="BatchInfoDAO.selectBatchInfoListTotCnt" parameterClass="BatchInfoVO" resultClass="int">
+	<![CDATA[
+        SELECT COUNT(1) as TOT_CNT
+        FROM TN_BATCH A
+        WHERE 1 = 1
+          AND A.DELETE_AT = 'N'
+	]]>              
+        <isEqual prepend="AND" property="searchCondition" compareValue="A">
+          A.BATCH_ID LIKE '%' || #searchKeyword# || '%'
+        </isEqual>       
+        <isEqual prepend="AND" property="searchCondition" compareValue="B">
+          A.BATCH_NM LIKE '%' || #searchKeyword# || '%'
+        </isEqual>
+        <isEqual prepend="AND" property="onlineExecutAt" compareValue="SEARCH">
+            A.ONLINE_EXECUT_AT = 'Y'
+        </isEqual>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+            A.JOB_SE_CODE = #jobSeCode#
+        </isNotEmpty>
+	</select>
+    
+    <select id="BatchInfoDAO.selectBatchInfo" parameterClass="BatchInfoVO" resultMap="batchInfoList">
+<![CDATA[
+        SELECT
+            A.BATCH_ID
+          , A.BATCH_NM
+          , A.BATCH_DC
+          , A.JOB_DLBRT_NO
+          , A.JOB_SE_CODE
+          , ( SELECT S.CODE_NM FROM TC_CMMNDETAILCODE S WHERE S.CODE_ID = 'BO001' AND S.CODE = A.JOB_SE_CODE ) as JOB_SE_CODE_NM
+          , TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') AS FRST_REGIST_PNTTM
+          , TO_CHAR(A.LAST_UPDT_PNTTM, 'YYYY-MM-DD') AS LAST_UPDT_PNTTM
+          , NVL(A.ONLINE_EXECUT_AT, 'N') as ONLINE_EXECUT_AT
+        FROM
+            TN_BATCH A
+        WHERE A.BATCH_ID = #batchId#
+          AND A.DELETE_AT = 'N'
+        ]]>
+</select>
+    
+    <select id="BatchInfoDAO.selectBatchAtchFileList" parameterClass="BatchInfoVO" resultMap="atchFile">
+<![CDATA[
+    	SELECT
+    	    A.ATCH_FILE_ID
+    	  , A.ATCH_SE_CODE
+    	  , A.WDTB_PATH
+    	  , A.BATCH_FILE_NM
+    	FROM
+    	    TN_BATCH_ATCH_FILE A
+    	  , TN_BATCH B
+    	WHERE A.BATCH_ID = B.BATCH_ID
+    	  AND B.DELETE_AT = 'N'
+    	  AND A.BATCH_ID = #batchId#
+    	]]>
+</select>
+    
+    <select id="BatchInfoDAO.selectBatchAtchFile" parameterClass="BatchAtchFileVO" resultMap="atchFile">
+<![CDATA[
+    	SELECT
+    	    A.ATCH_FILE_ID
+    	  , A.ATCH_SE_CODE
+    	  , A.WDTB_PATH
+    	  , A.BATCH_FILE_NM
+    	FROM
+    	    TN_BATCH_ATCH_FILE A
+    	  , TN_BATCH B
+    	WHERE A.BATCH_ID = B.BATCH_ID
+    	  AND B.DELETE_AT = 'N'
+    	  AND A.BATCH_ID = #batchId#
+    	  AND A.ATCH_FILE_ID = #atchFileId#
+    	]]>
+</select>
+    
+    <insert id="BatchInfoDAO.insertBatchInfo" parameterClass="BatchInfoVO">
+    	<![CDATA[
+    	INSERT INTO TN_BATCH
+    	(
+    		BATCH_ID
+    	  , BATCH_NM
+    	  , BATCH_DC
+    	  , JOB_DLBRT_NO
+    	  , JOB_SE_CODE
+    	  , ONLINE_EXECUT_AT
+    	  , FRST_REGISTER_ID
+    	  , FRST_REGIST_PNTTM
+    	  , LAST_UPDUSR_ID
+    	  , LAST_UPDT_PNTTM
+    	  , DELETE_AT
+    	)
+    	VALUES
+    	(
+    	    #batchId#
+    	  , #batchNm#
+    	  , #batchDc#
+    	  , #jobDlbrtNo#
+    	  , #jobSeCode#
+    	  , NVL(#onlineExecutAt#, 'N')
+    	  , #frstRegisterId#
+    	  , SYSDATETIME
+    	  , #lastUpdusrId#
+    	  , SYSDATETIME
+    	  , 'N'
+    	)
+    	]]>
+    </insert>
+    
+    <insert id="BatchInfoDAO.insertBatchInfoHistory" parameterClass="BatchInfoVO">
+<![CDATA[
+    	INSERT INTO TH_BATCH
+    	(
+    	    BATCH_ID
+    	  , BATCH_NO
+    	  , BATCH_NM
+    	  , BATCH_DC
+    	  , JOB_DLBRT_NO
+    	  , JOB_SE_CODE
+    	  , ONLINE_EXECUT_AT
+    	  , DELETE_AT
+    	  , FRST_REGISTER_ID
+    	  , FRST_REGIST_PNTTM
+    	  , LAST_UPDUSR_ID
+    	  , LAST_UPDT_PNTTM
+    	)
+    	SELECT
+    	    A.BATCH_ID
+    	  , ( SELECT NVL(MAX(S.BATCH_NO+1), '0') FROM TH_BATCH S WHERE S.BATCH_ID = A.BATCH_ID )
+    	  , A.BATCH_NM
+    	  , A.BATCH_DC
+    	  , A.JOB_DLBRT_NO
+    	  , A.JOB_SE_CODE
+    	  , A.ONLINE_EXECUT_AT
+    	  , A.DELETE_AT
+    	  , #frstRegisterId#
+    	  , SYSDATETIME
+    	  , #lastUpdusrId#
+    	  , SYSDATETIME
+    	FROM
+    	    TN_BATCH A
+    	WHERE A.BATCH_ID = #batchId#
+    	]]>
+</insert>
+    
+    <insert id="BatchInfoDAO.insertBatchAtchFile" parameterClass="BatchAtchFileVO">
+    	<![CDATA[
+    	INSERT INTO TN_BATCH_ATCH_FILE
+    	(
+    	    BATCH_ID
+    	  , ATCH_FILE_ID
+    	  , BATCH_FILE_NM
+    	  , WDTB_PATH
+    	  , ATCH_SE_CODE
+    	  , FRST_REGISTER_ID
+    	  , FRST_REGIST_PNTTM
+    	  , LAST_UPDUSR_ID
+    	  , LAST_UPDT_PNTTM
+    	)
+    	VALUES
+    	(
+    	    #batchId#
+    	  , #atchFileId#
+    	  , #batchFileNm#
+    	  , #wdtbPath#
+    	  , #atchSeCode#
+    	  , #frstRegisterId#
+    	  , SYSDATETIME
+    	  , #lastUpdusrId#
+    	  , SYSDATETIME
+    	)
+    	]]>
+    </insert>
+    
+    <delete id="BatchInfoDAO.deleteBatchAtchFilePast" parameterClass="BatchAtchFileVO">
+    	<![CDATA[
+    	DELETE FROM TN_BATCH_ATCH_FILE
+    	WHERE BATCH_ID = #batchId#
+    	  AND WDTB_PATH = #wdtbPath#
+    	  AND ATCH_FILE_ID IN ( SELECT S.ATCH_FILE_ID FROM TN_FILEDETAIL S WHERE S.ORIGNL_FILE_NM = #fileNm# )
+    	]]>
+    </delete>
+    
+    <delete id="BatchInfoDAO.deleteBatchAtchFile" parameterClass="BatchAtchFileVO">
+    	<![CDATA[
+    	DELETE FROM TN_BATCH_ATCH_FILE
+    	WHERE BATCH_ID = #batchId#
+    	  AND ATCH_FILE_ID = #atchFileId#
+    	]]>
+    </delete>
+    
+    <update id="BatchInfoDAO.updateBatchInfo" parameterClass="BatchInfoVO">
+    	<![CDATA[
+    	UPDATE TN_BATCH
+    	SET
+    	    BATCH_NM = #batchNm#
+    	  , BATCH_DC = #batchDc#
+    	  , JOB_DLBRT_NO = #jobDlbrtNo#
+    	  , JOB_SE_CODE = #jobSeCode#
+    	  , ONLINE_EXECUT_AT = #onlineExecutAt#
+    	  , LAST_UPDUSR_ID = #lastUpdusrId#
+    	  , LAST_UPDT_PNTTM = SYSDATETIME
+    	WHERE BATCH_ID = #batchId#
+    	]]>
+    </update>
+    
+    <delete id="BatchInfoDAO.deleteBatchInfo" parameterClass="BatchInfoVO">
+<![CDATA[
+    	UPDATE TN_BATCH
+    	SET
+    	    DELETE_AT = 'Y'
+    	  , LAST_UPDUSR_ID = #lastUpdusrId#
+    	  , LAST_UPDT_PNTTM = SYSDATETIME
+    	WHERE BATCH_ID = #batchId#
+    ]]>
+</delete>
+    
+    <delete id="BatchInfoDAO.deleteBatchInfoHistory" parameterClass="BatchInfoVO">
+    <![CDATA[
+    	DELETE FROM TH_BATCH
+    	WHERE BATCH_ID = #batchId#
+    ]]>
+    </delete>
+    
+    <delete id="BatchInfoDAO.deleteBatchParamtrs" parameterClass="BatchParamtrVO">
+    <![CDATA[
+    	DELETE FROM TN_BATCH_PARAMTR
+    	WHERE 1 = 1
+    ]]>
+    	<isNotEmpty prepend="AND" property="batchId">
+    	<![CDATA[
+    	  BATCH_ID = #batchId#
+    	]]>
+    	</isNotEmpty>
+    	<isNotEmpty prepend="AND" property="paramtrNm">
+    	<![CDATA[
+    	  PARAMTR_NM = #paramtrNm#
+    	]]>
+    	</isNotEmpty>
+    </delete>
+    
+    <insert id="BatchInfoDAO.insertBatchParamtr" parameterClass="BatchParamtrVO">
+    <![CDATA[
+    	INSERT INTO TN_BATCH_PARAMTR
+    	(
+    		BATCH_ID
+    	  , PARAMTR_NM
+    	)
+    	VALUES
+    	(
+    		#batchId#
+    	  , #paramtrNm#
+    	)
+    ]]>
+    </insert>
+    
+    <select id="BatchInfoDAO.selectBatchParamtrList" parameterClass="BatchParamtrVO" resultMap="batchParamtr">
+    <![CDATA[
+    	SELECT
+    	    BATCH_ID
+    	  , PARAMTR_NM
+    	FROM
+    	    TN_BATCH_PARAMTR
+    	WHERE 1 = 1
+    ]]>
+    	<isNotEmpty prepend="AND" property="batchId">
+    	<![CDATA[
+    	  BATCH_ID = #batchId#
+    	]]>
+    	</isNotEmpty>
+    	<isNotEmpty prepend="AND" property="paramtrNm">
+    	<![CDATA[
+    	  PARAMTR_NM = #paramtrNm#
+    	]]>
+    	</isNotEmpty>
+    </select>
+    
+    <select id="BatchInfoDAO.selectBatchBeanList" parameterClass="BatchInfoVO" resultMap="batchBean">
+    <![CDATA[
+    	SELECT
+    	    BATCH_ID
+    	  , BEAN_ID
+    	FROM
+    	    TN_BATCH_BEAN
+    	WHERE 1 = 1
+    ]]>
+    	<isNotEmpty prepend="AND" property="batchId">
+    <![CDATA[
+    	  BATCH_ID = #batchId#
+    ]]>
+    	</isNotEmpty>
+    	<dynamic prepend="AND BEAN_ID IN">
+    	  <iterate property="beanList" open="(" conjunction="," close=")">
+    	   #beanList[].beanId#
+    	  </iterate>
+    	</dynamic>
+    </select>
+    
+    <insert id="BatchInfoDAO.insertBatchBean" parameterClass="BatchBeanVO">
+    <![CDATA[
+    	INSERT INTO TN_BATCH_BEAN
+    	(
+    	    BATCH_ID
+    	  , BEAN_ID
+    	)
+    	VALUES
+    	(
+    	    #batchId#
+    	  , #beanId#
+    	)
+    ]]>
+    </insert>
+    
+    <delete id="BatchInfoDAO.deleteBatchBean" parameterClass="BatchInfoVO">
+    <![CDATA[
+    	DELETE FROM TN_BATCH_BEAN
+    	WHERE 1 = 1
+    	  AND BATCH_ID = #batchId#
+    ]]>
+    </delete>
+
+</sqlMap>

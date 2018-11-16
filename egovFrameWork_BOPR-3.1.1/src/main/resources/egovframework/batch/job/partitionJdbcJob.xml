@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
+
+	<job id="partitionJdbcJob" xmlns="http://www.springframework.org/schema/batch">
+		<step id="partitionJdbcJob.step">
+			<partition step="partitionJdbcJob.step1" partitioner="partitionJdbcJob.partitioner">
+				<handler grid-size="4" task-executor="partitionJdbcJob.taskExecutor"/>
+			</partition>
+		</step>
+	</job>
+
+	<bean id="partitionJdbcJob.partitioner" class="egovframework.sample.bat.example.support.EgovColumnRangePartitioner">
+		<property name="dataSource" ref="egov.dataSource" />
+		<property name="table" value="CUSTOMER" />
+		<property name="column" value="ID" />
+	</bean>
+
+	<bean id="partitionJdbcJob.taskExecutor" class="org.springframework.core.task.SyncTaskExecutor" />
+
+	<step id="partitionJdbcJob.step1" xmlns="http://www.springframework.org/schema/batch">
+		<tasklet>
+			<chunk writer="partitionJdbcJob.itemWriter" reader="partitionJdbcJob.itemReader"  commit-interval="5" />
+			<listeners>
+				<listener ref="partitionJdbcJob.fileNameListener" />
+			</listeners>
+		</tasklet>
+	</step>
+
+	<bean id="partitionJdbcJob.fileNameListener" class="egovframework.sample.bat.example.listener.EgovOutputFileListener" scope="step">
+		<property name="path" value="file:c:/temp/db/" />
+	</bean>
+
+	<bean id="partitionJdbcJob.itemReader" scope="step" autowire-candidate="false" class="org.springframework.batch.item.database.JdbcPagingItemReader">
+		<property name="dataSource" ref="egov.dataSource" />
+		<property name="rowMapper">
+			<bean class="egovframework.sample.bat.domain.trade.CustomerCreditRowMapper" />
+		</property>
+		<property name="queryProvider">
+			<bean class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean">
+				<property name="dataSource" ref="egov.dataSource"/>
+				<property name="fromClause" value="CUSTOMER"/>
+				<property name="selectClause" value="ID,NAME,CREDIT"/>
+				<property name="sortKey" value="ID"/>
+				<property name="whereClause" value="ID &gt;= :minId and ID &lt;= :maxId"/>
+			</bean>
+		</property>
+		<property name="parameterValues">
+			<map>
+				<entry key="minId" value="#{stepExecutionContext[minValue]}"/>
+				<entry key="maxId" value="#{stepExecutionContext[maxValue]}"/>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="partitionJdbcJob.outputTestReader" class="org.springframework.batch.item.file.MultiResourceItemReader" scope="prototype">
+		<property name="resources" value="file:c:/temp/db/*.csv" />
+		<property name="delegate" ref="partitionJdbcJob.testItemReader" />
+	</bean>
+
+	<bean id="partitionJdbcJob.testItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+		<property name="lineMapper">
+			<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+				<property name="lineTokenizer">
+					<bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+						<property name="delimiter" value="," />
+						<property name="names" value="id,name,credit" />
+					</bean>
+				</property>
+				<property name="fieldSetMapper">
+					<bean class="org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper">
+						<property name="targetType" value="egovframework.sample.bat.domain.trade.CustomerCredit" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="partitionJdbcJob.inputTestReader" class="org.springframework.batch.item.database.JdbcCursorItemReader">
+		<property name="sql">
+			<value>
+                <![CDATA[
+                    select ID,NAME,CREDIT from CUSTOMER
+                ]]>
+			</value>
+		</property>
+		<property name="dataSource" ref="egov.dataSource" />
+		<property name="verifyCursorPosition" value="true"/>
+		<property name="rowMapper">
+			<bean class="egovframework.sample.bat.domain.trade.CustomerCreditRowMapper" />
+		</property>
+	</bean>
+
+	<bean id="partitionJdbcJob.itemWriter" class="org.springframework.batch.item.file.FlatFileItemWriter" scope="step">
+		<property name="resource" value="#{stepExecutionContext[outputFile]}" />
+		<property name="lineAggregator">
+			<bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+				<property name="delimiter" value="," />
+				<property name="fieldExtractor">
+					<bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+						<property name="names" value="id,name,credit" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+</beans>

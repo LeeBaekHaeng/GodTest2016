@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BatchWdtb">
+
+    <typeAlias alias="BatchWdtbVO" type="egovframework.bopr.sim.service.BatchWdtbVO"/>
+    <typeAlias alias="BatchAtchFileVO" type="egovframework.bopr.sim.service.BatchAtchFileVO"/>
+
+    <resultMap id="batchWdtb" class="egovframework.bopr.sim.service.BatchWdtbVO">
+        <result property="jobDlbrtNo"      column="JOB_DLBRT_NO"       columnIndex="1"  />
+        <result property="jobSeCode"       column="JOB_SE_CODE"        columnIndex="2"  />
+        <result property="jobSeCodeNm"     column="JOB_SE_CODE_NM"     columnIndex="3"  />
+        <result property="jobDlbrtNm"      column="JOB_DLBRT_NM"       columnIndex="4"  />
+        <result property="jobDlbrtCn"      column="JOB_DLBRT_CN"       columnIndex="5"  />
+        <result property="batchDlbrtNo"    column="BATCH_DLBRT_NO"     columnIndex="6"  />
+        <result property="batchId"         column="BATCH_ID"           columnIndex="7"  />
+        <result property="batchNm"         column="BATCH_NM"           columnIndex="8"  />
+        <result property="batchDc"         column="BATCH_DC"           columnIndex="9"  />
+        <result property="testAt"          column="TEST_AT"            columnIndex="10"  />
+        <result property="wdtbAt"          column="WDTB_AT"            columnIndex="11" />
+        <result property="wdtbAtNm"        column="WDTB_AT_NM"         columnIndex="12" />
+        <result property="processSeCode"   column="PROCESS_SE_CODE"    columnIndex="13" />
+        <result property="processSeCodeNm" column="PROCESS_SE_CODE_NM" columnIndex="14" />
+    </resultMap>
+    
+    <resultMap id="batchWdtbList" class="egovframework.bopr.sim.service.BatchWdtbVO">
+        <result property="jobDlbrtNo"    column="JOB_DLBRT_NO"    columnIndex="1" />
+        <result property="jobSeCodeNm"   column="JOB_SE_CODE_NM"  columnIndex="2" />
+        <result property="batchDlbrtNo"  column="BATCH_DLBRT_NO"  columnIndex="3" />
+        <result property="batchId"       column="BATCH_ID"        columnIndex="4" />
+        <result property="batchNm"       column="BATCH_NM"        columnIndex="5" />
+        <result property="processSeCode" column="PROCESS_SE_CODE" columnIndex="6" />
+        <result property="wdtbAt"        column="WDTB_AT"         columnIndex="7" />
+    </resultMap>
+    
+    <resultMap id="atchFile" class="egovframework.bopr.sim.service.BatchAtchFileVO">
+        <result property="atchFileId"    column="ATCH_FILE_ID"    columnIndex="1"/>
+        <result property="atchSeCode"    column="ATCH_SE_CODE"    columnIndex="2"/>
+        <result property="wdtbPath"      column="WDTB_PATH"       columnIndex="3"/>
+        <result property="processSeCode" column="PROCESS_SE_CODE" columnIndex="4"/>
+    </resultMap>
+    
+    <select id="BatchWdtbDAO.selectBatchWdtbList" parameterClass="BatchWdtbVO" resultMap="batchWdtbList">
+    <![CDATA[
+    SELECT
+        A.*
+    FROM
+        ( SELECT
+              A.JOB_DLBRT_NO
+            , ( SELECT S.CODE_NM
+                FROM TC_CMMNDETAILCODE S
+                WHERE S.CODE_ID = 'BO001'
+                  AND S.CODE = C.JOB_SE_CODE ) as JOB_SE_CODE_NM
+            , A.BATCH_DLBRT_NO
+            , A.BATCH_ID
+            , A.BATCH_NM
+            , ( SELECT S.CODE_NM
+                FROM TC_CMMNDETAILCODE S
+                WHERE S.CODE_ID = 'BO011'
+                  AND S.CODE = A.PROCESS_SE_CODE ) as PROCESS_SE_CODE
+            , ( SELECT S.CODE_NM
+                FROM TC_CMMNDETAILCODE S
+                WHERE S.CODE_ID = 'BO012'
+                  AND S.CODE = COALESCE(A.WDTB_AT, 'N') ) as WDTB_AT
+          FROM
+              TN_BATCH_DLBRT A
+            , TN_BATCH_DLBRT_RESULT B
+            , TN_JOB_DLBRT C
+          WHERE 1 = 1
+            AND A.JOB_DLBRT_NO = B.JOB_DLBRT_NO
+            AND A.BATCH_DLBRT_NO = B.BATCH_DLBRT_NO
+            AND B.BATCH_DLBRT_RESULT_NO = ( SELECT MAX(S.BATCH_DLBRT_RESULT_NO)
+                                              FROM TN_BATCH_DLBRT_RESULT S
+                                             WHERE S.JOB_DLBRT_NO = A.JOB_DLBRT_NO
+                                               AND S.BATCH_DLBRT_NO = A.BATCH_DLBRT_NO )
+            AND B.BATCH_DLBRT_RESULT_CODE = 'CN'
+            AND A.JOB_DLBRT_NO = C.JOB_DLBRT_NO
+    ]]>
+        <isEqual prepend="AND" property="searchCondition" compareValue="A">
+            A.JOB_DLBRT_NO LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="B">
+            A.BATCH_DLBRT_NO LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="C">
+            A.BATCH_ID LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="D">
+            A.BATCH_NM LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="wdtbAt">
+            A.WDTB_AT = #wdtbAt#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+            C.JOB_SE_CODE = #jobSeCode#
+        </isNotEmpty>
+          ORDER BY A.LAST_UPDT_PNTTM DESC, A.FRST_REGIST_PNTTM DESC, A.BATCH_DLBRT_NO, A.JOB_DLBRT_NO
+    <![CDATA[
+        ) A
+    LIMIT #recordCountPerPage# OFFSET #firstIndex#
+    ]]>
+    </select>
+    
+    <select id="BatchWdtbDAO.selectBatchWdtbListTotCnt" parameterClass="BatchWdtbVO" resultClass="int">
+    <![CDATA[
+    SELECT COUNT(1) as TOT_CNT
+    FROM
+        TN_BATCH_DLBRT A
+      , TN_BATCH_DLBRT_RESULT B
+      , TN_JOB_DLBRT C
+    WHERE 1 = 1
+      AND A.JOB_DLBRT_NO = B.JOB_DLBRT_NO
+      AND A.BATCH_DLBRT_NO = B.BATCH_DLBRT_NO
+      AND B.BATCH_DLBRT_RESULT_NO = ( SELECT MAX(S.BATCH_DLBRT_RESULT_NO)
+                                        FROM TN_BATCH_DLBRT_RESULT S
+                                       WHERE S.JOB_DLBRT_NO = A.JOB_DLBRT_NO
+                                         AND S.BATCH_DLBRT_NO = A.BATCH_DLBRT_NO )
+      AND B.BATCH_DLBRT_RESULT_CODE = 'CN'
+      AND A.JOB_DLBRT_NO = C.JOB_DLBRT_NO
+    ]]>
+        <isEqual prepend="AND" property="searchCondition" compareValue="A">
+      A.JOB_DLBRT_NO LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="B">
+      A.BATCH_DLBRT_NO LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="C">
+      A.BATCH_ID LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isEqual prepend="AND" property="searchCondition" compareValue="D">
+      A.BATCH_NM LIKE CONCAT('%', #searchKeyword#, '%')
+        </isEqual>
+        <isNotEmpty prepend="AND" property="wdtbAt">
+      A.WDTB_AT = #wdtbAt#
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="jobSeCode">
+      C.JOB_SE_CODE = #jobSeCode#
+        </isNotEmpty>
+    </select>
+    
+    <select id="BatchWdtbDAO.selectBatchWdtb" parameterClass="BatchWdtbVO" resultMap="batchWdtb">
+    <![CDATA[
+    SELECT
+        A.JOB_DLBRT_NO
+      , A.JOB_SE_CODE
+      , ( SELECT S.CODE_NM
+          FROM TC_CMMNDETAILCODE S
+          WHERE S.CODE_ID = 'BO001'
+            AND S.CODE = A.JOB_SE_CODE ) as JOB_SE_CODE_NM
+      , A.JOB_DLBRT_NM
+      , A.JOB_DLBRT_CN
+      , C.BATCH_DLBRT_NO
+      , C.BATCH_ID
+      , C.BATCH_NM
+      , C.BATCH_DC
+      , ( SELECT S.CODE_NM
+          FROM TC_CMMNDETAILCODE S
+          WHERE S.CODE_ID = 'BO013'
+            AND S.CODE =  COALESCE(C.TEST_AT, 'N') ) as TEST_AT
+      , COALESCE(C.WDTB_AT, 'N') as WDTB_AT
+      , ( SELECT S.CODE_NM
+          FROM TC_CMMNDETAILCODE S
+          WHERE S.CODE_ID = 'BO012'
+            AND S.CODE = COALESCE(C.WDTB_AT, 'N') ) as WDTB_AT_NM
+      , C.PROCESS_SE_CODE
+      , ( SELECT S.CODE_NM
+          FROM TC_CMMNDETAILCODE S
+          WHERE S.CODE_ID = 'BO011'
+            AND S.CODE = C.PROCESS_SE_CODE ) as PROCESS_SE_CODE_NM
+    FROM
+        TN_JOB_DLBRT A
+      , TN_JOB_DLBRT_RESULT B
+      , TN_BATCH_DLBRT C
+      , TN_BATCH_DLBRT_RESULT D
+    WHERE A.JOB_DLBRT_NO = B.JOB_DLBRT_NO
+      AND A.JOB_DLBRT_NO = C.JOB_DLBRT_NO
+      AND C.JOB_DLBRT_NO = D.JOB_DLBRT_NO
+      AND C.BATCH_DLBRT_NO = D.BATCH_DLBRT_NO
+      AND B.JOB_DLBRT_RESULT_NO = ( SELECT MAX(S.JOB_DLBRT_RESULT_NO)
+                                      FROM TN_JOB_DLBRT_RESULT S
+                                     WHERE S.JOB_DLBRT_NO = A.JOB_DLBRT_NO )
+      AND B.JOB_DLBRT_RESULT_CODE = 'CN'
+      AND D.BATCH_DLBRT_RESULT_NO = ( SELECT MAX(S.BATCH_DLBRT_RESULT_NO)
+                                        FROM TN_BATCH_DLBRT_RESULT S
+                                       WHERE S.JOB_DLBRT_NO = C.JOB_DLBRT_NO
+                                         AND S.BATCH_DLBRT_NO = C.BATCH_DLBRT_NO )
+      AND D.BATCH_DLBRT_RESULT_CODE = 'CN'
+      AND A.JOB_DLBRT_NO = #jobDlbrtNo#
+      AND C.BATCH_DLBRT_NO = #batchDlbrtNo#
+    ]]>                 
+    </select>
+	
+	<update id="BatchWdtbDAO.updateBatchWdtb" parameterClass="BatchWdtbVO">
+ 	<![CDATA[
+    UPDATE TN_BATCH_DLBRT
+    SET
+        WDTB_AT = #wdtbAt#
+      , LAST_UPDUSR_ID = #lastUpdusrId#
+      , LAST_UPDT_PNTTM = SYSDATE()
+    WHERE JOB_DLBRT_NO = #jobDlbrtNo#
+      AND BATCH_DLBRT_NO = #batchDlbrtNo#
+ 	]]>
+ 	</update>
+ 	
+ 	<select id="BatchWdtbDAO.selectBatchWdtbAtchFileList" parameterClass="BatchWdtbVO" resultMap="atchFile">
+ 	<![CDATA[
+ 	SELECT
+ 	    A.ATCH_FILE_ID
+ 	  , A.ATCH_SE_CODE
+ 	  , A.WDTB_PATH
+ 	  , A.PROCESS_SE_CODE
+ 	FROM
+ 	    TN_BATCH_DLBRT_ATCH_FILE A
+ 	WHERE A.JOB_DLBRT_NO = #jobDlbrtNo#
+ 	  AND A.BATCH_DLBRT_NO = #batchDlbrtNo#
+ 	]]>
+ 	</select>
+ 	
+ 	<select id="BatchWdtbDAO.selectBatchWdtbAtchFile" parameterClass="BatchAtchFileVO" resultMap="atchFile">
+ 	<![CDATA[
+ 	SELECT
+ 	    A.ATCH_FILE_ID
+ 	  , A.ATCH_SE_CODE
+ 	  , A.WDTB_PATH
+ 	  , A.PROCESS_SE_CODE
+ 	FROM
+ 	    TN_BATCH_DLBRT_ATCH_FILE A
+ 	WHERE A.JOB_DLBRT_NO = #jobDlbrtNo#
+ 	  AND A.BATCH_DLBRT_NO = #batchDlbrtNo#
+ 	  AND A.ATCH_FILE_ID = #atchFileId#
+ 	]]>
+ 	</select>
+
+	<update id="BatchWdtbDAO.updateBatchWdtbAtchFilePath" parameterClass="BatchAtchFileVO">
+	<![CDATA[
+	UPDATE TN_BATCH_DLBRT_ATCH_FILE
+	SET WDTB_PATH = #wdtbPath#
+	WHERE 1 = 1
+	  AND JOB_DLBRT_NO = #jobDlbrtNo#
+	  AND BATCH_DLBRT_NO = #batchDlbrtNo#
+	  AND ATCH_FILE_ID = #atchFileId#
+	]]>
+	</update>
+
+</sqlMap>

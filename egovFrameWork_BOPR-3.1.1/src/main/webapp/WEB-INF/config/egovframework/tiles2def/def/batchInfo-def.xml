@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<!-- 배치정보 메뉴정의 -->
+<tiles-definitions>
+
+<!-- 배치정보관리 -->
+	<!-- 배치정보목록 -->
+	<definition name="egovframework/bopr/sim/EgovBatchInfoList" extends="template">
+		<put-attribute name="title" value="배치정보목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovBatchInfoList.jsp" />
+	</definition>
+	
+	<!-- 배치정보조회 -->
+	<definition name="egovframework/bopr/sim/EgovBatchInfoDetail" extends="template">
+		<put-attribute name="title" value="배치정보상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovBatchInfoDetail.jsp" />
+	</definition>
+	
+	<!-- 배치정보등록 -->
+	<definition name="egovframework/bopr/sim/EgovBatchInfoRegist" extends="template">
+		<put-attribute name="title" value="배치정보등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovBatchInfoRegist.jsp" />
+	</definition>
+
+<!-- Job상태알림관리 --><!-- 서비스 오류  -->
+	<!-- Job상태알림목록 -->
+	<definition name="egovframework/bopr/sim/EgovSttusNtcnList" extends="template">
+		<put-attribute name="title" value="Job상태알림목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovSttusNtcnList.jsp" />
+	</definition>
+	
+	<!-- Job상태알림조회 -->
+	<definition name="egovframework/bopr/sim/EgovSttusNtcnDetail" extends="template">
+		<put-attribute name="title" value="Job상태알림상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovSttusNtcnDetail.jsp" />
+	</definition>
+	
+	<!-- Job상태알림등록 -->
+	<definition name="egovframework/bopr/sim/EgovSttusNtcnRegist" extends="template">
+		<put-attribute name="title" value="Job상태알림등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovSttusNtcnRegist.jsp" />
+	</definition>
+<!-- 스케줄관리 -->
+	<!-- 스케줄관리목록 -->
+	<definition name="egovframework/bopr/sim/EgovSchdulList" extends="template">
+		<put-attribute name="title" value="스케줄관리목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovSchdulList.jsp" />
+	</definition>
+	
+	<!-- 스케줄관리조회 -->
+	<definition name="egovframework/bopr/sim/EgovSchdulDetail" extends="template">
+		<put-attribute name="title" value="스케줄관리상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovSchdulDetail.jsp" />
+	</definition>
+	
+	<!-- 스케줄관리등록 -->
+	<definition name="egovframework/bopr/sim/EgovSchdulRegist" extends="template">
+		<put-attribute name="title" value="스케줄관리등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovSchdulRegist.jsp" />
+	</definition>
+	
+<!-- 스케줄결과관리 -->
+	<!-- 스케줄관리목록 -->
+	<definition name="egovframework/bopr/sim/EgovSchdulResultList" extends="template">
+		<put-attribute name="title" value="스케줄관리목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovSchdulResultList.jsp" />
+	</definition>
+	
+	<!-- 스케줄관리조회 -->
+	<definition name="egovframework/bopr/sim/EgovSchdulResultDetail" extends="template">
+		<put-attribute name="title" value="스케줄관리상세정보" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovSchdulResultDetail.jsp" />
+	</definition>
+	
+</tiles-definitions>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	
+	<definition name="common/validator" template="/WEB-INF/jsp/common/validator.jsp">
+	</definition>
+	
+	<definition name="common/normalCalPopup" template="/WEB-INF/jsp/common/normalCalPopup.jsp">
+	</definition>
+	
+	<definition name="common/normalCalendar" template="/WEB-INF/jsp/common/normalCalendar.jsp">
+	</definition>
+
+</tiles-definitions>

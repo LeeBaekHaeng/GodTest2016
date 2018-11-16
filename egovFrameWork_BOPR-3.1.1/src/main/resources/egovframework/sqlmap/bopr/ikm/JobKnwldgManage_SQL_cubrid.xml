@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="JobKnwldgManage">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="JobKnwldgManageVO" type="egovframework.bopr.ikm.service.JobKnwldgManageVO"/>
+    <typeAlias  alias="JobKnwldgManage" type="egovframework.bopr.ikm.service.JobKnwldgManage"/>
+
+	<resultMap id="jobKnwldg" class="egovframework.bopr.ikm.service.JobKnwldgManageVO">
+        <result property="knwldgNo" column="KNWLDG_NO" columnIndex="1"/>
+        <result property="knwldgNm" column="KNWLDG_NM" columnIndex="2"/>
+        <result property="knwldgCn" column="KNWLDG_CN" columnIndex="3"/>
+        <result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="4"/>
+        <result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="5"/>
+        <result property="lastUpdusrId" column="LAST_UPDUSR_ID" columnIndex="6"/>
+        <result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM" columnIndex="7"/>
+        <result property="atchFileId" column="ATCH_FILE_ID" columnIndex="8"/>
+        <result property="othbcAt" column="OTHBC_AT" columnIndex="9"/>
+        <result property="knwldgTyCode" column="KNWLDG_TY_CODE" columnIndex="10"/>
+        <result property="knwldgEvl" column="KNWLDG_EVL" columnIndex="13"/>
+        <result property="dsuseEnnc" column="DSUSE_ENNC" columnIndex="14"/>
+        <result property="dsuseDe" column="DSUSE_DE" columnIndex="15"/>
+        <result property="rdcnt" column="RDCNT" columnIndex="16"/>        
+    </resultMap>
+    
+    <resultMap id="jobKnwldgList" class="egovframework.bopr.ikm.service.JobKnwldgManageVO">
+        <result property="knwldgNo" column="KNWLDG_NO" columnIndex="1"/>
+        <result property="knwldgNm" column="KNWLDG_NM" columnIndex="2"/>
+        <result property="knwldgCn" column="KNWLDG_CN" columnIndex="3"/>
+        <result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="4"/>
+        <result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="5"/>
+        <result property="lastUpdusrId" column="LAST_UPDUSR_ID" columnIndex="6"/>
+        <result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM" columnIndex="7"/>
+        <result property="atchFileId" column="ATCH_FILE_ID" columnIndex="8"/>
+        <result property="othbcAt" column="OTHBC_AT" columnIndex="9"/>
+        <result property="knwldgTyCode" column="KNWLDG_TY_CODE" columnIndex="10"/>
+        <result property="dsuseEnnc" column="DSUSE_ENNC" columnIndex="13"/>
+        <result property="dsuseDe" column="DSUSE_DE" columnIndex="14"/>
+        <result property="rdcnt" column="RDCNT" columnIndex="15"/>        
+    </resultMap>
+    
+    <select id="jobKnwldgManageDAO.selectJobKnwldgList" parameterClass="JobKnwldgManageVO" resultMap="jobKnwldgList">
+        <![CDATA[
+            SELECT  * 
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.* 
+              FROM(
+
+            SELECT
+                   KNWLDG_NO
+            	 , KNWLDG_TY_CODE
+            	 , KNWLDG_NM
+            	 , KNWLDG_CN
+            	 , ATCH_FILE_ID
+            	 , OTHBC_AT
+            	 , DSUSE_ENNC
+            	 , DSUSE_DE
+            	 , FRST_REGISTER_ID
+            	 , TO_CHAR(LAST_UPDT_PNTTM, 'YYYY-MM-DD HH24:MI:SS') AS FRST_REGIST_PNTTM   
+            	 , LAST_UPDUSR_ID
+            	 , TO_CHAR(LAST_UPDT_PNTTM, 'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM  
+            	 , RDCNT
+              FROM TN_KNWLDG
+             WHERE 1=1
+        ]]>              
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[KNWLDG_NM LIKE '%' || #searchKeyword# || '%']]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+            	<![CDATA[KNWLDG_CN LIKE '%' || #searchKeyword# || '%']]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+            	<![CDATA[FRST_REGISTER_ID LIKE '%' || #searchKeyword# || '%']]>
+            </isEqual>
+            <isEqual prepend="AND" property="adminYn" compareValue="N">
+        		(OTHBC_AT = 'Y' OR (OTHBC_AT = 'N' AND FRST_REGISTER_ID = #loginId#))
+        	</isEqual>
+            <isNotEqual prepend="AND" property="searchKeywordFrom" compareValue="">
+	        <![CDATA[  
+	        		FRST_REGIST_PNTTM >= TO_DATE(#searchKeywordFrom#,'YYYY-MM-DD HH24:MI:SS')
+	        		]]>
+	        </isNotEqual>
+	        <isNotEqual prepend="AND" property="searchKeywordTo" compareValue="">
+	        <![CDATA[  
+	        		FRST_REGIST_PNTTM <= TO_DATE(concat(#searchKeywordTo#,' 23:59:59'),'YYYY-MM-DD HH24:MI:SS')
+	        ]]>
+	        </isNotEqual>
+        <![CDATA[            
+            ORDER BY LAST_UPDT_PNTTM DESC
+
+                    ) ALL_LIST
+                    ) T
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#
+        ]]>                 
+    </select>
+ 
+    <insert id="jobKnwldgManageDAO.insertJobKnwldg" parameterClass="JobKnwldgManage">
+        <![CDATA[
+            INSERT INTO TN_KNWLDG 
+                  ( KNWLDG_NO
+            	  , KNWLDG_TY_CODE
+            	  , KNWLDG_NM
+            	  , KNWLDG_CN
+            	  , ATCH_FILE_ID
+            	  , OTHBC_AT
+            	  , DSUSE_ENNC
+            	  , DSUSE_DE
+            	  , FRST_REGISTER_ID
+            	  , FRST_REGIST_PNTTM
+            	  , LAST_UPDUSR_ID
+            	  , LAST_UPDT_PNTTM
+            	  , RDCNT)
+           VALUES ( #knwldgNo#
+                  , #knwldgTyCode#
+                  , #knwldgNm#
+                  , #knwldgCn#
+                  , #atchFileId#
+                  , #othbcAt#
+                  , #dsuseEnnc#
+                  , #dsuseDe#
+                  , #frstRegisterId#
+                  , SYSDATETIME
+                  , #lastUpdusrId#
+                  , SYSDATETIME
+                  , 0)
+        ]]>  
+    </insert>
+
+    <update id="jobKnwldgManageDAO.updateJobKnwldg" parameterClass="JobKnwldgManage">
+        <![CDATA[
+            UPDATE TN_KNWLDG 
+               SET KNWLDG_TY_CODE=#knwldgTyCode#
+            	  , KNWLDG_NM=#knwldgNm#
+            	  , KNWLDG_CN=#knwldgCn#
+            	  , ATCH_FILE_ID=#atchFileId#
+            	  , OTHBC_AT=#othbcAt#
+            	  , DSUSE_ENNC=#dsuseEnnc#
+            	  , DSUSE_DE=#dsuseDe#
+            	  , LAST_UPDUSR_ID=#lastUpdusrId#
+            	  , LAST_UPDT_PNTTM=SYSDATETIME
+             WHERE KNWLDG_NO=#knwldgNo#
+        ]]>
+    </update>
+	
+    <update id="jobKnwldgManageDAO.deleteJobKnwldg">
+        <![CDATA[
+        	UPDATE TN_KNWLDG 
+               SET OTHBC_AT='N'
+             WHERE KNWLDG_NO=#knwldgNo#
+        ]]>
+    </update>
+    
+    <select id="jobKnwldgManageDAO.selectJobKnwldgListTotCnt" parameterClass="JobKnwldgManageVO" resultClass="int">
+            SELECT COUNT(*) totcnt
+            FROM TN_KNWLDG
+            WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                <![CDATA[KNWLDG_NM LIKE '%' || #searchKeyword# || '%']]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+            	<![CDATA[KNWLDG_CN LIKE '%' || #searchKeyword# || '%']]>
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+            	<![CDATA[FRST_REGISTER_ID LIKE '%' || #searchKeyword# || '%']]>
+            </isEqual>
+            <isEqual prepend="AND" property="adminYn" compareValue="N">
+        		(OTHBC_AT = 'Y' OR (OTHBC_AT = 'N' AND FRST_REGISTER_ID = #loginId#))
+        	</isEqual>
+            <isNotEqual prepend="AND" property="searchKeywordFrom" compareValue="">
+	        <![CDATA[  
+	        		FRST_REGIST_PNTTM >= TO_DATE(#searchKeywordFrom#,'YYYY-MM-DD HH24:MI:SS')
+	        		]]>
+	        </isNotEqual>
+	        <isNotEqual prepend="AND" property="searchKeywordTo" compareValue="">
+	        <![CDATA[  
+	        		FRST_REGIST_PNTTM <= TO_DATE(concat(#searchKeywordTo#,' 23:59:59'),'YYYY-MM-DD HH24:MI:SS')
+	        ]]>
+	        </isNotEqual>
+    </select>
+    
+    <select id="jobKnwldgManageDAO.selectJobKnwldg" parameterClass="JobKnwldgManageVO" resultMap="jobKnwldg">
+        <![CDATA[
+            SELECT a.KNWLDG_NO
+            	 , a.KNWLDG_TY_CODE
+            	 , a.KNWLDG_NM
+            	 , a.KNWLDG_CN
+            	 , a.ATCH_FILE_ID
+            	 , a.OTHBC_AT
+            	 , (SELECT ROUND(AVG(b.CMT_KNWLDG_EVL),2) FROM TN_KNWLDG_CMT b WHERE b.NTT_ID = #knwldgNo#) AS KNWLDG_EVL
+            	 , a.DSUSE_ENNC
+            	 , a.DSUSE_DE
+            	 , a.FRST_REGISTER_ID
+            	 , TO_CHAR(LAST_UPDT_PNTTM, 'YYYY-MM-DD HH24:MI:SS') AS FRST_REGIST_PNTTM
+            	 , a.LAST_UPDUSR_ID
+            	 , TO_CHAR(LAST_UPDT_PNTTM, 'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM 
+            	 , a.RDCNT
+              FROM TN_KNWLDG a
+             WHERE a.KNWLDG_NO=#knwldgNo#
+        ]]>
+    </select>
+    
+    <update id="jobKnwldgManageDAO.addReadCount" parameterClass="JobKnwldgManage">
+        <![CDATA[
+            UPDATE TN_KNWLDG 
+               SET RDCNT = RDCNT +1
+             WHERE KNWLDG_NO=#knwldgNo#
+        ]]>
+    </update>
+</sqlMap>

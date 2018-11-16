@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+<!--
+ <bean id="jobDetailBean" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<property name="jobClass" value="egovframework.bopr.imsi.SayHelloJob" />
+	<property name="jobDataAsMap">
+		<map>
+			<entry key="name" value="JobDetail"/>
+		</map>
+	</property>
+  </bean>
+
+  <bean id="sayHelloService" class="egovframework.bopr.imsi.SayHelloService">
+		<property name="name" value="FactoryBean"/>
+	</bean>
+	  <bean id="SayHelloJob" class="egovframework.bopr.imsi.SayHelloJob">
+		<property name="name" value="FactoryBean"/>
+	</bean>
+
+	<bean id="jobDetailFactoryBean" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="sayHelloService" />
+		<property name="targetMethod" value="sayHello" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="jobDetailFactoryBean2 class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="SayHelloJob" />
+		<property name="targetMethod" value="sayHello2" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	   	<property name="jobDetail" ref="jobDetailFactoryBean" />
+	   	<property name="cronExpression" value="*/10 * * * * ?" />
+	</bean>
+	<bean id="cronTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	   	<property name="jobDetail" ref="jobDetailFactoryBean2" />
+	   	<property name="cronExpression" value="*/10 * * * * ?" />
+	</bean>
+
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="cronTrigger" />
+				<ref bean="cronTrigger2" />
+			</list>
+		</property>
+	</bean>
+
+   <bean id="sayHelloService" class="egovframework.bopr.imsi.SayHelloService">
+		<property name="name" value="FactoryBean"/>
+	</bean>
+ -->
+
+    <!-- 배치관리 스케줄러
+    <bean id="batchScheduler" class="egovframework.com.sym.bat.service.BatchScheduler" init-method="init" destroy-method="destroy">
+        <property name="egovBatchSchdulService" ref="egovBatchSchdulService"/>
+        <property name="idgenService" ref="egovBatchResultIdGnrService"/>
+
+        <property name="egovSchdulService" ref="egovSchdulService"/>
+    </bean> -->
+
+    <bean id="egovSchdulUtl" class="egovframework.bopr.com.EgovSchdulUtl" init-method="init" destroy-method="destroy">
+        <property name="egovSchdulService"            ref="egovSchdulService"/>
+        <property name="egovSchdulResultService"      ref="egovSchdulResultService" />
+        <property name="egovNotificationService"      ref="EgovNotificationService"/>
+        <property name="egovSmsInfoService"           ref="EgovSmsInfoService"/>
+        <property name="egovSndngMailService"         ref="egovSndngMailService"/>
+        <property name="egovSttusNtcnService"         ref="egovSttusNtcnService" />
+    </bean>
+</beans>

@@ -1,0 +1,65 @@
+<div class="contsBody">
+	<h2>사용자 관리</h2>
+	<div class="location">사용자 관리 > <strong>등록</strong></div>
+
+	<div class="Btn">
+		<span class="bbsBtn"><a href="list.html">목록</a></span>
+		<span class="bbsBtn"><a href="#">등록</a></span>
+	</div>
+
+	<div class="bbsDetail">
+		<table  summary="사용자관리 등록입니다.">
+		<caption>사용자관리 등록</caption>
+		<colgroup>
+			<col style="width:20%" />
+			<col style="width:auto" />
+		</colgroup>
+		<tbody>
+		
+		<!-- 기존 테이블 내용 입력 START -->
+		<tr>
+			<th><img src="/images/egovframework/bopr/blt4.gif" alt="중요표시" />사용자ID</th>
+			<td><input name="userId" id="userId" type="text" value="" size="40" onchange="document.userManage.idCheckYn.value=false;"/>&nbsp;
+					<a href="#LINK" onclick="fnIdCheck();">
+						<img src="/images/egovframework/bopr/search.gif" alt="검색하기 버튼" />(중복아이디 검색)
+					</a>
+			</td>
+		</tr>
+		<tr>
+			<th><img src="/images/egovframework/bopr/blt4.gif" alt="중요표시" />사용자명</th>
+			<td><input name="userNm" id="userNm" type="text" value="" size="40" /></td>
+		</tr>
+		<tr>
+			<th><img src="/images/egovframework/bopr/blt4.gif" alt="중요표시" />비밀번호</th>
+			<td><input name="password" id="password" type="password" value="" size="40" /></td>
+		</tr>
+		<tr>
+			<th><img src="/images/egovframework/bopr/blt4.gif" alt="중요표시" />소속부서</th>
+			<td><select id="deptId" name="deptId" title="소속부서">
+					<option value="" selected="selected">선택하세요</option>
+					<option title="소속부서" value="01">인사부</option><option title="소속부서" value="02">총무부</option><option title="소속부서" value="03">경리부</option><option title="소속부서" value="04">홍보부</option><option title="소속부서" value="05">영업부</option><option title="소속부서" value="06">감사부</option><option title="소속부서" value="07">기획실</option><option title="소속부서" value="08">비서실</option><option title="소속부서" value="09">출장소</option>													
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>전화번호</th>
+			<td><input name="moblphonNo" id="moblphonNo" type="text" value="" size="20"/></td>
+		</tr>
+		<tr>
+			<th>주소</th>
+			<td><input name="adres" id="adres" type="text" value="" size="20"/></td>
+		</tr>
+		<tr>
+			<th>ImageFile</th>
+			<td><input name="imageFile" id="imageFile" type="text" value="" size="20"/></td>
+		</tr>
+		<tr>
+			<th>E-mail</th>
+			<td><input name="emails" id="emails" type="text" value="" size="20"/></td>
+		</tr>
+		<!-- 기존 테이블 내용 입력 END  -->
+		
+		</tbody>
+		</table>
+	</div>
+</div>

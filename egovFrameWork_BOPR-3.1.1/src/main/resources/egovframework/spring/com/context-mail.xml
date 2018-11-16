@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+   <bean id="egov.propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="locations">
+          <list>
+              <value>classpath:/egovframework/egovProps/globals.properties</value>
+              <!-- value>file:/product/jeus/egovProps/globals.properties</value-->
+          </list>
+      </property>
+    </bean>
+
+    <!-- 일반용
+    <bean id="mntrngMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"
+        p:host="STMP서버주소"
+        p:username="아이디"
+        p:password="비밀번호" />
+    -->
+    <!-- 메일 연동 인터페이스에서 사용 -->
+    <!-- ID/PW는 별도로 가입하여 사용할 것 -->
+    <!-- <bean id="EMSMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"
+        p:host="74.125.53.109"
+        p:port="465"
+        p:protocol="smtps"
+        p:username="*********"
+        p:password="*********">
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtps.auth">true</prop>
+                <prop key="mail.smtps.startls.enable">true</prop>
+                <prop key="mail.smtps.debug">true</prop>
+            </props>
+        </property>
+    </bean>
+     -->
+    <!-- 모니터링 서비스에서 사용 gmail, hanmail 용 -->
+    <!-- ID/PW는 별도로 가입하여 사용할 것
+    <bean id="EMSMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"
+        p:host="smtp.gmail.com"
+        p:port="465"
+        p:protocol="smtps"
+        p:username="lasoe79@gmail.com"
+        p:password="xxxxxx!@">
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtps.auth">true</prop>
+                <prop key="mail.smtps.startls.enable">true</prop>
+                <prop key="mail.smtps.debug">true</prop>
+            </props>
+        </property>
+    </bean> -->
+
+     <bean id="EMSMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"
+        p:host="smtp.naver.com"
+        p:port="465"
+        p:protocol="smtps"
+        p:username="lasoe"
+        p:password="xxxxxx">
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtps.auth">true</prop>
+                <prop key="mail.smtps.startls.enable">true</prop>
+                <prop key="mail.smtps.debug">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="mntrngMessage" class="org.springframework.mail.SimpleMailMessage"
+        p:from="SYSTEM &lt; test.egov.test@gmail.com &gt;"
+        p:subject="{모니터링종류} 상태통보."
+        p:text="* {모니터링종류}  상태통보.&#13;{에러내용}"/>
+
+</beans>

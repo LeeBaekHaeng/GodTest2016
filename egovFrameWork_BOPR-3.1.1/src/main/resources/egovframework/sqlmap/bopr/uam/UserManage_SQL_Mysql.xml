@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserManage">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="UserManageVO" type="egovframework.bopr.uam.service.UserManageVO"/>
+    <typeAlias  alias="UserManage" type="egovframework.bopr.uam.service.UserManage"/>
+    <typeAlias  alias="StplatVO" type="egovframework.bopr.uam.service.StplatVO"/>
+
+	<resultMap id="user" class="egovframework.bopr.uam.service.UserManageVO">
+        <result property="userId" column="USER_ID" columnIndex="1"/>
+        <result property="userNm" column="USER_NM" columnIndex="2"/>
+        <result property="password" column="PASSWORD" columnIndex="3"/>
+        <result property="useAt" column="USE_AT" columnIndex="4"/>
+        <result property="deptId" column="DEPT_ID" columnIndex="5"/>
+        <result property="moblphonNo" column="MOBLPHON_NO" columnIndex="6"/>
+        <result property="adres" column="ADRES" columnIndex="7"/>
+        <result property="emails" column="EMAILS" columnIndex="8"/>
+        <result property="imageFile" column="IMAGE_FILE" columnIndex="9"/>
+        <result property="registDe" column="REGIST_DE" columnIndex="10"/>
+        <result property="jobSeCode" column="JOB_SE_CODE" columnIndex="11"/>
+        <result property="agreAt" column="AGRE_AT" columnIndex="12"/>
+    </resultMap>
+    
+    <resultMap id="stplatMap" class="egovframework.bopr.uam.service.StplatVO">
+        <result property="useStplatId"         column="USE_STPLAT_ID"          />
+        <result property="useStplatCn"         column="USE_STPLAT_CN"          />
+        <result property="infoProvdAgeCn"      column="INFO_PROVD_AGRE_CN"     />
+        <result property="frstRegisterId" 	   column="FRST_REGISTER_ID" 	   />
+        <result property="frstRegistPnttm"     column="FRST_REGIST_PNTTM" 	   />
+        <result property="lastUpdusrId"        column="LAST_UPDUSR_ID" 		   />
+        <result property="lastUpdtPnttm"       column="LAST_UPDT_PNTTM"        />
+    </resultMap>
+    
+    <select id="userManageDAO.selectUserAllList" parameterClass="UserManageVO" resultMap="user">
+        <![CDATA[
+            SELECT  A.* 
+              FROM  (
+            SELECT ALL_LIST.* 
+              FROM  (
+
+            SELECT
+                   USER_ID
+            	 , USER_NM
+            	 , PASSWORD
+            	 , USE_AT
+            	 , DEPT_ID
+            	 , MOBLPHON_NO
+            	 , ADRES
+            	 , EMAILS
+            	 , IMAGE_FILE
+            	 , DATE_FORMAT(REGIST_DE, '%Y-%m-%d %H:%i:%S') AS REGIST_DE
+            	 , JOB_SE_CODE
+            	 , AGRE_AT
+              FROM TN_USERS
+             WHERE 1=1
+        ]]>              
+        	<isEqual prepend="AND" property="searchCondition" compareValue="1">
+                USER_ID LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                USER_NM LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+        <![CDATA[            
+            ORDER BY REGIST_DE DESC
+
+                    ) ALL_LIST
+                    ) A
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>                 
+    </select>
+ 
+    <insert id="userManageDAO.insertUser" parameterClass="UserManage">
+        <![CDATA[
+            INSERT INTO TN_USERS 
+                  ( USER_ID
+            	  , USER_NM
+            	  , PASSWORD
+            	  , USE_AT
+            	  , DEPT_ID
+            	  , MOBLPHON_NO
+            	  , ADRES
+            	  , EMAILS
+            	  , IMAGE_FILE
+            	  , REGIST_DE
+            	  , JOB_SE_CODE
+            	  , AGRE_AT)
+           VALUES ( #userId#
+                  , #userNm#
+                  , #password#
+                  , 'Y'
+                  , #deptId#
+                  , #moblphonNo#
+                  , #adres#
+                  , #emails#
+                  , #imageFile#
+                  , SYSDATE()
+                  , #jobSeCode#
+                  , 'Y')
+        ]]>  
+    </insert>
+
+    <update id="userManageDAO.updateUser" parameterClass="UserManage">
+        <![CDATA[
+            UPDATE TN_USERS 
+               SET USER_NM=#userNm#
+                 , USE_AT=#useAt#
+                 , DEPT_ID=#deptId#
+            	 , MOBLPHON_NO=#moblphonNo#
+            	 , ADRES=#adres#
+            	 , EMAILS=#emails#
+            	 , IMAGE_FILE=#imageFile#
+            	 , JOB_SE_CODE=#jobSeCode#
+             WHERE USER_ID=#userId#
+        ]]>
+    </update>
+
+    <update id="userManageDAO.deleteUser">
+        <![CDATA[
+             UPDATE TN_USERS 
+               SET USE_AT='N'
+             WHERE USER_ID=#userId#
+        ]]>
+    </update>
+    
+    <select id="userManageDAO.selectUserListTotCnt" parameterClass="UserManageVO" resultClass="int">
+            SELECT COUNT(*) totcnt
+            FROM TN_USERS
+            WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                USER_ID LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                USER_NM LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+    </select>
+    
+    <select id="userManageDAO.selectUser" parameterClass="UserManageVO" resultMap="user">
+        <![CDATA[
+            SELECT USER_ID
+            	 , USER_NM
+            	 , PASSWORD
+            	 , USE_AT
+            	 , DEPT_ID
+            	 , MOBLPHON_NO
+            	 , ADRES
+            	 , EMAILS
+            	 , IMAGE_FILE
+            	 , DATE_FORMAT(REGIST_DE, '%Y-%m-%d %H:%i:%S') AS REGIST_DE
+            	 , JOB_SE_CODE
+            	 , AGRE_AT
+              FROM TN_USERS
+             WHERE USER_ID=#userId#
+        ]]>
+        	<isEqual prepend="AND" property="searchCondition" compareValue="1">
+                USER_NM LIKE '%'||#searchKeyword#||'%'
+            </isEqual>
+    </select>
+    
+    <select id="userManageDAO.checkIdDplct_S" resultClass="int">
+        <![CDATA[
+            SELECT COUNT(1) usedCnt
+                FROM(
+                SELECT
+                    USER_ID             userId
+                FROM    TN_USERS
+                ) A
+            WHERE userId = #checkId#
+        ]]>
+    </select>
+    
+    <select id="userManageDAO.checkPassword" resultClass="int">
+        <![CDATA[
+            SELECT COUNT(1) passwordCnt
+                FROM(
+                SELECT
+                    USER_ID             userId
+                   ,PASSWORD             password
+                FROM    TN_USERS
+                ) A
+            WHERE userId = #userId#
+            	  and password = #password#
+        ]]>
+    </select>
+    
+    <update id="userManageDAO.updatePassword" parameterClass="UserManage">
+        <![CDATA[
+            UPDATE TN_USERS 
+               SET PASSWORD=#password#
+             WHERE USER_ID=#userId#
+        ]]>
+    </update>
+    
+    <select id="stplatManageDAO.selectStplat" resultMap="stplatMap">
+        <![CDATA[
+            SELECT	USE_STPLAT_ID
+                  ,	USE_STPLAT_CN
+                  , INFO_PROVD_AGRE_CN
+                  , FRST_REGISTER_ID
+                  , DATE_FORMAT(FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S') AS FRST_REGIST_PNTTM
+                  , LAST_UPDUSR_ID
+                  , DATE_FORMAT(LAST_UPDT_PNTTM, '%Y-%m-%d %H:%i:%S') AS LAST_UPDT_PNTTM  
+            FROM TN_STPLATINFO
+            WHERE USE_STPLAT_ID=#useStplatId#
+        ]]>
+    </select>
+    
+    <update id="stplatManageDAO.updateStplat" parameterClass="StplatVO">
+        <![CDATA[
+            UPDATE TN_STPLATINFO 
+               SET USE_STPLAT_CN=#useStplatCn#
+                 , INFO_PROVD_AGRE_CN=#infoProvdAgeCn#
+                 , LAST_UPDUSR_ID=#lastUpdusrId#
+            	 , LAST_UPDT_PNTTM=SYSDATE()
+             WHERE USE_STPLAT_ID=#useStplatId#
+        ]]>
+    </update>
+    
+    <insert id="stplatManageDAO.insertStplat" parameterClass="StplatVO">
+        <![CDATA[
+            INSERT INTO TN_STPLATINFO 
+                 ( USE_STPLAT_ID
+                 , USE_STPLAT_CN
+                 , INFO_PROVD_AGRE_CN
+                 , FRST_REGISTER_ID
+            	 , FRST_REGIST_PNTTM  
+                 , LAST_UPDUSR_ID
+            	 , LAST_UPDT_PNTTM  
+                   )
+           VALUES ( #useStplatId# 
+		           ,'내용이 없습니다'
+		           ,'내용이 없습니다'
+		           ,#frstRegisterId# 
+		           ,SYSDATE()
+		           ,#frstRegisterId# 
+		           ,SYSDATE()
+		           )
+        ]]>  
+    </insert>
+    
+</sqlMap>

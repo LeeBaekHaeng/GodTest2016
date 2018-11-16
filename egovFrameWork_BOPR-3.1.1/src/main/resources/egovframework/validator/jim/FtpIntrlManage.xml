@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE form-validation PUBLIC 
+    "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1//EN" 
+    "http://jakarta.apache.org/commons/dtds/validator_1_1.dtd">
+
+<form-validation>
+    <formset>
+        <form name="ftpIntrlManage">
+            <field property="ftpIntrlckNm" depends="required">
+                <arg0 key="FTP연동명" resource="false"/>
+            </field>
+            <field property="ftpAdres" depends="required">
+                <arg0 key="FTP주소" resource="false"/>
+            </field>
+            <field property="userId" depends="required">
+        		<arg0 key="사용자ID" resource="false"/>
+			</field> 
+            <field property="password" depends="required, password1, password3, password4">
+                <arg0 key="비밀번호" resource="false"/>
+            </field>
+            <field property="password2" depends="required">
+                <arg0 key="비밀번호확인" resource="false"/>
+            </field>
+            <field property="batchWdtbPath" depends="required">
+                <arg0 key="첨부파일배포경로" resource="false"/>
+            </field>
+            <field property="cfgWdtbPath" depends="required">
+                <arg0 key="설정파일배포경로" resource="false"/>
+            </field>
+        </form>
+	</formset>   
+</form-validation>

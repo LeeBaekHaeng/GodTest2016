@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="rehndn">
+
+    <typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="RehndnVO" type="egovframework.bopr.mom.service.RehndnVO"/>
+
+    <resultMap id="rehndnList" class="egovframework.bopr.mom.service.RehndnVO">
+        <result property="rehndnNo" column="REHNDN_NO" columnIndex="1"/>
+        <result property="jobInstanceId" column="JOB_INSTANCE_ID" columnIndex="2"/>
+        <result property="jobName" column="JOB_NAME" columnIndex="3"/>
+        <result property="rehndnResn" column="REHNDN_RESN" columnIndex="4"/>
+        <result property="rehndnPnttm" column="REHNDN_PNTTM" columnIndex="5"/>
+        <result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="6"/>
+        <result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="7"/>
+        <result property="lastUpdusrId" column="LAST_UPDUSR_ID" columnIndex="8"/>
+        <result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM" columnIndex="9"/>
+        <result property="batchId" column="BATCH_ID" columnIndex="10"/>
+        <result property="batchNm" column="BATCH_NM" columnIndex="11"/>
+        <result property="exitCode" column="EXIT_CODE" columnIndex="12"/>
+        <result property="status" column="STATUS" columnIndex="13"/>
+    </resultMap>
+    
+    <resultMap id="rehndnRegistData" class="egovframework.bopr.mom.service.RehndnVO">
+    	<result property="jobInstanceId" column="JOB_INSTANCE_ID" />
+    	<result property="batchId" column="BATCH_ID" />
+    	<result property="batchNm" column="BATCH_NM" />
+    </resultMap>
+    
+    <select id="RehndnDAO.selectRehndnList" parameterClass="RehndnVO" resultMap="rehndnList">
+        <![CDATA[
+SELECT  E.* 
+              FROM  (
+            SELECT ALL_LIST.* , rownum rn
+              FROM  (
+				SELECT
+				    A.REHNDN_NO
+				  , A.JOB_INSTANCE_ID
+				  , C.JOB_NAME
+				  , A.REHNDN_RESN
+				  , A.REHNDN_PNTTM
+				  , A.FRST_REGISTER_ID
+				  , A.FRST_REGIST_PNTTM
+				  , A.LAST_UPDUSR_ID
+				  , A.LAST_UPDT_PNTTM
+				  , A.BATCH_ID
+				  , B.BATCH_NM
+				  , D.EXIT_CODE
+          		  , D.STATUS
+				FROM
+				    TN_REHNDN A
+				    LEFT OUTER JOIN BATCH_JOB_EXECUTION D
+          			ON D.JOB_EXECUTION_ID = A.JOB_EXECUTION_ID
+				  , TN_BATCH B
+				  , BATCH_JOB_INSTANCE C
+				WHERE A.BATCH_ID = B.BATCH_ID
+				  AND A.JOB_INSTANCE_ID = C.JOB_INSTANCE_ID
+	        ]]>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="1">
+	             A.REHNDN_NO LIKE ('%'||#searchKeyword#||'%')
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="2">
+	             A.BATCH_ID LIKE ('%'||#searchKeyword#||'%')
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="3">
+	             B.BATCH_NM LIKE ('%'||#searchKeyword#||'%')
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchCondition" compareValue="4">
+	             A.JOB_INSTANCE_ID LIKE ('%'||#searchKeyword#||'%')
+	        </isEqual>
+	        <isNotEmpty prepend="AND" property="searchResultCode">
+	        	D.EXIT_CODE = #searchResultCode#
+	        </isNotEmpty>
+	        <![CDATA[            
+            ORDER BY A.REHNDN_NO DESC
+                    ) ALL_LIST
+                    ) E
+             WHERE rn BETWEEN #firstIndex# + 1 AND #firstIndex# + #recordCountPerPage#
+        ]]>
+    </select>
+
+    <select id="RehndnDAO.selectRehndn" resultMap="rehndnList">
+        <![CDATA[
+SELECT
+    A.REHNDN_NO
+  , A.JOB_INSTANCE_ID
+  , C.JOB_NAME
+  , A.REHNDN_RESN
+  , A.REHNDN_PNTTM
+  , A.FRST_REGISTER_ID
+  , A.FRST_REGIST_PNTTM
+  , A.LAST_UPDUSR_ID
+  , A.LAST_UPDT_PNTTM
+  , A.BATCH_ID
+  , B.BATCH_NM
+  , D.EXIT_CODE
+  , D.STATUS
+FROM
+    TN_REHNDN A
+    LEFT OUTER JOIN BATCH_JOB_EXECUTION D
+	ON D.JOB_EXECUTION_ID = A.JOB_EXECUTION_ID
+  , TN_BATCH B
+  , BATCH_JOB_INSTANCE C
+WHERE A.BATCH_ID = B.BATCH_ID
+  AND A.REHNDN_NO = #rehndnNo#
+  AND A.JOB_INSTANCE_ID = C.JOB_INSTANCE_ID
+        ]]>
+    </select>
+    
+    <select id="RehndnDAO.selectRehndnRegistData" parameterClass="RehndnVO" resultMap="rehndnRegistData">
+        <![CDATA[
+SELECT A.BATCH_ID
+     , A.BATCH_NM
+     , B.JOB_INSTANCE_ID
+  FROM TN_BATCH A
+     , BATCH_JOB_INSTANCE B
+ WHERE A.BATCH_NM = B.JOB_NAME
+   AND B.JOB_INSTANCE_ID = #jobInstanceId#
+   AND A.DELETE_AT = 'N'
+        ]]>
+    </select>
+    
+    <insert id="RehndnDAO.insertRehndn" parameterClass="RehndnVO">
+INSERT INTO TN_REHNDN
+(
+    REHNDN_NO
+  , JOB_INSTANCE_ID
+  , REHNDN_RESN
+  , REHNDN_PNTTM
+  , FRST_REGISTER_ID
+  , FRST_REGIST_PNTTM
+  , LAST_UPDUSR_ID
+  , LAST_UPDT_PNTTM
+  , BATCH_ID
+  , JOB_EXECUTION_ID
+)
+VALUES
+(
+    #rehndnNo#
+  , #jobInstanceId#
+  , #rehndnResn#
+  , SYSDATETIME
+  , #frstRegisterId#
+  , SYSDATETIME
+  , #lastUpdusrId#
+  , SYSDATETIME
+  , #batchId#
+  , #jobExecutionId#
+)
+    </insert>
+    
+    <update id="RehndnDAO.updateRehndn" parameterClass="RehndnVO">
+UPDATE TN_REHNDN
+SET
+    REHNDN_RESN = #rehndnResn#
+WHERE REHNDN_NO = #rehndnNo#
+    </update>
+    
+    <delete id="RehndnDAO.deleteRehndn" parameterClass="rehndnVO">
+DELETE FROM TN_REHNDN
+WHERE REHNDN_NO = #rehndnNo#
+    </delete>
+    
+    <delete id="RehndnDAO.deleteRehndnByBatchId" parameterClass="rehndnVO">
+DELETE FROM TN_REHNDN
+WHERE BATCH_ID = #batchId#
+    </delete>
+    
+    <select id="RehndnDAO.selectRehndnListTotCnt" parameterClass="rehndnVO" resultClass="int">
+SELECT COUNT(*) totcnt
+  FROM TN_REHNDN A
+	    LEFT OUTER JOIN BATCH_JOB_EXECUTION D
+       			ON D.JOB_EXECUTION_ID = A.JOB_EXECUTION_ID
+	  , TN_BATCH B
+	  , BATCH_JOB_INSTANCE C
+	WHERE A.BATCH_ID = B.BATCH_ID
+	  AND A.JOB_INSTANCE_ID = C.JOB_INSTANCE_ID
+     <isEqual prepend="AND" property="searchCondition" compareValue="1">
+          A.REHNDN_NO LIKE ('%'||#searchKeyword#||'%')
+     </isEqual>
+     <isEqual prepend="AND" property="searchCondition" compareValue="2">
+          A.BATCH_ID LIKE ('%'||#searchKeyword#||'%')
+     </isEqual>
+     <isEqual prepend="AND" property="searchCondition" compareValue="3">
+          B.BATCH_NM LIKE ('%'||#searchKeyword#||'%')
+     </isEqual>
+     <isEqual prepend="AND" property="searchCondition" compareValue="4">
+          A.JOB_INSTANCE_ID LIKE ('%'||#searchKeyword#||'%')
+     </isEqual>
+     <isNotEmpty prepend="AND" property="searchResultCode">
+ 	 	  D.EXIT_CODE = #searchResultCode#
+     </isNotEmpty>
+	</select>
+</sqlMap>

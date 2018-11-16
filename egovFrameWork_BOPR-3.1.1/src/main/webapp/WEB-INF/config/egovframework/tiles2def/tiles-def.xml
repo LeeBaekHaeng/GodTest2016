@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+	<definition name="template" template="/WEB-INF/jsp/egovframework/com/layouts/layout.jsp">
+		<put-attribute name="title" value="Guide Program" />
+		<put-attribute name="header" value="/WEB-INF/jsp/egovframework/com/main/inc/EgovIncHeader.jsp" />
+		<put-attribute name="topnavi" value="/sym/mnu/mpm/EgovMainMenuHead.do" />
+		<put-attribute name="menu" value="/WEB-INF/jsp/egovframework/com/main/inc/EgovIncLeftmenu.jsp" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/layouts/body.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/egovframework/com/main/inc/EgovIncFooter.jsp" />
+	</definition>	
+	
+	<definition name="main" template="/WEB-INF/jsp/egovframework/com/layouts/layout_main.jsp">
+		<put-attribute name="title" value="Guide Program" />
+		<put-attribute name="header" value="/WEB-INF/jsp/egovframework/com/main/inc/EgovIncHeader.jsp" />
+		<put-attribute name="topnavi" value="/sym/mnu/mpm/EgovMainMenuHead.do" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/com/layouts/body.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/egovframework/com/main/inc/EgovIncFooter.jsp" />
+	</definition>	
+	
+	<definition name="dummy" template="/WEB-INF/jsp/layouts/dummy.jsp">
+		<put-attribute name="title" value="Guide Program" />
+		<put-attribute name="body" value="/WEB-INF/jsp/layouts/body.jsp" />
+	</definition>
+
+</tiles-definitions>

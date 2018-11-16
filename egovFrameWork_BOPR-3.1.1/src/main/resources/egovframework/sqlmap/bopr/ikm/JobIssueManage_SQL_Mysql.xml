@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="JobIssueManage">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="JobIssueManageVO" type="egovframework.bopr.ikm.service.JobIssueManageVO"/>
+    <typeAlias  alias="JobIssueManage" type="egovframework.bopr.ikm.service.JobIssueManage"/>
+    <typeAlias  alias="IssueAnwserVO" type="egovframework.bopr.ikm.service.IssueAnwserVO"/>
+
+	<resultMap id="jobIssue" class="egovframework.bopr.ikm.service.JobIssueManageVO">
+        <result property="issueNo" column="ISSUE_NO" columnIndex="1"/>
+        <result property="issueSj" column="ISSUE_SJ" columnIndex="2"/>
+        <result property="issueCn" column="ISSUE_CN" columnIndex="3"/>
+        <result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="4"/>
+        <result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="5"/>
+        <result property="lastUpdusrId" column="LAST_UPDUSR_ID" columnIndex="6"/>
+        <result property="lastUpdtPnttm" column="LAST_UPDT_PNTTM" columnIndex="7"/>
+        <result property="atchFileId" column="ATCH_FILE_ID" columnIndex="8"/>
+        <result property="issueSttusCode" column="ISSUE_STTUS_CODE" columnIndex="9"/>
+        <result property="issueOccrrncDe" column="ISSUE_OCCRRNC_DE" columnIndex="10"/>
+        <result property="issueLvCode" column="ISSUE_LV_CODE" columnIndex="11"/>
+        <result property="issueTyCode" column="ISSUE_TY_CODE" columnIndex="12"/>
+        <result property="othbcAt" column="OTHBC_AT"/>
+    </resultMap>
+    
+    <resultMap id="issueAnswer" class="egovframework.bopr.ikm.service.IssueAnwserVO">
+        <result property="answerNo" column="ANSWER_NO" />
+        <result property="issueSttusCode" column="ISSUE_STTUS_CODE" />
+        <result property="answerCn" column="ANSWER_CN" />
+        <result property="answerRegisterId" column="ANSWER_REGISTER_ID" />
+        <result property="answerRegistPnttm" column="ANSWER_REGIST_PNTTM" />
+    </resultMap>
+    
+    <select id="jobIssueManageDAO.selectJobIssueList" parameterClass="JobIssueManageVO" resultMap="jobIssue">
+        <![CDATA[
+            SELECT  A.* 
+              FROM  (
+            SELECT ALL_LIST.* 
+              FROM  (
+
+            SELECT
+                   ISSUE_NO
+            	 , ISSUE_SJ
+            	 , ISSUE_CN
+            	 , FRST_REGISTER_ID
+            	 , DATE_FORMAT(FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S') AS FRST_REGIST_PNTTM  
+            	 , LAST_UPDUSR_ID
+            	 , DATE_FORMAT(LAST_UPDT_PNTTM, '%Y-%m-%d %H:%i:%S') AS LAST_UPDT_PNTTM  
+            	 , ATCH_FILE_ID
+            	 , ISSUE_STTUS_CODE
+            	 , ISSUE_OCCRRNC_DE
+            	 , ISSUE_LV_CODE
+            	 , ISSUE_TY_CODE
+            	 , OTHBC_AT
+              FROM TN_ISSUE
+             WHERE 1=1
+        ]]>              
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                ISSUE_SJ LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                ISSUE_CN LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                FRST_REGISTER_ID concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="4">
+                ISSUE_STTUS_CODE = #searchKeyword#
+            </isEqual>
+            <isEqual prepend="AND" property="adminYn" compareValue="N">
+        		(OTHBC_AT = 'Y' OR (OTHBC_AT = 'N' AND FRST_REGISTER_ID = #loginId#))
+        	</isEqual>
+            <isNotEqual prepend="AND" property="searchKeywordFrom" compareValue="">
+	        <![CDATA[  
+	        		FRST_REGIST_PNTTM >= #searchKeywordFrom#
+	        		]]>
+	        </isNotEqual>
+	        <isNotEqual prepend="AND" property="searchKeywordTo" compareValue="">
+	        <![CDATA[  
+	        		FRST_REGIST_PNTTM <= concat(#searchKeywordTo#,' 23:59:59')
+	        ]]>
+	        </isNotEqual>
+        <![CDATA[            
+            ORDER BY LAST_UPDT_PNTTM DESC
+
+                    ) ALL_LIST
+                    ) A
+             LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>                 
+    </select>
+ 
+    <insert id="jobIssueManageDAO.insertJobIssue" parameterClass="JobIssueManage">
+        <![CDATA[
+            INSERT INTO TN_ISSUE 
+                  ( ISSUE_NO
+            	  , ISSUE_SJ
+            	  , ISSUE_CN
+            	  , FRST_REGISTER_ID
+            	  , FRST_REGIST_PNTTM
+                  , LAST_UPDUSR_ID
+            	  , LAST_UPDT_PNTTM
+            	  , ATCH_FILE_ID
+            	  , ISSUE_STTUS_CODE
+            	  , ISSUE_OCCRRNC_DE
+            	  , ISSUE_LV_CODE
+            	  , ISSUE_TY_CODE
+            	  , OTHBC_AT)
+           VALUES ( #issueNo#
+                  , #issueSj#
+                  , #issueCn#
+                  , #frstRegisterId#
+                  , NOW()
+                  , #lastUpdusrId#
+                  , NOW()
+                  , #atchFileId#
+                  , '01'
+                  , #issueOccrrncDe#
+                  , #issueLvCode#
+                  , #issueTyCode#
+                  ,'Y')
+        ]]>  
+    </insert>
+
+    <update id="jobIssueManageDAO.updateJobIssue" parameterClass="JobIssueManage">
+        <![CDATA[
+            UPDATE TN_ISSUE 
+               SET ISSUE_SJ=#issueSj#
+                 , ISSUE_CN=#issueCn#
+            	 , LAST_UPDUSR_ID=#lastUpdusrId#
+            	 , LAST_UPDT_PNTTM=NOW()
+            	 , ATCH_FILE_ID=#atchFileId#
+            	 , ISSUE_STTUS_CODE=#issueSttusCode#
+            	 , ISSUE_OCCRRNC_DE=#issueOccrrncDe#
+            	 , ISSUE_LV_CODE=#issueLvCode#
+            	 , ISSUE_TY_CODE=#issueTyCode#
+            	 , OTHBC_AT=#othbcAt#
+
+             WHERE ISSUE_NO=#issueNo#
+        ]]>
+    </update>
+    
+    <update id="jobIssueManageDAO.updateIssueSttus" parameterClass="JobIssueManage">
+        <![CDATA[
+            UPDATE TN_ISSUE 
+               SET ISSUE_STTUS_CODE=#issueSttusCode#
+             WHERE ISSUE_NO=#issueNo#
+        ]]>
+    </update>
+
+    <update id="jobIssueManageDAO.deleteJobIssue">
+        <![CDATA[
+       		UPDATE TN_ISSUE 
+               SET OTHBC_AT='N'
+             WHERE ISSUE_NO=#issueNo#
+        ]]>
+    </update>
+    
+    <select id="jobIssueManageDAO.selectJobIssueListTotCnt" parameterClass="JobIssueManageVO" resultClass="int">
+            SELECT COUNT(*) totcnt
+            FROM TN_ISSUE
+            WHERE 1=1
+            <isEqual prepend="AND" property="searchCondition" compareValue="1">
+                ISSUE_SJ LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="2">
+                ISSUE_CN LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="3">
+                FRST_REGISTER_ID LIKE concat('%',#searchKeyword#,'%')
+            </isEqual>
+            <isEqual prepend="AND" property="searchCondition" compareValue="4">
+                ISSUE_STTUS_CODE = #searchKeyword#
+            </isEqual>
+            <isEqual prepend="AND" property="adminYn" compareValue="N">
+        		(OTHBC_AT = 'Y' OR (OTHBC_AT = 'N' AND FRST_REGISTER_ID = #loginId#))
+        	</isEqual>
+            <isNotEqual prepend="AND" property="searchKeywordFrom" compareValue="">
+	        <![CDATA[  
+	        		FRST_REGIST_PNTTM >= #searchKeywordFrom#
+	        		]]>
+	        </isNotEqual>
+	        <isNotEqual prepend="AND" property="searchKeywordTo" compareValue="">
+	        <![CDATA[  
+	        		FRST_REGIST_PNTTM <= concat(#searchKeywordTo#,' 23:59:59')
+	        ]]>
+	        </isNotEqual>
+    </select>
+    
+    <select id="jobIssueManageDAO.selectJobIssue" parameterClass="JobIssueManageVO" resultMap="jobIssue">
+        <![CDATA[
+            SELECT ISSUE_NO
+            	 , ISSUE_SJ
+            	 , ISSUE_CN
+            	 , FRST_REGISTER_ID
+            	 , DATE_FORMAT(FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S') AS FRST_REGIST_PNTTM  
+                 , LAST_UPDUSR_ID
+            	 , DATE_FORMAT(LAST_UPDT_PNTTM, '%Y-%m-%d %H:%i:%S') AS LAST_UPDT_PNTTM  
+            	 , ATCH_FILE_ID
+            	 , ISSUE_STTUS_CODE
+            	 , DATE_FORMAT(ISSUE_OCCRRNC_DE, '%Y-%m-%d') AS ISSUE_OCCRRNC_DE
+            	 , ISSUE_LV_CODE
+            	 , ISSUE_TY_CODE
+            	 , OTHBC_AT
+              FROM TN_ISSUE
+             WHERE ISSUE_NO=#issueNo#
+        ]]>
+    </select>
+    
+    <select id="jobIssueManageDAO.selectIssueAnswerList" parameterClass="IssueAnwserVO" resultMap="issueAnswer">
+        <![CDATA[
+            SELECT  ANSWER_NO
+            	  , ISSUE_STTUS_CODE
+            	  , ANSWER_CN
+            	  , ANSWER_REGISTER_ID
+            	  , ANSWER_REGIST_PNTTM
+              FROM TN_ISSUE_CMT
+             WHERE     ANSWER_NO=#answerNo# 
+             
+             ORDER BY ISSUE_STTUS_CODE
+                    
+        ]]>
+    </select>
+    
+    <insert id="jobIssueManageDAO.insertIssueAnswer" parameterClass="IssueAnwserVO">
+        <![CDATA[
+            INSERT INTO TN_ISSUE_CMT 
+                  ( ANSWER_NO
+            	  , ISSUE_STTUS_CODE
+            	  , ANSWER_CN
+            	  , ANSWER_REGISTER_ID
+            	  , ANSWER_REGIST_PNTTM)
+           VALUES ( #answerNo#
+                  , #issueSttusCode#
+                  , #answerCn#
+                  , #answerRegisterId#
+                  , SYSDATE())            	 
+        ]]>
+    </insert>
+    
+    <update id="jobIssueManageDAO.updateIssueAnswer" parameterClass="IssueAnwserVO">
+        <![CDATA[
+            UPDATE TN_ISSUE_CMT 
+               SET ANSWER_CN=#answerCn#
+                 , ANSWER_REGISTER_ID=#answerRegisterId#
+            	 , ANSWER_REGIST_PNTTM=SYSDATE()
+
+             WHERE     ANSWER_NO=#answerNo# 
+                   AND ISSUE_STTUS_CODE=#issueSttusCode#
+        ]]>
+    </update>
+    
+    <delete id="jobIssueManageDAO.deleteIssueAnswer" parameterClass="IssueAnwserVO">
+        <![CDATA[
+            DELETE FROM TN_ISSUE_CMT 
+             WHERE     ANSWER_NO=#answerNo# 
+                   AND ISSUE_STTUS_CODE=#issueSttusCode#
+        ]]>
+    </delete>
+    
+</sqlMap>

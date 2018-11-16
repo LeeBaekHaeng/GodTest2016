@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!-- 
+	수정일                 수정자                          수정내용
+  =========     =======    =================================================
+  2011.8.26   	서준식     	 	SSO 로그인을 위한 쿼리 추가
+  2011.09.27    서준식              컬럼 변경 SUB_DN 을  CRTFC_DN_VALUE 로 변경
+  2011.09.28    서준식              컬럼 변경 entrprsmber_id 을  ENTRPRS_MBER_ID 로 변경
+-->
+<sqlMap namespace="LoginUsr">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="loginVO" type="egovframework.com.cmm.LoginVO"/>
+	  
+	<!-- 로그인 처리를 위한 resultMap -->
+	<resultMap id="login" class="egovframework.com.cmm.LoginVO">
+		<result property="id" column="id" columnIndex="1"/>
+		<result property="name" column="name" columnIndex="2"/>
+		<result property="password" column="password" columnIndex="3"/>
+		<result property="orgnztNm" column="orgnztNm" columnIndex="4"/>
+	</resultMap>
+
+	<!-- 아이디 찾기를 위한 resultMap -->
+	<resultMap id="id" class="egovframework.com.cmm.LoginVO">
+		<result property="id" column="id" columnIndex="1"/>
+	</resultMap>
+	
+	<!-- 비밀번호 처리를 위한 resultMap -->
+	<resultMap id="password" class="egovframework.com.cmm.LoginVO">
+		<result property="password" column="password" columnIndex="1"/>
+	</resultMap>
+	
+	<!-- SSO용 ESNTL_ID를 이용한 로그인 -->
+	
+	<select id="loginDAO.ssoLoginByEsntlId" resultMap="login">
+		SELECT    USER_ID AS id
+				, USER_NM AS name
+				, PASSWORD AS password
+				, EMAILS AS email
+				, DEPT_ID AS orgnztNm
+		FROM TN_USERS
+		WHERE USER_ID = #id#
+	</select>
+		
+	
+	<!-- 일반 로그인 -->
+	<select id="loginDAO.actionLogin" resultMap="login">
+		SELECT	  USER_ID AS id
+				, USER_NM AS name
+				, PASSWORD AS password
+				, DEPT_ID AS orgnztNm
+		FROM TN_USERS
+		WHERE USER_ID = #id# AND PASSWORD = #password#
+	</select>
+	
+	
+	<!-- 아이디 찾기 -->
+	<select id="loginDAO.searchId" resultMap="id">
+		SELECT	  USER_ID AS id
+		FROM TN_USERS
+		WHERE USER_NM = #name#
+	</select>
+
+
+	<!-- 비밀번호 찾기 -->
+	<select id="loginDAO.searchPassword" resultMap="password">
+		SELECT	  PASSWORD AS password
+		FROM TN_USERS
+		WHERE USER_ID = #id#
+	</select>
+
+
+	<!-- 변경된 비밀번호를 저장 -->
+	<update id="loginDAO.updatePassword">
+		UPDATE TN_USERS
+		SET PASSWORD = #password#
+		WHERE USER_ID = #id#
+	</update>
+	
+</sqlMap>

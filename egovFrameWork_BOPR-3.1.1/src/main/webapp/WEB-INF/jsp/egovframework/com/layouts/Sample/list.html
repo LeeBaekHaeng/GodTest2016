@@ -1,0 +1,72 @@
+<div class="contsBody">
+	<h2>사용자 관리</h2>
+	<div class="location">사용자 관리 > <strong>목록</strong></div>
+	
+	<!-- 검색영역 -->
+	<div class="search">
+		<fieldset class="searchboxA">
+			<legend>검색 영역</legend>
+			<label for="searchCondition" class="disp_none">검색조건</label>
+			<select id="searchCondition" name="searchCondition" class="serSel" style="" title="검색어 선택">
+				<option value="lowest_instt_nm">사용자명</option>
+				<option value="siteUrl">사이트 주소</option>    
+				<option value="telno">전화번호</option>       
+				<option value="adres">주소</option>          
+			</select>
+			<label for="searchKeyword" class="disp_none">검색어</label>
+			<input id="searchKeyword" name="searchKeyword" class="inptext" title="검색어 입력란" type="text" value=""/>                       
+			<input type="image" class="searchbtn" title="검색" src="/images/egovframework/bopr/btn_search.gif" alt="검색" />
+		</fieldset>
+	</div>
+	<!-- //검색영역 -->
+
+	<div class="Btn">
+		<span class="bbsBtn"><a href="register.html">등록</a></span>
+		<span class="bbsBtn"><a href="#">삭제</a></span>
+	</div>
+
+	<div class="bbsList">
+		<table  summary="사용자관리 목록입니다.">
+		<caption>사용자관리 목록</caption>
+		<colgroup>
+			<col style="width:5%" />
+			<col style="width:18%" />
+			<col style="width:auto" />
+			<col style="width:15%" />
+			<col style="width:12%" />
+			<col style="width:20%" />
+			<col style="width:13%" />
+		</colgroup>
+		<thead>
+		<tr>
+			<th scope="col"><input type="checkbox" name="checkAll" class="check2" onclick="javascript:fncCheckAll()"></th>
+			<th scope="col">사용자ID</th>
+			<th scope="col">사용자명</th>
+			<th scope="col">전화번호</th>
+			<th scope="col">사용여부</th>
+			<th scope="col">등록일자</th>
+			<th scope="col">사용자정보</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td><input type="checkbox" name="delYn" /></td>
+			<td class="left"><a href="detail.html">testtest</a></td>
+			<td>asdf</td>
+			<td>010-2593-8475</td>
+			<td>사용가능</td>
+			<td>2012-09-04 10:40:39.0</td>
+			<td><a href="detail.html"><img src="/images/egovframework/bopr/search.gif" alt="상세보기" /></a></td>
+		</tr>
+		</tbody>
+		</table>
+	</div>
+
+	<!-- 페이징 -->
+	<div class="paging">
+		<!-- 적용불가 -->
+		<!-- <a href="#" title="처음"><img src="/images/egovframework/bopr/bbs_btn_frist.gif" alt="처음" /></a><a href="#1" title="이전"><img src="images/new/bbs_btn_prev.gif" alt="이전" class="pre"/></a><span> 1</span><span><a href="#2" title="2"><strong>2</strong></a></span><span><a href="#3" title="3">3</a></span><span><a href="#4" title="4" >4</a></span><span><a href="#5" title="5" >5</a></span><span><a href="#6" title="6">6</a></span><span><a href="#7" title="7" >7</a></span><span><a href="#8" title="8">8</a></span><span><a href="#9" title="9" >9</a></span><span><a href="#10" title="10" >10</a></span><a href="#11" title="다음"><img src="images/new/bbs_btn_next.gif" alt="다음" class="next"/></a><a href="#158" title="마지막"><img src="/images/egovframework/bopr/bbs_btn_end.gif" alt="마지막" /></a> -->
+		<ui:pagination paginationInfo = "${paginationInfo}" type="image" jsFunction="linkPage"/>
+	</div>
+	<!-- //페이징 -->
+</div>

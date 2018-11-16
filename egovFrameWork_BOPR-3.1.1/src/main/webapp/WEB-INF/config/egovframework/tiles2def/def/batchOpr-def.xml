@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<!-- 배치운영 메뉴정의 -->
+<tiles-definitions>
+
+<!-- 실행중Job관리 -->
+	<!-- 실행중Job목록 -->
+	<definition name="egovframework/bopr/mom/EgovExecutJobList" extends="template">
+		<put-attribute name="title" value="실행중Job목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovExecutJobList.jsp" />
+	</definition>
+	
+	<!-- 실행중Job조회 -->
+	<definition name="egovframework/bopr/mom/EgovExecutJobDetail" extends="template">
+		<put-attribute name="title" value="실행중Job조회" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovExecutJobDetail.jsp" />
+	</definition>
+
+<!-- Job실행결과관리 -->
+	<!-- Job실행결과목록 -->
+	<definition name="egovframework/bopr/mom/EgovExecutResultList" extends="template">
+		<put-attribute name="title" value="Job실행결과목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovExecutResultList.jsp" />
+	</definition>
+	
+	<!-- Job실행결과조회(수정) -->
+	<definition name="egovframework/bopr/mom/EgovExecutResultDetail" extends="template">
+		<put-attribute name="title" value="Job실행결과조회(수정)" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovExecutResultDetail.jsp" />
+	</definition>	
+
+<!-- 작업이력관리 -->
+	<!-- 작업이력목록 -->
+	<definition name="egovframework/bopr/jhm/EgovJobHistList" extends="template">
+		<put-attribute name="title" value="작업이력목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jhm/EgovJobHistList.jsp" />
+	</definition>
+	
+	<!-- 작업이력조회 -->
+	<definition name="egovframework/bopr/jhm/EgovJobHistDetail" extends="template">
+		<put-attribute name="title" value="작업이력조회" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/jhm/EgovJobHistDetail.jsp" />
+	</definition>
+		
+<!-- 배치실행관리 -->
+	<!-- 배치실행목록 -->
+	<definition name="egovframework/bopr/mom/EgovBatchExecutList" extends="template">
+		<put-attribute name="title" value="배치실행목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovBatchExecutList.jsp" />
+	</definition>
+	
+	<!-- 배치실행조회(수정) -->
+	<definition name="egovframework/bopr/mom/EgovBatchExecutDetail" extends="template">
+		<put-attribute name="title" value="배치실행조회(수정)" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovBatchExecutDetail.jsp" />
+	</definition>	
+	
+	<!-- 배치실행등록 -->
+	<definition name="egovframework/bopr/mom/EgovBatchExecutRegist" extends="template">
+		<put-attribute name="title" value="배치실행등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovBatchExecutRegist.jsp" />
+	</definition>	
+
+<!-- 재처리대상 관리 -->
+	<!-- 재처리대상 목록 -->
+	<definition name="egovframework/bopr/mom/EgovRehndnJobList" extends="template">
+		<put-attribute name="title" value="재처리대상 목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovRehndnJobList.jsp" />
+	</definition>
+	<!-- 재처리대상 조회(재처리) -->
+	<definition name="egovframework/bopr/mom/EgovRehndnJobDetail" extends="template">
+		<put-attribute name="title" value="재처리대상 조회(재처리)" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovRehndnJobDetail.jsp" />
+	</definition>	
+	
+	<!-- 재처리등록 -->
+	<definition name="egovframework/bopr/mom/EgovRehndnRegist" extends="template">
+		<put-attribute name="title" value="재처리등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovRehndnRegist.jsp" />
+	</definition>
+<!-- 재처리수행결과 관리 -->
+	<!-- 재처리결과 목록 -->
+	<definition name="egovframework/bopr/mom/EgovRehndnList" extends="template">
+		<put-attribute name="title" value="재처리결과 목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovRehndnList.jsp" />
+	</definition>
+	<!-- 재처리조회(수정) -->
+	<definition name="egovframework/bopr/mom/EgovRehndnDetail" extends="template">
+		<put-attribute name="title" value="재처리조회(수정)" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovRehndnDetail.jsp" />
+	</definition>	
+<!-- 재처리 탭 관리 -->
+	<!-- 재처리 탭 메인페이지 -->
+	<definition name="egovframework/bopr/mom/EgovRehndnTab" extends="template">
+		<put-attribute name="title" value="배치운영" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/mom/EgovRehndnTab.jsp" />
+	</definition>
+</tiles-definitions>

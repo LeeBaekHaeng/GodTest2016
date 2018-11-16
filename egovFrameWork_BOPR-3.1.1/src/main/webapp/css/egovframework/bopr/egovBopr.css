@@ -1,0 +1,286 @@
+@import"space.css";
+
+*, body, div, p, span, address {  margin:0; padding:0; font-family: "Dotum" !important; font-size: 12px;}
+img, fieldset {border:0 none; vertical-align:middle;}
+table {border-collapse: collapse; border-spacing: 0;}
+caption, legend { display:none}
+address { font-weight:normal; font-style:normal;}
+ol, ul, dl { list-style:none }
+a { text-decoration:none; }
+a:hover { text-decoration:underline;}
+
+#wrap { width:100%; height:100%; margin:0; padding:0; }
+#header { margin:0 auto; padding:7px 0 0; overflow:hidden; }
+#content { clear:both; position:relative; overflow:hidden; padding:20px 15px; }
+#footer { clear:both; position:relative; background: url(/images/egovframework/bopr/bg_footer_line.gif) top repeat-x; height:73px; visibility: visible;}
+
+/*top util*/
+.top_util {width:100%; height:24px; margin-top:-7px; vertical-align:top;}
+.top_util .bg {width:200px; float:right; margin-right:10px; background: url(/images/egovframework/bopr/new_main/ptn_toputil.gif) repeat-x; }
+.top_util .bg div {float:left;}
+
+/* header */
+#header h1 { float:left; height:33px; padding:5px 10px 0; overflow:hidden;}
+#header h1 img { vertical-align:top; padding:0 10px 0 0}
+#header h1 span { font-size:18px; letter-spacing:-1px; vertical-align:top; color:#333}
+
+.topInfo { float:right; display:inline; padding:12px 10px 0 0}
+.topInfo span { display:inline-block; font-size:11px; letter-spacing:-1px; vertical-align:middle; }
+.topInfo span.name { font-weight:bold; }
+.topInfo span img { vertical-align:middle; }
+
+.tabNav { clear:both; height:40px; background: url(/images/egovframework/bopr/bg_nav.gif) top repeat-x;}
+.tabNav ul { padding:0 15px; }
+.tabNav li { float:left; padding:0 20px; line-height:40px;font-weight:bold; overflow:hidden}
+.tabNav li a { color:#fff;  font-size:14px; }
+
+.nav { clear:both; padding:14px 10px 0; overflow:hidden;}
+.nav ul { height:37px; border-top:1px solid #d8dade; border-left:1px solid #d8dade; border-right:1px solid #d8dade; overflow:hidden; }
+.nav li { float:left; text-align:center; padding:11px 20px; overflow:hidden; }
+.nav li a {  font-size:12px; }
+.nav li.on { padding:11px 20px; overflow:hidden; border-top:1px solid #0f2453; border-left:1px solid #0f2453; border-right:1px solid #0f2453; background:#243e7c; }
+.nav li.on a { color:#fff; }
+
+
+/* content */
+.leftConts { float:left; width:19%; text-align:left;}
+.rightConts { float:right; display:inline; width:78%; text-align:left; }
+
+.logBox { width:100%; padding:0 }
+.logBox ul { border:1px solid #e0e0e0; overflow:hidden; padding:10px 12px;}
+.logBox li { clear:both; overflow:hidden; }
+.logBox li img { vertical-align:middle;}
+.logBox li.time { padding:10px 0 0}
+.nameLeft { float:left; }
+.logoutRight { float:right; display:inline;}
+
+.leftMenu { clear:both; padding:20px 0; width:100%; }
+.leftMenu h2 { background:#065899; padding:12px 0 10px; overflow:hidden; color:#fff; text-align:center; font-size:16px;}
+
+.leftMenu ul { border:2px solid #065899; overflow:hidden;  }
+.leftMenu li { border-bottom:1px solid #bfcad0; background:#f2f2f2 url(/images/egovframework/bopr/blt.gif) 90% 13px no-repeat; overflow:hidden;  color:#0073ae; font-weight:bold; padding:10px 15px; letter-spacing:-1px;}
+.leftMenu li a { display:block; color:#0f79b3}
+.leftMenu li.deth {background:#fff url(/images/egovframework/bopr/blt_up.gif) 90% 13px no-repeat;  padding:10px 0 10px 15px}
+.leftMenu li.deth a { display:block; text-decoration:none; }
+.leftMenu li.deth a:hover { text-decoration:none;}
+
+ol.deth2 { background:none; padding:5px 0 0; margin:0;}
+ol.deth2 li { background: url(/images/egovframework/bopr/blt2.gif) 0px 11px no-repeat;  padding:8px 0 8px 13px; overflow:hidden; letter-spacing:-1px; border-bottom:1px solid #e3e3e3; font-weight:normal; }
+ol.deth2 li.last { border-bottom:none; padding:8px 0 0 13px;}
+ol.deth2 li a { display:block; color:#666; text-decoration:none; }
+
+/* 검색부분 */
+.search { clear:both; margin:0 auto; text-align:center; background:#f9f9f9; border-bottom:1px solid #dcdcdc; border-left:1px solid #dcdcdc; border-right:1px solid #dcdcdc;}
+.disp_none { display:none; }
+
+/* search */
+.searchboxA { overflow:hidden; width:100%; margin:0; padding:8px 0 6px;_padding:7px 0 5px;text-align:center;}
+.searchboxA .inptext { margin:0; width:200px; border:1px solid #d3d3d3; height:20px;}
+.searchboxA img { vertical-align:middle; }
+.serSel { width:120px; white-space:nowrap;  border:1px solid #d3d3d3; vertical-align:top; height:20px;}
+.searchbtn { width:37px; height:22px; vertical-align:top;}
+
+/* 상세내용들 */
+.contsBody { clear:both; padding:20px 0 0; }
+.contsBody h2 { background: url(/images/egovframework/bopr/blt3.gif) 0 0 no-repeat; padding:0 0 0 20px; font-size:14px; height:30px; border-bottom:1px solid #3672c2; color:#3672c2}
+.location { border-bottom:1px solid #dcdcdc; text-align:right; height:30px; font-size:11px; line-height:30px; color:#333;}
+.location strong { font-size:11px; letter-spacing:-1px; }
+
+.popupBody { clear:both; padding:20px 5px 5px; }
+.popupBody h2 { background: url(/images/egovframework/bopr/blt3.gif) 0 0 no-repeat; padding:0 0 0 20px; font-size:14px; height:30px; border-bottom:1px solid #3672c2; color:#3672c2}
+
+
+.BtnComment { clear:both; padding:15px 0 0; text-align:center; overflow:hidden} 
+.locationComment { border-bottom:1px solid #dcdcdc; text-align:left; height:30px; font-size:11px; letter-spacing:-1px; line-height:30px; color:#666}
+
+.Btn { clear:both; padding:15px 0 0; text-align:right; overflow:hidden}
+.BtnTOp { clear:both; padding:0px 0 10px; text-align:right; overflow:hidden} 
+.bbsBtn {  display:inline-block; margin:0 2px; background: url(/images/egovframework/bopr/bg_bbs_btn.gif) repeat-x; height:20px; padding:0 12px; }
+overflow:hidden; text-align:center; border:1px solid #d1d6e3; font-size:11px; letter-spacing:-1px;  line-height:22px;}
+.bbsBtn a { color:#0e72c2; }
+.bbsBtn a:hover { text-decoration:none; color:#000;}
+
+.bbsList { clear:both; padding:10px 0; overflow:hidden;}
+.bbsList table { width:100%; border-top:2px solid #4e95dc;}
+.bbsList th { padding:10px 0; overflow:hidden; text-align:center; border-bottom:1px solid #ccc; background:#f8f8f8;}
+.bbsList td { padding:10px 0; overflow:hidden; text-align:center; border-bottom:1px solid #ccc; color:#5d5858;}
+.bbsList td a { color:#3672c2;}
+.bbsList td.left { text-align:left; }
+
+.bbsDetail { clear:both; padding:10px 0; overflow:hidden;}
+.bbsDetail table { width:100%;}
+.bbsDetail th { padding:10px 10px; overflow:hidden; text-align:left; border-bottom:1px solid #ccc; border-right:1px solid #ccc; background:#f8f8f8;}
+.bbsDetail th img { vertical-align:top; margin-right:5px}
+.bbsDetail th.first { border-top:2px solid #4e95dc}
+.bbsDetail td.first { border-top:2px solid #4e95dc}
+.bbsDetail td.none { border-bottom:none;}
+.bbsDetail td { padding:10px 10px; overflow:hidden; text-align:left; border-bottom:1px solid #ccc; color:#5d5858;}
+.bbsDetail input { border:1px solid #d3d3d3; padding:2px 5px; overflow:hidden; vertical-align:top;}
+
+/* paging */
+.paging { clear:both; text-align:center; margin:20px 0; }
+.paging a { display:inline-block; color:#444;  font-size:12px; }
+.paging span {  margin:2px 5px; padding:0 0 0; font-size:12px; line-height:14px; vertical-align:middle;}
+.paging img { margin:0 3px; _margin:0 3px 2px; vertical-align:middle;}
+.paging strong { color:#ff0000; font-weight:bold;}
+
+/* footer */
+#footer h2 { float:left; padding:17px 10px 0}
+#footer address { float:left; display:inline; padding:27px 10px 0; font-size:11px; color:#444;}
+
+
+/* 메인화면 */
+.metoday { clear:both; float:left; width:45%; padding:0 0 30px; overflow:hidden}
+.metodayBox { height:118px; border:2px solid #ff6000; background:#fbfafa; overflow:hidden}
+.metodayBox h2 { margin:12px 15px 0; border-bottom:1px solid #d8dce0; height:22px; overflow:hidden;}
+.meLeft { float:left; background: url(/images/egovframework/bopr/ic_today.gif) left top no-repeat; height:26px; padding:2px 0 0 21px}
+.meRight { float:right; display:inline; padding:5px 0 0}
+*:first-child+html .metoday { height:100px; }
+
+.todayExe { float:right; display:inline; width:52%; padding:0 0 30px; overflow:hidden}
+.todayBox { height:118px; border:2px solid #d8d8d8; background:#f7f7f7; overflow:hidden}
+.todayBox h2 { margin:12px 15px 0; border-bottom:1px solid #d8dce0; height:22px; overflow:hidden;}
+.toLeft { float:left; background: url(/images/egovframework/bopr/ic_list.gif) left top no-repeat; height:26px; padding:2px 0 0 21px}
+*:first-child+html .todayExe { height:100px;}
+
+/*2012-10-17 수정*/
+.today_wrap {width:100%; padding-bottom:30px; overflow:hidden}
+.today_wrap .metoday {float:left; width:50%; height:152px; min-width:200px;}
+.today_wrap .metoday .today {padding-right:15px;}
+.today_wrap .metoday .today .left {float:left; width:21px; background:url(/images/egovframework/bopr/new_main/img_metoday_left.gif) 0 0 no-repeat;}
+.today_wrap .metoday .today .center {background:url(/images/egovframework/bopr/new_main/img_metoday_ptn.gif) 0 0 repeat-x; height:152px;}
+
+.today_wrap .metoday .today .me_tit {background:url(/images/egovframework/bopr/new_main/ico_bullet_orange.gif) no-repeat;}
+.today_wrap .metoday h2 {color:#333; height:25px; border-bottom:1px solid #fe9400; padding-top:20px;}
+.today_wrap .metoday h2 span.me_tit {float:left; padding-left:18px; padding-bottom:3px;}
+.today_wrap .metoday .center .btn_more {position:absolute; left:42%; top:70px;}
+
+.today_wrap .metoday .today .center .today_list ul {padding-top:20px;}
+.today_wrap .metoday .today .center .today_list li { background: url(/images/egovframework/bopr/new_main/ico_dot_orange.gif) 0 3px no-repeat; padding:0 0 0 7px; height:24px; font-size:11px; color:#666; }
+.today_wrap .metoday .today .center .today_list li a { font-size:11px; color:#666;}
+.today_wrap .metoday .today .center .today_list li a:hover { color:#fe9400; text-decoration:none;}
+.today_wrap .metoday .today .center .today_list_jeb { float:left; }
+.today_wrap .metoday .today .center .today_list_date { float:right; display:inline; color:#444; padding:0 12px;}
+.today_wrap .metoday .today .right {float:right; width:21px; background:url(/images/egovframework/bopr/new_main/img_metoday_right.gif) 0 0 no-repeat; margin-top:-152px;}
+
+
+.today_wrap .todayexe {float:right; width:50%; height:152px; min-width:200px;}
+.today_wrap .todayexe .exetoday {clear:both;}
+.today_wrap .todayexe .exetoday .left {float:left; width:21px; background:url(/images/egovframework/bopr/new_main/img_todayexe_left.gif) 0 0 no-repeat;}
+.today_wrap .todayexe .exetoday .execenter {background:url(/images/egovframework/bopr/new_main/img_todayexe_ptn.gif) 0 0 repeat-x; height:152px;}
+.today_wrap .todayexe .exetoday .right {float:right; width:21px; background:url(/images/egovframework/bopr/new_main/img_todayexe_right.gif) 0 0 no-repeat; margin-top:-152px;}
+
+.today_wrap .todayexe .exetoday .exe_tit {background:url(/images/egovframework/bopr/new_main/ico_bullet_blue.gif) no-repeat;}
+.today_wrap .todayexe .execenter h2 {color:#333; height:25px; border-bottom:1px solid #54b6cf; padding-top:20px;}
+.today_wrap .todayexe .execenter h2 span.exe_tit {float:left; padding-left:18px; padding-bottom:3px;}
+.today_wrap .todayexe .execenter .btn_more {position:absolute; left:92%; top:70px;}
+
+.today_wrap .todayexe .exetoday .execenter .exe_list ul {padding-top:20px;}
+.today_wrap .todayexe .exetoday .execenter .exe_list li { background: url(/images/egovframework/bopr/new_main/ico_dot_blue.gif) 0 3px no-repeat; padding:0 0 0 7px; height:24px; font-size:11px; color:#666; }
+.today_wrap .todayexe .exetoday .execenter .exe_list li a { font-size:11px; color:#666;}
+.today_wrap .todayexe .exetoday .execenter .exe_list li a:hover { color:#54b6cf; text-decoration:none;}
+.today_wrap .todayexe .exetoday .execenter .exe_list_jeb { float:left; }
+.today_wrap .todayexe .exetoday .execenter .exe_list_date { float:right; display:inline; color:#444; padding:0 25px 0 0;}
+/*2012-10-17 수정*/
+
+/*2012-10-18 댓글등록 추가*/
+.cmt_wrap {width:100%; border-top:2px solid #4e95dc; font-size:12px; color:#5d5858;}
+.cmt_wrap .top {height:24px; vertical-align:middle; margin-top:10px;}
+.cmt_wrap .writer {float:left; width:50%;}
+.cmt_wrap .writer span {font-weight:bold;}
+.cmt_wrap .writer span.title {color:#000;}
+.cmt_wrap .point {float:right; width:50%; text-align:right;}
+.cmt_wrap .point span {font-weight:bold;}
+.cmt_wrap .point span.title {color:#000;}
+
+.cmt_wrap .point_sel {width:115px; height:18px; white-space:nowrap; border:1px solid #d3d3d3;}
+.cmt_wrap .point_sel .sel_01 {background:url(/images/egovframework/board_coment/img_star01.gif) 0 0 no-repeat;}
+.cmt_wrap .point_sel .sel_02 {background:url(/images/egovframework/board_coment/img_star02.gif) 0 0 no-repeat;}
+.cmt_wrap .point_sel .sel_03 {background:url(/images/egovframework/board_coment/img_star03.gif) 0 0 no-repeat;}
+.cmt_wrap .point_sel .sel_04 {background:url(/images/egovframework/board_coment/img_star04.gif) 0 0 no-repeat;}
+.cmt_wrap .point_sel .sel_05 {background:url(/images/egovframework/board_coment/img_star05.gif) 0 0 no-repeat;}
+
+.cmt_wrap .content {border:1px solid #ccc; background:#f8f8f8; height:116px; padding:10px 10px 0 10px; overflow:hidden;}
+.cmt_wrap .text_area {float:left; width:90%;}
+.cmt_wrap .text_area textarea {width:100%; height:100px;}
+.cmt_wrap .btn_area {width:104px; float:right; padding-left:10px; vertical-align:middle;}
+/*2012-10-18 댓글등록 추가*/
+
+/*2012-10-18 달력 추가*/
+.calendar_wrap {width:298px; margin:0 auto; border-left:1px solid #ccc; border-right:1px solid #ccc; border-bottom:1px solid #ccc;}
+.calendar_wrap .year {height:32px; text-align:center; font-size:18px; color:#3670c1; font-weight:bold; padding-top:13px;}
+.calendar_wrap .day { width:298px; overflow:hidden;}
+.calendar_wrap .day .pre {float:left; width:89px; text-align:right;}
+.calendar_wrap .day .day_num {float:left; width:120px;}
+.calendar_wrap .day .next {float:left; width:89px; text-align:left;}
+
+.calendar_wrap .day_number {text-align:center; width:280px; font-size:11px; color:#666;}
+.calendar_wrap .day_number th td {text-align:center; vertical-align:middle;}
+.calendar_wrap .day_number td.on {text-align:center; vertical-align:middle; font-size:11px; font-weight:bold; color:#fff; background:#b3c4fb; }
+.calendar_wrap .day_number td a {display:block; text-decoration:none; color:#666;}
+/*2012-10-18 달력 추가*/
+
+.bomList { clear:both; padding:15px 20px 0; overflow:hidden}
+.bomList li { background: url(/images/egovframework/bopr/blt5.gif) 0 3px no-repeat; padding:0 0 0 7px; height:20px; color:#989898; }
+.bomList li a { color:#989898;}
+.jeb { float:left; }
+.date { float:right; display:inline; padding:0 0}
+
+.maincontsBody { clear:both; width:100%;}
+*:first-child+html .maincontsBody { clear:both; padding:10px 0 0}
+h4 {  background: url(/images/egovframework/bopr/blt3.gif) 0 0 no-repeat; padding:0 0 0 20px; font-size:14px; overflow:hidden}
+
+.bbsListMa { clear:both; padding:10px 0; overflow:hidden}
+.bbsListMa table { width:100%; border-top:2px solid #b3d7f1; }
+.bbsListMa th { padding:8px 0; overflow:hidden; color:#576b79; text-align:center; border-bottom:1px solid #cbcbcb; border-right:1px solid #cbcbcb; background:#f8f8f8;}
+.bbsListMa td { padding:7px 0; overflow:hidden; font-size:11px; text-align:center; border-bottom:1px solid #cbcbcb; border-right:1px solid #cbcbcb; color:#5d5858}
+.bbsListMa td a { color:#3672c2}
+.bbsListMa td.left { text-align:left; }
+.bbsListMa th.last, .bbsListMa td.last { border-right:none}
+
+.monitoringList { clear:both; padding:20px 0; overflow:hidden}
+.arrangementLeft { float:left; width:48.5%; }
+.arrangementRight { float:right; display:inline; width:48.5%; }
+
+/* 로그인 화면 */
+#wrapLogin { margin:0; padding:0; width:100%; }
+
+#loginContent { margin:0; padding:0; background:#fff;  }
+.loginBg { background: url(/images/egovframework/bopr/login/index_bg.jpg) top no-repeat; width:980px; height:542px; margin:0 auto;}
+#login { padding:300px 0 0 600px}
+
+.boxLogin { position:relative; background: url(/images/egovframework/bopr/login/img_loginbg.jpg) top no-repeat; width:284px; height:139px; }
+.idpwInput { clear:both; float:left; padding:40px 0 0 28px}
+.idpwInput li { margin:0 0 6px}
+.idpwInput li input { border:1px solid #ddd; height:20px; padding:0 5px; line-height:20px;}
+.idpwInput li p {font-weight:bold;}
+.idpwInput li p input {vertical-align:middle;}
+.idpwInput li p input.check {border:none;}
+*:first-child+html .idpwInput li input { height:19px;}
+
+.btnLogin { position:absolute; left:176px; top:38px;}
+
+#footerLogin { clear:both; position:relative; background: url(/images/egovframework/bopr/login/img_footerbg.jpg) top repeat-x; height:53px;}
+.lobFooter { margin:0 auto; width:980px; }
+.lobFooter h2 { float:left; padding:10px 0 0 10px}
+#footerLogin address { float:left; padding:10px 0 0 15px}
+.monitor { float:right; display:inline; padding:10px 10px 0 0}
+
+/* 댓글 */
+.com-commentT { color:#666666; background:#fff; border-top:solid 2px #ddd; padding:0.625em 0.938em; font-size:0.750em; }
+.com-commentT span { color:#047fbe}
+.com-commentList { padding:0.625em 0.938em; border-top:solid 1px #ddd;background:#fff;}
+.com-commentList p { float:left; font-size:0.750em; padding-right:0.313em;}
+.com-commentList p.com-delete a { display:block; font-weight:normal; text-decoration:none; padding:1px 0.125em; color:#ff6600; }
+.com-commentList p.com-delete { float:right; display:inline-block; padding-right:0; margin-right:0.125em; font-size:0.688em; font-family:Dotum; border:1px solid #c6c6c6;}
+
+.com-commentList p.com-modify a { display:block; font-weight:normal; text-decoration:none; padding:1px 0.125em; }
+.com-commentList p.com-modify { float:right; display:inline-block; padding-right:0; margin-right:0.125em; font-size:0.688em; font-family:Dotum; border:1px solid #c6c6c6;}
+
+.com-commentList p.com-date { color:#999 }
+.com-commContent { clear:both; font-size:0.750em; color:#666; padding:0.313em 0; line-height:140%; }
+.com-commContent2 { clear:both; list-style:none; padding:0;}
+.com-commContent2 li { width:90%; color:#333; padding:0.313em 0; line-height:140%; overflow: hidden; white-space: normal}
+.com-commContent2 li.date { color:#999; }
+
+.uss-txtDate { color:#999; margin-left:0.438em; }

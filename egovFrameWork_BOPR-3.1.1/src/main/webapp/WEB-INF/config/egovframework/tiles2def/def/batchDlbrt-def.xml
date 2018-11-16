@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<!-- 배치심의 메뉴정의 -->
+<tiles-definitions>
+
+<!-- 업무심의요청 -->
+	<!-- 업무심의요청목록 -->
+	<definition name="egovframework/bopr/bam/EgovJobDlbrtList" extends="template">
+		<put-attribute name="title" value="업무심의요청목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovJobDlbrtList.jsp" />
+	</definition>
+	
+	<!-- 업무심의요청조회 -->
+	<definition name="egovframework/bopr/bam/EgovJobDlbrtDetail" extends="template">
+		<put-attribute name="title" value="업무심의요청조회" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovJobDlbrtDetail.jsp" />
+	</definition>
+	
+	<!-- 업무심의요청조회(수정) -->
+	<definition name="egovframework/bopr/bam/EgovJobDlbrtUpdate" extends="template">
+		<put-attribute name="title" value="업무심의요청조회(수정)" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovJobDlbrtUpdate.jsp" />
+	</definition>
+	
+	<!-- 업무심의요청등록 -->
+	<definition name="egovframework/bopr/bam/EgovJobDlbrtRegist" extends="template">
+		<put-attribute name="title" value="업무심의요청등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovJobDlbrtRegist.jsp" />
+	</definition>
+	
+<!-- 배치심의요청 -->
+	<!-- 배치심의목록 -->
+	<definition name="egovframework/bopr/bam/EgovBatchDlbrtList" extends="template">
+		<put-attribute name="title" value="배치심의요청목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovBatchDlbrtList.jsp" />
+	</definition>
+	
+	<!-- 배치심의조회 -->
+	<definition name="egovframework/bopr/bam/EgovBatchDlbrtDetail" extends="template">
+		<put-attribute name="title" value="배치심의요청조회" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovBatchDlbrtDetail.jsp" />
+	</definition>
+	<!-- 배치심의조회(수정) -->
+	<definition name="egovframework/bopr/bam/EgovBatchDlbrtUpdate" extends="template">
+		<put-attribute name="title" value="배치심의요청조회(수정)" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovBatchDlbrtUpdate.jsp" />
+	</definition>
+	<!-- 배치심의등록 -->
+	<definition name="egovframework/bopr/bam/EgovBatchDlbrtRegist" extends="template">
+		<put-attribute name="title" value="배치심의요청등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovBatchDlbrtRegist.jsp" />
+	</definition>
+	
+<!-- 업무심의관리 -->
+	<!-- 업무심의관리목록 -->
+	<definition name="egovframework/bopr/bam/EgovJobDlbrtConfmList" extends="template">
+		<put-attribute name="title" value="업무심의관리목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovJobDlbrtConfmList.jsp" />
+	</definition>
+	
+	<!-- 업무심의관리조회(수정) -->
+	<definition name="egovframework/bopr/bam/EgovJobDlbrtConfmDetail" extends="template">
+		<put-attribute name="title" value="업무심의관리조회(수정)" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovJobDlbrtConfmDetail.jsp" />
+	</definition>
+	
+	<!-- 업무심의관리등록 -->
+	<definition name="egovframework/bopr/bam/EgovJobDlbrtConfmRegist" extends="template">
+		<put-attribute name="title" value="업무심의관리등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovJobDlbrtConfmRegist.jsp" />
+	</definition>
+	
+<!-- 배치심의관리 -->
+	<!-- 배치심의관리목록 -->
+	<definition name="egovframework/bopr/bam/EgovBatchDlbrtConfmList" extends="template">
+		<put-attribute name="title" value="배치심의관리목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovBatchDlbrtConfmList.jsp" />
+	</definition>
+	
+	<!-- 배치심의관리조회(수정) -->
+	<definition name="egovframework/bopr/bam/EgovBatchDlbrtConfmDetail" extends="template">
+		<put-attribute name="title" value="배치심의관리조회(수정)" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovBatchDlbrtConfmDetail.jsp" />
+	</definition>
+	
+	<!-- 배치심의관리등록 -->
+	<definition name="egovframework/bopr/bam/EgovBatchDlbrtConfmRegist" extends="template">
+		<put-attribute name="title" value="배치심의관리등록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/bam/EgovBatchDlbrtConfmRegist.jsp" />
+	</definition>
+	
+<!-- 배치배포관리 -->
+	<!-- 배치배포관리목록 -->
+	<definition name="egovframework/bopr/sim/EgovBatchWdtbList" extends="template">
+		<put-attribute name="title" value="배치배포관리목록" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovBatchWdtbList.jsp" />
+	</definition>
+	
+	<!-- 배치배포관리조회 -->
+	<definition name="egovframework/bopr/sim/EgovBatchWdtbDetail" extends="template">
+		<put-attribute name="title" value="배치배포관리조회" type="string" />
+		<put-attribute name="body" value="/WEB-INF/jsp/egovframework/bopr/sim/EgovBatchWdtbDetail.jsp" />
+	</definition>
+		
+</tiles-definitions>

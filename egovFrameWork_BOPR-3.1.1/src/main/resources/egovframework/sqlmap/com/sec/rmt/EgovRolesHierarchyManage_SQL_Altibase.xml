@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorRoleManage">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias  alias="roleHierarchyManageVO" type="egovframework.com.sec.rmt.service.RoleHierarchyManageVO"/>
+    <typeAlias  alias="roleHierarchyManage" type="egovframework.com.sec.rmt.service.RoleHierarchyManage"/>
+
+    <resultMap id="roleHierarchy" class="egovframework.com.sec.rmt.service.RoleHierarchyManageVO">
+        <result property="parentRole" column="PARNTS_ROLE" columnIndex="1"/>
+        <result property="childRole" column="CHILD_ROLE" columnIndex="2"/>
+    </resultMap>
+	
+    <select id="roleHierarchyManageDAO.selectRoleHierarchyList" parameterClass="roleHierarchyManageVO" resultMap="roleHierarchy">
+        <![CDATA[
+        	SELECT  * 
+              FROM  (
+            SELECT ROWNUM RNUM, ALL_LIST.* 
+              FROM  (
+        	SELECT PARNTS_ROLE,
+        		   CHILD_ROLE 
+        		   
+        	FROM TN_ROLES_HIERARCHY
+            
+            ) ALL_LIST
+                    )
+             WHERE  RNUM  > #firstIndex#
+               AND  RNUM <= #firstIndex# + #recordCountPerPage#	         
+        ]]>
+    </select>
+
+    <insert id="roleHierarchyManageDAO.insertRoleHierarchy" parameterClass="roleHierarchyManage">
+        <![CDATA[
+	        INSERT INTO TN_ROLES_HIERARCHY 
+	                  ( PARNTS_ROLE
+	            	  , CHILD_ROLE
+	            	  )
+	           VALUES ( #parentRole#
+	                  , #childRole#
+	                  )           
+        ]]>
+    </insert>
+    
+    <update id="roleHierarchyManageDAO.updateRoleHierarchy" parameterClass="roleHierarchyManage">
+        <![CDATA[
+			
+		
+        ]]>
+    </update>
+
+    <delete id="roleHierarchyManageDAO.deleteRoleHierarchy" parameterClass="roleHierarchyManage">
+        <![CDATA[
+           
+        ]]>
+    </delete>
+    
+    <select id="roleHierarchyManageDAO.selectRoleHierarchyListTotCnt" parameterClass="roleHierarchyManageVO" resultClass="int">
+		SELECT COUNT(*) totcnt
+		FROM TN_ROLES_HIERARCHY
+		
+	</select>
+    
+</sqlMap>

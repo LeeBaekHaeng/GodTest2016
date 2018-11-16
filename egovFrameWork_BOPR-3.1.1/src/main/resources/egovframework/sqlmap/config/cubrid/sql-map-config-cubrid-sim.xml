@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd" >
+
+<sqlMapConfig>
+    <sqlMap resource="egovframework/sqlmap/bopr/sim/batchwdtb/BatchWdtb_SQL_cubrid.xml" />
+    <sqlMap resource="egovframework/sqlmap/bopr/sim/batchinfo/BatchInfo_SQL_cubrid.xml" />
+    <sqlMap resource="egovframework/sqlmap/bopr/sim/sttusntcn/SttusNtcn_SQL_cubrid.xml" />
+    <sqlMap resource="egovframework/sqlmap/bopr/sim/schdul/Schdul_SQL_cubrid.xml" />
+	<sqlMap resource="egovframework/sqlmap/bopr/sim/schdulresult/SchdulResult_SQL_cubrid.xml" />
+</sqlMapConfig>

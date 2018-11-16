@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Notification">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="notificationVO" type="egovframework.com.uss.ion.noi.service.NotificationVO"/>
+	<typeAlias  alias="notification" type="egovframework.com.uss.ion.noi.service.Notification"/>
+
+	<resultMap id="notificationList" class="egovframework.com.uss.ion.noi.service.NotificationVO">
+		<result property="ntfcNo" column="NTFC_NO" columnIndex="1"/>
+		<result property="ntfcSj" column="NTFC_SJ" columnIndex="2"/>
+		<result property="ntfcCn" column="NTFC_CN" columnIndex="3"/>
+		<result property="ntfcTime" column="NTFC_TIME" columnIndex="4"/>
+		<result property="bhNtfcIntrvlString" column="BH_NTFC_INTRVL" columnIndex="5"/>
+		<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="6"/>
+	</resultMap>
+
+	<resultMap id="notificationDetail" class="egovframework.com.uss.ion.noi.service.NotificationVO">
+		<result property="ntfcNo" column="NTFC_NO" columnIndex="1"/>
+		<result property="ntfcSj" column="NTFC_SJ" columnIndex="2"/>
+		<result property="ntfcCn" column="NTFC_CN" columnIndex="3"/>
+		<result property="ntfcTime" column="NTFC_TIME" columnIndex="4"/>
+		<result property="bhNtfcIntrvlString" column="BH_NTFC_INTRVL" columnIndex="5"/>
+		<result property="frstRegisterId" column="FRST_REGISTER_ID" columnIndex="6"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM" columnIndex="7"/>
+		<result property="frstRegistPnttm" column="FRST_REGIST_PNTTM" columnIndex="8"/>
+	</resultMap>
+
+	<select id="NotificationDAO.selectNotificationInfs" parameterClass="notificationVO" resultMap="notificationList" >
+		<![CDATA[
+			SELECT 
+				a.NTFC_NO, a.NTFC_SJ, a.NTFC_CN,
+				DATE_FORMAT(a.NTFC_TIME, '%Y-%m-%d %H:%i:%S') as NTFC_TIME, 
+				CONCAT(REPLACE(BH_NTFC_INTRVL,',','분,'), '분') as BH_NTFC_INTRVL,
+				DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d') as FRST_REGIST_PNTTM
+			FROM
+				TN_NTFCINFO a
+			WHERE 1=1	
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	a.NTFC_TIME LIKE CONCAT (#searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	a.NTFC_SJ LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+			<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	a.NTFC_CN LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+		<![CDATA[			
+			ORDER BY a.FRST_REGIST_PNTTM DESC 
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>				
+	</select>	
+	
+	<select id="NotificationDAO.selectNotificationInfsCnt" parameterClass="notificationVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT 
+				COUNT(a.NTFC_NO)
+			FROM
+				TN_NTFCINFO a
+			WHERE 1=1 
+		]]>
+			<isEqual prepend="AND" property="searchCnd" compareValue="0">
+				<![CDATA[	a.NTFC_TIME LIKE CONCAT (#searchWrd#,'%') 		]]>
+			</isEqual>
+			<isEqual prepend="AND" property="searchCnd" compareValue="1">
+				<![CDATA[	a.NTFC_SJ LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+			<isEqual prepend="AND" property="searchCnd" compareValue="2">
+				<![CDATA[	a.NTFC_CN LIKE CONCAT ('%', #searchWrd#,'%') 		]]>
+			</isEqual>	
+	</select>
+
+	<insert id="NotificationDAO.insertNotificationInf" parameterClass="notification" >
+		<selectKey resultClass="java.lang.String" keyProperty="ntfcNo">
+			SELECT IFNULL(MAX(NTFC_NO),0)+1 AS NTFC_NO FROM TN_NTFCINFO
+		</selectKey>
+		<![CDATA[
+			INSERT INTO TN_NTFCINFO
+			(NTFC_NO, NTFC_SJ, NTFC_CN,
+			 NTFC_TIME, BH_NTFC_INTRVL,
+			 FRST_REGISTER_ID, FRST_REGIST_PNTTM )
+			VALUES
+			( #ntfcNo#, #ntfcSj#, #ntfcCn#, #ntfcTime#, #bhNtfcIntrvlString#, 
+			  #frstRegisterId#, SYSDATE()  
+			 )			
+		]]>
+	</insert>
+ 
+	<select id="NotificationDAO.selectNotificationInf" parameterClass="notificationVO" resultMap="notificationDetail" >
+		<![CDATA[
+			SELECT 
+				a.NTFC_NO, a.NTFC_SJ, a.NTFC_CN,
+				DATE_FORMAT(STR_TO_DATE(a.NTFC_TIME, '%Y%m%d%H%i%S'), '%Y-%m-%d %H:%i:%S') as NTFC_TIME,
+				CONCAT(REPLACE(a.BH_NTFC_INTRVL, ',', '분,'), '분') as BH_NTFC_INTRVL,
+				a.FRST_REGISTER_ID, b.USER_NM as FRST_REGISTER_NM,
+				DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S') as FRST_REGIST_PNTTM
+			FROM
+				TN_NTFCINFO a				
+			LEFT OUTER JOIN COMVNUSERMASTER b
+				ON a.FRST_REGISTER_ID = b.ESNTL_ID		
+			WHERE a.NTFC_NO = #ntfcNo#
+		]]>				
+	</select> 
+ 
+ 	<update id="NotificationDAO.updateNotificationInf" parameterClass="notification">
+ 		<![CDATA[
+			UPDATE TN_NTFCINFO SET 
+				NTFC_SJ = #ntfcSj#,
+				NTFC_CN = #ntfcCn#, 
+				NTFC_TIME = #ntfcTime#,
+				BH_NTFC_INTRVL = #bhNtfcIntrvlString#,
+				LAST_UPDUSR_ID = #lastUpdusrId#,
+				LAST_UPDT_PNTTM = SYSDATE()
+			WHERE NTFC_NO = #ntfcNo#
+ 		]]>
+ 	</update>
+
+ 	<update id="NotificationDAO.deleteNotificationInf" parameterClass="notification">
+ 		<![CDATA[
+			DELETE FROM TN_NTFCINFO
+			WHERE NTFC_NO = #ntfcNo#
+ 		]]>
+ 	</update>
+
+	<select id="NotificationDAO.getNotificationData" parameterClass="notificationVO" resultMap="notificationList" >
+		<![CDATA[
+			SELECT 
+				a.NTFC_NO, a.NTFC_SJ, a.NTFC_CN,
+				DATE_FORMAT(a.NTFC_TIME, '%Y-%m-%d %H:%i:%S') as NTFC_TIME, 
+				BH_NTFC_INTRVL as BH_NTFC_INTRVL,
+				DATE_FORMAT(a.FRST_REGIST_PNTTM, '%Y-%m-%d %H:%i:%S') as FRST_REGIST_PNTTM
+			FROM
+				TN_NTFCINFO a
+			WHERE a.NTFC_TIME BETWEEN #startDateTime# AND #endDateTime#
+		]]>	
+		<![CDATA[			
+			ORDER BY a.NTFC_TIME ASC 
+		]]>				
+	</select>
+</sqlMap>
