@@ -1,11 +1,14 @@
 package egovframework.com.utl.wed.web;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.propertyeditors.URLEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,10 +94,22 @@ public class EgovWebEditorImageController {
 
 	    String url = request.getContextPath()
 	    + "/utl/web/imageSrc.do?"
-	    + "path=" + this.encrypt(vo.getServerSubPath())
-	    + "&physical=" + this.encrypt(vo.getPhysicalName())
-	    + "&contentType=" + this.encrypt(vo.getContentType());
+//	    + "path=" + this.encrypt(vo.getServerSubPath())
+	    + "path=" + URLEncoder.encode(this.encrypt(vo.getServerSubPath()), "UTF-8")
+//	    + "&physical=" + this.encrypt(vo.getPhysicalName())
+	    + "&physical=" + URLEncoder.encode(this.encrypt(vo.getPhysicalName()), "UTF-8")
+//	    + "&contentType=" + this.encrypt(vo.getContentType());
+	    + "&contentType=" + URLEncoder.encode(this.encrypt(vo.getContentType()), "UTF-8");
 
+	    LOGGER.debug("url=" + url);
+	    LOGGER.debug("path=" + vo.getServerSubPath());
+	    LOGGER.debug("path=" + this.encrypt(vo.getServerSubPath()));
+	    LOGGER.debug("path=" + URLEncoder.encode(this.encrypt(vo.getServerSubPath()), "UTF-8"));
+	    LOGGER.debug("physical=" + vo.getPhysicalName());
+	    LOGGER.debug("physical=" + this.encrypt(vo.getPhysicalName()));
+	    LOGGER.debug("contentType=" + vo.getContentType());
+	    LOGGER.debug("contentType=" + this.encrypt(vo.getContentType()));
+	    
 	    model.addAttribute("url", url);
 	}
 
@@ -111,13 +126,26 @@ public class EgovWebEditorImageController {
     @RequestMapping(value="/utl/web/imageSrc.do",method=RequestMethod.GET)
     public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String subPath = this.decrypt(request.getParameter("path"));
+//		String subPath = this.decrypt(URLDecoder.decode(request.getParameter("path"), "UTF-8"));
 		//2017.12.12 - 출력 모듈 경로 변경 취약점 조치
 		//저장파일경로 > 디텍토리 변경 체크 	
 		subPath = EgovWebUtil.filePathBlackList(subPath);
 		String physical = this.decrypt(request.getParameter("physical"));
 		physical = EgovWebUtil.filePathBlackList(physical);
 		String mimeType = this.decrypt(request.getParameter("contentType"));
-		
+
+	    LOGGER.debug("path=" + request.getParameter("path"));
+	    LOGGER.debug("path=" + URLDecoder.decode(request.getParameter("path"), "UTF-8"));
+	    LOGGER.debug("path=" + this.decrypt(URLDecoder.decode(request.getParameter("path"), "UTF-8")));
+	    LOGGER.debug("path=" + this.decrypt(request.getParameter("path")));
+	    LOGGER.debug("subPath=" + subPath);
+	    LOGGER.debug("physical=" + request.getParameter("physical"));
+	    LOGGER.debug("physical=" + this.decrypt(request.getParameter("physical")));
+	    LOGGER.debug("physical=" + physical);
+	    LOGGER.debug("contentType=" + request.getParameter("contentType"));
+	    LOGGER.debug("contentType=" + this.decrypt(request.getParameter("contentType")));
+	    LOGGER.debug("mimeType=" + mimeType);
+
 		EgovFormBasedFileUtil.viewFile(response, uploadDir, subPath, physical, mimeType);
     }
     
