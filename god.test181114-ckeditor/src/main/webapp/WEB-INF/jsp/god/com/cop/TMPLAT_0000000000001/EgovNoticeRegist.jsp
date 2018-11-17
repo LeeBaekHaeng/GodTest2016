@@ -314,7 +314,8 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 <script type="text/javascript">
 $( document ).ready(function() {
 
-	$.get('${pageContext.request.contextPath}/test/1.htm', {}, function(data) {
+// 	$.get('${pageContext.request.contextPath}/test/1.htm', {}, function(data) {
+	$.get('${pageContext.request.contextPath}/test/ed_request.html', {}, function(data) {
 		$('#nttCn').val(data);
 
         ClassicEditor

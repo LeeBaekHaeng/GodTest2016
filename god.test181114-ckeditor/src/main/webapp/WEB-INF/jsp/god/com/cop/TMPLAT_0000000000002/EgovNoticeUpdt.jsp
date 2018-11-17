@@ -394,9 +394,9 @@ $( document ).ready(function() {
 // 	HTMLArea.init();
 // 	HTMLArea.onload = initEditor2;
 
-	CKEDITOR.replace( 'nttCn', {height : '2000px'} );
-	CKEDITOR.replace( 'nttCn2', {height : '1000px'} );
-	CKEDITOR.replace( 'nttCn3', {height : '1000px'} );
+	CKEDITOR.replace( 'nttCn', {height : '2000px', allowedContent : true} );
+	CKEDITOR.replace( 'nttCn2', {height : '1000px', allowedContent : true} );
+	CKEDITOR.replace( 'nttCn3', {height : '1000px', allowedContent : true} );
 
 });
 </script>

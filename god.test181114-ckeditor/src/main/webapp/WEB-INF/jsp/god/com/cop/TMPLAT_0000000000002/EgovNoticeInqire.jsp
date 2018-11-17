@@ -293,13 +293,13 @@
 <p></p>
 
 <h1>1페이지</h1>
-<c:out value="${result.nttCn}" escapeXml="false" />
+<%-- <c:out value="${result.nttCn}" escapeXml="false" /> --%>
 
 <h1>2페이지</h1>
-<c:out value="${result.nttCn2}" escapeXml="false" />
+<%-- <c:out value="${result.nttCn2}" escapeXml="false" /> --%>
 
 <h1>3페이지</h1>
-<c:out value="${result.nttCn3}" escapeXml="false" />
+<%-- <c:out value="${result.nttCn3}" escapeXml="false" /> --%>
 
 </body>
 </html>

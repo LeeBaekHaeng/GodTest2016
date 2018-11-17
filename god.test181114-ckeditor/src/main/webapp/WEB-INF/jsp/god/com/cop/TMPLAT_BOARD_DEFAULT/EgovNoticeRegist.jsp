@@ -66,6 +66,9 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 		}
 
 		if (confirm('<spring:message code="common.regist.msg" />')) {
+// console.log($('#nttCn').val().replace(/<input type="text" style="width: 80%;height: 70px;margin-left: 10px;font-size: 20px;" onchange="console.log(this.value);a = this.value;">/gi, '<input type="text" style="width: 80%;height: 70px;margin-left: 10px;font-size: 20px;" onchange="console.log(this.value);a = this.value;" value="' + a + '">'));
+// return;
+// 
 			//document.board.onsubmit();
 			document.board.action = "<c:url value='/cop/bbs${prefix}/insertBoardArticle.do'/>";
 			document.board.submit();
@@ -107,7 +110,7 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 <!-- body onload="javascript:editor_generate('nttCn');"-->
 <!-- <body onLoad="HTMLArea.init(); HTMLArea.onload = initEditor; document.board.nttSj.focus(); makeFileAttachment();"> -->
 <body onLoad="document.board.nttSj.focus(); makeFileAttachment();">
-
+<input type="text" id="pf1a">
 <form:form commandName="board" name="board" method="post" enctype="multipart/form-data" >
 
 <input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>"/>
@@ -153,7 +156,7 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 	    <th width="20%" height="23" class="emphasisRight" nowrap><spring:message code="cop.nttSj" />
 	    <img src="<c:url value='/images/egovframework/com/cmm/icon/required.gif' />" width="15" height="15" alt="필수입력표시"></th>
 	    <td width="80%" nowrap colspan="3">
-	      <input name="nttSj" type="text" size="60" value=""  maxlength="60" title="제목입력">
+	      <input name="nttSj" id="nttSj" type="text" size="60" value=""  maxlength="60" title="제목입력">
 	      <br/><form:errors path="nttSj" />
 	    </td>
 	  </tr>
@@ -312,8 +315,20 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 <%-- <script type="text/javascript" src="${pageContext.request.contextPath}/js/egovframework/com/cmm/jquery.js"></script> --%>
 <script type="text/javascript">
 $( document ).ready(function() {
-	$.get('${pageContext.request.contextPath}/test/1.htm', {}, function(data) {
+// 	$.get('${pageContext.request.contextPath}/test/1.htm', {}, function(data) {
+	$.get('${pageContext.request.contextPath}/test/ed_request.html', {}, function(data) {
 		$('#nttCn').val(data);
+		function initEditor2() {
+			var editor = new HTMLArea('nttCn');
+			editor.generate();
+			var editor2 = new HTMLArea('nttCn2');
+			editor2.generate();
+			var editor3 = new HTMLArea('nttCn3');
+			editor3.generate();
+		}
+		HTMLArea.init();
+		HTMLArea.onload = initEditor2;
+// 		console.log(HTMLArea.getElementById('input', 'pf1-1'));
 	}, 'html');
 	$.get('${pageContext.request.contextPath}/test/2.htm', {}, function(data) {
 		$('#nttCn2').val(data);
@@ -322,17 +337,19 @@ $( document ).ready(function() {
 		$('#nttCn3').val(data);
 	}, 'html');
 	
-	function initEditor2() {
-		var editor = new HTMLArea('nttCn');
-		editor.generate();
-		var editor2 = new HTMLArea('nttCn2');
-		editor2.generate();
-		var editor3 = new HTMLArea('nttCn3');
-		editor3.generate();
-	}
-	HTMLArea.init();
-	HTMLArea.onload = initEditor2;
+// 	function initEditor2() {
+// 		var editor = new HTMLArea('nttCn');
+// 		editor.generate();
+// 		var editor2 = new HTMLArea('nttCn2');
+// 		editor2.generate();
+// 		var editor3 = new HTMLArea('nttCn3');
+// 		editor3.generate();
+// 	}
+// 	HTMLArea.init();
+// 	HTMLArea.onload = initEditor2;
 });
+
+var a = '';
 </script>
 
 </body>

@@ -185,7 +185,7 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 	    <td colspan="3">
 	     <table width="100%" border="0" cellpadding="0" cellspacing="0" class="noStyle">
 	     <tr><td>
-	      <textarea id="nttCn" name="nttCn" class="textarea" cols="75" rows="28"  style="width:550px;"><c:out value="${result.nttCn}" escapeXml="false" /></textarea>
+<%-- 	      <textarea id="nttCn" name="nttCn" class="textarea" cols="75" rows="28"  style="width:550px;"><c:out value="${result.nttCn}" escapeXml="false" /></textarea> --%>
 	      <form:errors path="nttCn" />
 	      </td></tr>
 	     </table>
@@ -197,7 +197,7 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 	    <td colspan="3">
 	     <table width="100%" border="0" cellpadding="0" cellspacing="0" class="noStyle">
 	     <tr><td>
-	      <textarea id="nttCn2" name="nttCn2" class="textarea" cols="75" rows="28"  style="width:550px;"><c:out value="${result.nttCn2}" escapeXml="false" /></textarea>
+<%-- 	      <textarea id="nttCn2" name="nttCn2" class="textarea" cols="75" rows="28"  style="width:550px;"><c:out value="${result.nttCn2}" escapeXml="false" /></textarea> --%>
 <%-- 	      <form:errors path="nttCn" /> --%>
 	      </td></tr>
 	     </table>
@@ -209,7 +209,7 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 	    <td colspan="3">
 	     <table width="100%" border="0" cellpadding="0" cellspacing="0" class="noStyle">
 	     <tr><td>
-	      <textarea id="nttCn3" name="nttCn3" class="textarea" cols="75" rows="28"  style="width:550px;"><c:out value="${result.nttCn3}" escapeXml="false" /></textarea>
+<%-- 	      <textarea id="nttCn3" name="nttCn3" class="textarea" cols="75" rows="28"  style="width:550px;"><c:out value="${result.nttCn3}" escapeXml="false" /></textarea> --%>
 <%-- 	      <form:errors path="nttCn" /> --%>
 	      </td></tr>
 	     </table>
@@ -348,6 +348,11 @@ _editor_url = "<c:url value='/html/egovframework/com/cmm/utl/htmlarea3.0/'/>";
 	</table>
 	</div>
 </div>
+
+<textarea id="nttCn" name="nttCn" style="width: 100%; height: 2000px;"><c:out value="${result.nttCn}" escapeXml="false" /></textarea>
+<textarea id="nttCn2" name="nttCn2" style="width: 100%; height: 1000px;"><c:out value="${result.nttCn2}" escapeXml="false" /></textarea>
+<textarea id="nttCn3" name="nttCn3" style="width: 100%; height: 1000px;"><c:out value="${result.nttCn3}" escapeXml="false" /></textarea>
+
 </form:form>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/js/egovframework/com/cmm/jquery-1.4.2.min.js"></script>
