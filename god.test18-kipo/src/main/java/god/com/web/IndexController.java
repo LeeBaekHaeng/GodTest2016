@@ -60,10 +60,10 @@ public class IndexController {
 
 		ByteArrayInputStream input = new ByteArrayInputStream(selectFileInf.getFileCn2());
 		OutputStream output = response.getOutputStream();
-
 		int copy = IOUtils.copy(input, output);
-
 		egovLogger.debug("copy=" + copy);
+
+		output.write(selectFileInf.getFileCn2());
 	}
 
 }
