@@ -10,6 +10,9 @@
 </head>
 <body>
 
+	<img
+		src="<c:url value="/god/blobToImage.do?atchFileId=FILE_000000000000061&fileSn=1" />">
+
 	<ol>
 		<li><c:out value="${indexVO}" escapeXml="true" /></li>
 		<li><c:out value="${indexVO.param1}" escapeXml="true" /></li>

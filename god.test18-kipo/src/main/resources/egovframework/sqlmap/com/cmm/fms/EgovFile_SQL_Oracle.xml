@@ -27,6 +27,7 @@
 		<result property="fileStreCours" column="FILE_STRE_COURS" columnIndex="6"/>
 		<result property="orignlFileNm" column="ORIGNL_FILE_NM" columnIndex="7"/>
 		<result property="streFileNm" column="STRE_FILE_NM" columnIndex="8"/>
+		<result property="fileCn2" column="FILE_CN2" columnIndex="9" />
 	</resultMap>	
 
 
@@ -60,10 +61,10 @@
 		<![CDATA[
 			INSERT INTO COMTNFILEDETAIL
 			( ATCH_FILE_ID, FILE_SN, FILE_STRE_COURS, STRE_FILE_NM, 
-			  ORIGNL_FILE_NM, FILE_EXTSN, FILE_SIZE, FILE_CN )
+			  ORIGNL_FILE_NM, FILE_EXTSN, FILE_SIZE, FILE_CN, FILE_CN2 )
 			VALUES
 			( #atchFileId#, #fileSn#, #fileStreCours#, #streFileNm#, 
-			  #orignlFileNm#, #fileExtsn#, #fileMg#, #fileCn# )			
+			  #orignlFileNm#, #fileExtsn#, #fileMg#, #fileCn#, #fileCn2# )			
 		]]>
 	</insert>	
 	
@@ -89,7 +90,7 @@
  		<![CDATA[
 			SELECT 
 				ATCH_FILE_ID, FILE_CN, FILE_SN, FILE_STRE_COURS, STRE_FILE_NM,
-				FILE_EXTSN, ORIGNL_FILE_NM, FILE_SIZE
+				FILE_EXTSN, ORIGNL_FILE_NM, FILE_SIZE, FILE_CN2
 			FROM
 				COMTNFILEDETAIL
 			WHERE
