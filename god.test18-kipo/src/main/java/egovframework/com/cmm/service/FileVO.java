@@ -59,6 +59,7 @@ public class FileVO implements Serializable {
 	public String streFileNm = "";
 
 	public byte[] fileCn2;
+	public byte[] fileCn3;
 
 	/**
 	 * atchFileId attribute를 리턴한다.
@@ -237,6 +238,14 @@ public class FileVO implements Serializable {
 
 	public void setFileCn2(byte[] fileCn2) {
 		this.fileCn2 = fileCn2;
+	}
+
+	public byte[] getFileCn3() {
+		return fileCn3;
+	}
+
+	public void setFileCn3(byte[] fileCn3) {
+		this.fileCn3 = fileCn3;
 	}
 
 	/**
