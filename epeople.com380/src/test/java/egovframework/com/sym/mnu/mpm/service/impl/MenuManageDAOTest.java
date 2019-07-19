@@ -32,4 +32,7 @@ public class MenuManageDAOTest extends GodAbstractTest {
 		}
 	}
 
+	public void test2() throws Exception {
+	}
+
 }
