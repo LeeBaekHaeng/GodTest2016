@@ -5,20 +5,14 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import egovframework.com.cmm.ComDefaultCodeVO;
 import egovframework.com.cmm.service.CmmnDetailCode;
+import god.com.GodAbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:egovframework/spring/com/**/context-*.xml" })
-@ActiveProfiles("mysql")
 @Slf4j
-public class CmmUseDAOTest {
+public class CmmUseDAOTest extends GodAbstractTest {
 
 	@Resource(name = "cmmUseDAO")
 	private CmmUseDAO cmmUseDAO;
