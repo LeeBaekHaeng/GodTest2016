@@ -31,11 +31,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.TreeMap;
 
-import egovframework.com.cmm.IncludedCompInfoVO;
-import egovframework.com.cmm.LoginVO;
-import egovframework.com.cmm.annotation.IncludedInfo;
-import egovframework.com.cmm.util.EgovUserDetailsHelper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -46,6 +41,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import egovframework.com.cmm.IncludedCompInfoVO;
+import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.annotation.IncludedInfo;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
+
 @Controller
 public class EgovComIndexController implements ApplicationContextAware, InitializingBean {
 
@@ -55,11 +55,12 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 
 	private Map<Integer, IncludedCompInfoVO> map;
 
-	public void afterPropertiesSet() throws Exception {}
+	public void afterPropertiesSet() throws Exception {
+	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
-		
+
 		LOGGER.info("EgovComIndexController setApplicationContext method has called!");
 	}
 
@@ -69,7 +70,9 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 	}
 
 	@RequestMapping("/EgovTop.do")
-	public String top() {
+	public String top(ModelMap model) {
+		LoginVO authenticatedUser = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		model.addAttribute("authenticatedUser", authenticatedUser);
 		return "egovframework/com/cmm/EgovUnitTop";
 	}
 
@@ -127,7 +130,7 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 			}
 			/* 여기까지 AOP Proxy로 인한 코드 */
 
-			/*@Controller Annotation 처리된 클래스를 모두 찾는다.*/
+			/* @Controller Annotation 처리된 클래스를 모두 찾는다. */
 			Map<String, Object> myZoos = applicationContext.getBeansWithAnnotation(Controller.class);
 			LOGGER.debug("How many Controllers : ", myZoos.size());
 			for (final Object myZoo : myZoos.values()) {
@@ -139,7 +142,7 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 					annotation = methods[i].getAnnotation(IncludedInfo.class);
 
 					if (annotation != null) {
-						//LOG.debug("Found @IncludedInfo Method : " + methods[i] );
+						// LOG.debug("Found @IncludedInfo Method : " + methods[i] );
 						zooVO = new IncludedCompInfoVO();
 						zooVO.setName(annotation.name());
 						zooVO.setOrder(annotation.order());
@@ -161,7 +164,7 @@ public class EgovComIndexController implements ApplicationContextAware, Initiali
 		}
 
 		model.addAttribute("resultList", map.values());
-		
+
 		LOGGER.debug("EgovComIndexController index is called ");
 
 		return "egovframework/com/cmm/EgovUnitLeft";

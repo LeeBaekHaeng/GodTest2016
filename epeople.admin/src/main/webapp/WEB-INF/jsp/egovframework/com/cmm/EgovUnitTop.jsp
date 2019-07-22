@@ -11,6 +11,13 @@
 <title>eGovFrame 공통 컴포넌트</title>
 </head>
 <body>
+<ol>
+	<li>pageContext.request.requestURI: ${pageContext.request.requestURI}</li>
+	<li>pageContext.request.requestURL: ${pageContext.request.requestURL}</li>
+	<li>authenticatedUser: ${authenticatedUser}</li>
+	<li>authenticatedUser.id: ${authenticatedUser.id}</li>
+	<li>authenticatedUser.name: ${authenticatedUser.name}</li>
+</ol>
 <div id="header">
 	<div class="header_box"> 
 	<h1>
