@@ -488,6 +488,14 @@
 			<scope>system</scope>
 			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/libgpkiapi_jni-1.4.0.0.jar</systemPath>
 		</dependency>
+
+		<dependency>
+			<groupId>epeople</groupId>
+			<artifactId>com380</artifactId>
+			<version>1.0.0</version>
+			<type>war</type>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -580,6 +588,14 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
 			</plugin>
+
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<attachClasses>true</attachClasses>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 	<reporting>
