@@ -13,6 +13,7 @@
 <body>
 <ol>
 	<li><a href="<c:url value="/admin/index.do"/>" target="_blank">/admin/index.do</a></li>
+	<li><a href="<c:url value="/com/index.do"/>" target="_blank">/com/index.do</a></li>
 	<li>pageContext.request.requestURI: ${pageContext.request.requestURI}</li>
 	<li>pageContext.request.requestURL: ${pageContext.request.requestURL}</li>
 	<li>authenticatedUser: ${authenticatedUser}</li>
