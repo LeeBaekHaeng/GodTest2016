@@ -495,13 +495,14 @@
 			<artifactId>com380</artifactId>
 			<version>1.0.0</version>
 			<type>war</type>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>epeople</groupId>
 			<artifactId>com380</artifactId>
 			<version>1.0.0</version>
 			<classifier>classes</classifier>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 
 	</dependencies>
@@ -599,19 +600,22 @@
 
 			<!-- god -->
 			<!-- https://maven.apache.org/plugins/maven-war-plugin/overlays.html -->
-			<!-- <plugin> -->
-			<!-- <groupId>org.apache.maven.plugins</groupId> -->
-			<!-- <artifactId>maven-war-plugin</artifactId> -->
-			<!-- <version>3.2.3</version> -->
-			<!-- <configuration> -->
-			<!-- <overlays> -->
-			<!-- <overlay> -->
-			<!-- <groupId>epeople</groupId> -->
-			<!-- <artifactId>com380</artifactId> -->
-			<!-- </overlay> -->
-			<!-- </overlays> -->
-			<!-- </configuration> -->
-			<!-- </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+				<configuration>
+					<overlays>
+						<overlay>
+							<!-- empty groupId/artifactId represents the current build -->
+						</overlay>
+						<overlay>
+							<groupId>epeople</groupId>
+							<artifactId>com380</artifactId>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
 
 		</plugins>
 	</build>
