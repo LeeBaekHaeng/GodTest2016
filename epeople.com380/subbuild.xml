@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project name="MyProject" default="" basedir=".">
+
+	<target name="compile2">
+		<echo>compile2</echo>
+		<echo>subbuild.xml</echo>
+		<echo>src: ${src}</echo>
+		<echo>build: ${build}</echo>
+	</target>
+
+	<target name="compile3">
+		<echo>compile3</echo>
+		<echo>subbuild.xml</echo>
+		<echo>src: ${src}</echo>
+		<echo>build: ${build}</echo>
+	</target>
+
+</project>
