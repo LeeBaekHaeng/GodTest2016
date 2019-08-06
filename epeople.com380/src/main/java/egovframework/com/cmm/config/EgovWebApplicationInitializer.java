@@ -15,6 +15,7 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import egovframework.com.cmm.filter.GodMultipartFilter;
 import egovframework.com.cmm.filter.HTMLTagFilter;
 import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.sec.security.filter.EgovSpringSecurityLoginFilter;
@@ -170,6 +171,10 @@ public class EgovWebApplicationInitializer implements WebApplicationInitializer 
 		// (<c:out />의 경우 뷰단에서 데이터 출력시 XSS 방지 처리가 됨)
 		FilterRegistration.Dynamic htmlTagFilter = servletContext.addFilter("htmlTagFilter", new HTMLTagFilter());
 		htmlTagFilter.addMappingForUrlPatterns(null, false, "*.do");
+
+		FilterRegistration.Dynamic godMultipartFilter = servletContext.addFilter("godMultipartFilter",
+				new GodMultipartFilter());
+		godMultipartFilter.addMappingForUrlPatterns(null, false, "*.do");
 
 		// -------------------------------------------------------------
 		// Spring RequestContextListener 설정

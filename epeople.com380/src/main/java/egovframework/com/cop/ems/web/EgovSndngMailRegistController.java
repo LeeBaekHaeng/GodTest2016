@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.util.WebUtils;
 
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.annotation.IncludedInfo;
@@ -95,12 +94,12 @@ public class EgovSndngMailRegistController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/cop/ems/insertSndngMail.do")
-	// public String insertSndngMail(final MultipartHttpServletRequest multiRequest,
-	// @ModelAttribute("sndngMailVO") SndngMailVO sndngMailVO, ModelMap model,
-	// HttpServletRequest request)
-	// throws Exception {
-	public String insertSndngMail(@ModelAttribute("sndngMailVO") SndngMailVO sndngMailVO, ModelMap model,
-			HttpServletRequest request) throws Exception {
+	public String insertSndngMail(final MultipartHttpServletRequest multiRequest,
+			@ModelAttribute("sndngMailVO") SndngMailVO sndngMailVO, ModelMap model, HttpServletRequest request)
+			throws Exception {
+		// public String insertSndngMail(@ModelAttribute("sndngMailVO") SndngMailVO
+		// sndngMailVO, ModelMap model,
+		// HttpServletRequest request) throws Exception {
 
 		String contentType = request.getContentType();
 		egovLogger.debug("contentType: {}", contentType);
@@ -109,8 +108,8 @@ public class EgovSndngMailRegistController {
 
 		// MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)
 		// request;
-		MultipartHttpServletRequest multiRequest = WebUtils.getNativeRequest(request,
-				MultipartHttpServletRequest.class);
+		// MultipartHttpServletRequest multiRequest = WebUtils.getNativeRequest(request,
+		// MultipartHttpServletRequest.class);
 		egovLogger.debug("multiRequest: {}", multiRequest);
 		Iterator<String> fileNames = multiRequest.getFileNames();
 		egovLogger.debug("fileNames: {}", fileNames);
