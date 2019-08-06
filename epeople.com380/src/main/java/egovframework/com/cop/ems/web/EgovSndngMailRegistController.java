@@ -2,18 +2,22 @@ package egovframework.com.cop.ems.web;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.util.WebUtils;
 
 import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.annotation.IncludedInfo;
@@ -61,6 +65,8 @@ public class EgovSndngMailRegistController {
 	/** 파일구분자 */
 	static final char FILE_SEPARATOR = File.separatorChar;
 
+	protected Logger egovLogger = LoggerFactory.getLogger(EgovSndngMailRegistController.class);
+
 	/**
 	 * 발송메일 등록화면으로 들어간다
 	 * 
@@ -89,9 +95,25 @@ public class EgovSndngMailRegistController {
 	 * @exception Exception
 	 */
 	@RequestMapping(value = "/cop/ems/insertSndngMail.do")
-	public String insertSndngMail(final MultipartHttpServletRequest multiRequest,
-			@ModelAttribute("sndngMailVO") SndngMailVO sndngMailVO, ModelMap model, HttpServletRequest request)
-			throws Exception {
+	// public String insertSndngMail(final MultipartHttpServletRequest multiRequest,
+	// @ModelAttribute("sndngMailVO") SndngMailVO sndngMailVO, ModelMap model,
+	// HttpServletRequest request)
+	// throws Exception {
+	public String insertSndngMail(@ModelAttribute("sndngMailVO") SndngMailVO sndngMailVO, ModelMap model,
+			HttpServletRequest request) throws Exception {
+
+		String contentType = request.getContentType();
+		egovLogger.debug("contentType: {}", contentType);
+		egovLogger.debug("startsWith: {}", contentType.startsWith("multipart/form-data"));
+		egovLogger.debug("indexOf: {}", contentType.indexOf("multipart/form-data"));
+
+		// MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)
+		// request;
+		MultipartHttpServletRequest multiRequest = WebUtils.getNativeRequest(request,
+				MultipartHttpServletRequest.class);
+		egovLogger.debug("multiRequest: {}", multiRequest);
+		Iterator<String> fileNames = multiRequest.getFileNames();
+		egovLogger.debug("fileNames: {}", fileNames);
 
 		String link = "N";
 		if (sndngMailVO != null && sndngMailVO.getLink() != null && !sndngMailVO.getLink().equals("")) {
