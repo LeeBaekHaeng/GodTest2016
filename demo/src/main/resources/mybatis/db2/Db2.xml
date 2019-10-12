@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.Db2Mapper">
+
+	<select id="getDb1Dual" resultType="string">
+		select column_name from
+		COLUMNS where
+		table_schema = 'com' and table_name = 'comtcadministcode'
+		and
+		column_name = 'ADMINIST_ZONE_SE';
+	</select>
+
+</mapper>
