@@ -133,7 +133,8 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.18</version>
+			<!-- <version>1.18</version> -->
+			<version>[1.19,)</version>
 		</dependency>
 
 		<!-- oracle 10g driver -->
