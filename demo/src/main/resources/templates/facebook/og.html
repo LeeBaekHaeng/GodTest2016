@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title th:text="${og.title}">제목</title>
+
+<meta property="og:url" th:content="${og.url}" />
+<meta property="og:title" th:content="${og.title}" />
+<meta property="og:description" th:content="${og.description}" />
+<meta property="og:image" th:content="${og.image}" />
+
+</head>
+<body>
+
+	<img th:src="${og.image}">
+
+	<ol>
+		<li th:text="${og.url}"></li>
+		<li th:text="${og.title}"></li>
+		<li th:text="${og.description}"></li>
+		<li th:text="${og.image}"></li>
+	</ol>
+
+	<xmp>
+	<meta property="og:url" th:content="${og.url}" />
+	<meta property="og:title" th:content="${og.title}" />
+	<meta property="og:description" th:content="${og.description}" />
+	<meta property="og:image" th:content="${og.image}" />
+	</xmp>
+
+</body>
+</html>

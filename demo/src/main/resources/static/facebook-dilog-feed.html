@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<a href="" onclick="fn_facebook_dialog_feed(); return false;">페이스북
+		공유</a>
+
+	<script type="text/javascript">
+		function fn_facebook_dialog_feed() {
+			// godsoft18@gmail.com
+
+			var link = "";
+			link += "http://godsoft.iptime.org:8080/facebook/link";
+			link += "?url="
+					+ encodeURIComponent("http://godsoft.iptime.org:8080/facebook/og");
+			link += "&title=" + encodeURIComponent("제목");
+			link += "&description=" + encodeURIComponent("내용");
+			link += "&image="
+					+ encodeURIComponent("http://godsoft.iptime.org:8080/10956906_396737803821010_168799778_n.png");
+
+			console.log("link", link);
+
+			var url = "";
+			url += "https://www.facebook.com/dialog/feed";
+			url += "?app_id=904039353443604";
+			url += "&redirect_uri=https://www.facebook.com/";
+			url += "&display=popup";
+			url += "&link=" + encodeURIComponent(link);
+
+			var windowName = "fn_facebook_dialog_feed";
+
+			window.open(url, windowName);
+		}
+	</script>
+
+</body>
+</html>
