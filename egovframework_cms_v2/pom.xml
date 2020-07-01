@@ -369,7 +369,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.6</version>
+			<version>8.0.16</version>
 		</dependency>
 
 		<dependency>
@@ -379,7 +379,7 @@
 		</dependency>
 		<!-- oracle 10g driver <dependency> <groupId>ojdbc</groupId> <artifactId>ojdbc</artifactId> <version>14</version> </dependency> -->
 
-		<!-- mysql driver <dependency> <groupId>mysql</groupId> <artifactId>mysql-connector-java</artifactId> <version>5.1.6</version> </dependency> -->
+		<!-- mysql driver <dependency> <groupId>mysql</groupId> <artifactId>mysql-connector-java</artifactId> <version>8.0.16</version> </dependency> -->
 
 		<!-- altibase driver <dependency> <groupId>altibase</groupId> <artifactId>altibase-jdbc-driver</artifactId> <version>5.1.3.18</version> </dependency> -->
 
