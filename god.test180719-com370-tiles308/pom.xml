@@ -112,7 +112,7 @@
 			</exclusions> </dependency> <dependency> <groupId>commons-dbcp</groupId> 
 			<artifactId>commons-dbcp</artifactId> <version>1.4</version> </dependency> 
 			<dependency> <groupId>mysql</groupId> <artifactId>mysql-connector-java</artifactId> 
-			<version>5.1.31</version> </dependency> <dependency> <groupId>ojdbc</groupId> 
+			<version>8.0.16</version> </dependency> <dependency> <groupId>ojdbc</groupId> 
 			<artifactId>ojdbc</artifactId> <version>14</version> <scope>system</scope> 
 			<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ojdbc-14.jar</systemPath> 
 			</dependency> -->
@@ -413,7 +413,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.31</version>
+			<version>8.0.16</version>
 		</dependency>
 
 		<dependency>
